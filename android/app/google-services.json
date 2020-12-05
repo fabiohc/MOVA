@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "585254727186",
+    "firebase_url": "https://emanuellemepoupe.firebaseio.com",
+    "project_id": "emanuellemepoupe",
+    "storage_bucket": "emanuellemepoupe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585254727186:android:31afbcb2994983eab6b2cb",
+        "android_client_info": {
+          "package_name": "fcdev.br.com.emanuellemepoupe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585254727186-1ias2glbd22csfdmsui9hrcjk2lrrr27.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fcdev.br.com.emanuellemepoupe",
+            "certificate_hash": "1f39619a791ab3c247fe60cc017add25532b2fb3"
+          }
+        },
+        {
+          "client_id": "585254727186-p861q40ssjptc00c611mqcc8i7rm6vov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjUaK55-xZy6sFUgQ9xtxlknP7wpmAyfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585254727186-p861q40ssjptc00c611mqcc8i7rm6vov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
