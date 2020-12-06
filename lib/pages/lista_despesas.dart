@@ -48,11 +48,9 @@ class _ListaDespesaState extends State<ListaDespesas> {
     });
     super.initState();
   }
- 
-  
+
   @override
   Widget build(BuildContext context) {
-   
     var size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
@@ -71,31 +69,29 @@ class _ListaDespesaState extends State<ListaDespesas> {
                     scrollDirection: Axis.horizontal,
                     itemCount: quantidadeDeMeses.length,
                     itemBuilder: (context, index) {
-                    final meses = quantidadeDeMeses[index];
+                      final meses = quantidadeDeMeses[index];
                       return Container(
                         child: Row(
                           children: [
                             FlatButton(
-                                onPressed: () {
-                                  setState(() {
-                                   listaDespesasMesAtual =
-                                        util.obtenhaRegistroDespesasPorMes(
-                                                listaDespesas,
-                                                meses.toString());
-                                    selectedIndexMes = index;
-                                    selectedIndexTipo = 0;
-                                  });
-                                },
-                                color: selectedIndexMes == index
-                                    ? Colors.deepPurple[200]
-                                    : Colors.transparent,
-                                child: Text(
-                                    util.formataDataMesAno(meses.toString())),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    side: BorderSide(color: Colors.white60)),
-                              ),
-                        
+                              onPressed: () {
+                                setState(() {
+                                  listaDespesasMesAtual =
+                                      util.obtenhaRegistroDespesasPorMes(
+                                          listaDespesas, meses.toString());
+                                  selectedIndexMes = index;
+                                  selectedIndexTipo = 0;
+                                });
+                              },
+                              color: selectedIndexMes == index
+                                  ? Colors.deepPurple[200]
+                                  : Colors.transparent,
+                              child: Text(
+                                  util.formataDataMesAno(meses.toString())),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  side: BorderSide(color: Colors.white60)),
+                            ),
                             SizedBox(width: 10)
                           ],
                         ),
@@ -397,7 +393,10 @@ class _ListaDespesaState extends State<ListaDespesas> {
                                               color: Colors.blueGrey[600]),
                                           textAlign: TextAlign.start,
                                         ),
-                                        if (despesa.despFormaPagamento != null)
+                                        if (despesa.despFormaPagamento !=
+                                                null &&
+                                            despesa.despFormaPagamento !=
+                                                "null")
                                           Text(
                                             "Pago com: ${despesa.despFormaPagamento}" ??
                                                 "-",
@@ -406,7 +405,8 @@ class _ListaDespesaState extends State<ListaDespesas> {
                                                 color: Colors.blueGrey[600]),
                                             textAlign: TextAlign.start,
                                           ),
-                                        if (despesa.despTipoCartao != null)
+                                        if (despesa.despTipoCartao != null &&
+                                            despesa.despTipoCartao != "null")
                                           Text(
                                             "Cartão: ${despesa.despTipoCartao}" ??
                                                 "-",
@@ -436,96 +436,125 @@ class _ListaDespesaState extends State<ListaDespesas> {
                           Observer(builder: (_) {
                             return Row(
                               children: [
-                                /*FlatButton(
-                        onPressed: () {
-                          Card(child: InkWell(
-                            onTap: () {
-                              return showDialog(
-                                  context: context,
-                                  builder:
-                                      (BuildContext context) {
-                                    return new SimpleDialog(
-                                      children: <Widget>[
-                                        Container(
-                                            width: MediaQuery.of(
-                                                        context)
-                                                    .size
-                                                    .width *
-                                                0.9,
-                                            height: MediaQuery.of(
-                                                        context)
-                                                    .size
-                                                    .height *
-                                                0.9,
-                                            child: Card(
-                                              child: Row(
-                                                children: <
-                                                    Widget>[
-                                                  Text(
-                                                      "sdfad")
-                                                ],
-                                              ),
-                                            ))
-                                      ],
-                                    );
-                                  });
-                            },
-                          ));
-                        },
-                        child: Text(
-                          "Obs.",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.blueAccent),
-                          textAlign: TextAlign.start,
-                        )),*/
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: IconButton(
-                                      icon: Icon(Icons.edit),
-                                      color: Colors.orange,
+                                if (despesa.despObservacao != null &&
+                                    despesa.despObservacao != "null")
+                                  new IconButton(
+                                      icon: Icon(Icons.speaker_notes_outlined),
+                                      color: Colors.blueGrey,
                                       padding: EdgeInsets.all(0),
                                       onPressed: () {
-                                        Navigator.of(context)
-                                            .pushReplacementNamed(
-                                                RotasNavegacao.EDITARREGISTRO,
-                                                arguments: despesa);
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return new SimpleDialog(
+                                              children: <Widget>[
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.3,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.3,
+                                                  child: Observer(builder: (_) {
+                                                    return Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          Align(
+                                                            alignment: Alignment.bottomRight,
+                                                            child: 
+                                                           Padding(
+                                                                    padding: const EdgeInsets
+                                                                    .only(
+                                                             
+                                                                    ),
+                                                                    child: IconButton(
+                                                                icon: Icon(Icons.cancel),
+                                                                color: Colors.amber,
+                                                                onPressed: () {
+                                                                  Navigator.of(context)
+                                                                      .pop();
+                                                                }),
+                                                                  )),
+                                                          Align(
+                                                            alignment: Alignment.bottomLeft,
+                                                            child: 
+                                                        
+                                                          Padding(
+                                                              padding: const EdgeInsets
+                                                                      .only(
+                                                                  left:
+                                                                      10.0),
+                                                              child: Text(
+                                                                  "Descrição"))),
+                                                          Expanded(
+                                                              child: Align(
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                            child: Text(
+                                                              "${despesa.despObservacao}",
+                                                            ),
+                                                          )),
+                                                        ]);
+                                                  }),
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
                                       }),
-                                ),
-                                Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Observer(builder: (_) {
-                                      return IconButton(
-                                          icon: Icon(Icons.delete),
-                                          color: Colors.red,
-                                          padding: EdgeInsets.all(0),
-                                          onPressed: () {
-                                            despesaController
-                                                .deleteRegistro(despesa);
-                                            Flushbar(
-                                              title: "Pronto!",
-                                              message: "Registro removido.",
-                                              margin: EdgeInsets.all(10),
-                                              borderRadius: 8,
-                                              backgroundGradient:
-                                                  LinearGradient(colors: [
-                                                Colors.red,
-                                                Colors.redAccent
-                                              ]),
-                                              duration: Duration(seconds: 2),
-                                            )..show(context);
-                                            despesaController
-                                                .obtentaListaDespesas()
-                                                .then((list) {
-                                              setState(() {
-                                                listaDespesas = list;
-                                                listaDespesasMesAtual = util
-                                                    .obtenhaDespesasDoMesAtual(
-                                                        listaDespesas);
+                                if (despesa.despServico != "Parcela")
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: IconButton(
+                                        icon: Icon(Icons.edit),
+                                        color: Colors.orange,
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pushReplacementNamed(
+                                                  RotasNavegacao.EDITARREGISTRO,
+                                                  arguments: despesa);
+                                        }),
+                                  ),
+                                if (despesa.despServico != "Parcela")
+                                  Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Observer(builder: (_) {
+                                        return IconButton(
+                                            icon: Icon(Icons.delete),
+                                            color: Colors.red,
+                                            padding: EdgeInsets.all(0),
+                                            onPressed: () {
+                                              despesaController
+                                                  .deleteRegistro(despesa);
+                                              Flushbar(
+                                                title: "Pronto!",
+                                                message: "Registro removido.",
+                                                margin: EdgeInsets.all(10),
+                                                borderRadius: 8,
+                                                backgroundGradient:
+                                                    LinearGradient(colors: [
+                                                  Colors.red,
+                                                  Colors.redAccent
+                                                ]),
+                                                duration: Duration(seconds: 2),
+                                              )..show(context);
+                                              despesaController
+                                                  .obtentaListaDespesas()
+                                                  .then((list) {
+                                                setState(() {
+                                                  listaDespesas = list;
+                                                  listaDespesasMesAtual = util
+                                                      .obtenhaDespesasDoMesAtual(
+                                                          listaDespesas);
+                                                });
                                               });
                                             });
-                                          });
-                                    }))
+                                      }))
                               ],
                             );
                           }),
