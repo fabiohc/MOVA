@@ -55,7 +55,7 @@ class DespesaHelper {
         where: "despId = ?",
         whereArgs: [id]);
     if (maps.length > 0) {
-      return DespesaModel.fromMap(maps.first,false);
+      return DespesaModel.fromMap(maps.first, false);
     } else {
       return null;
     }
@@ -63,10 +63,40 @@ class DespesaHelper {
 
   Future<List<DespesaModel>> selectAll() async {
     Database dbDespesa = await db;
-    List list = await dbDespesa.rawQuery("Select * from despesa");
+    // List list = await dbDespesa.rawQuery("Select * from despesa");
+    List list = await dbDespesa.rawQuery("SELECT * " +
+        " FROM   (SELECT " +
+        " [d].[despIdGlobal], " +
+        " [d].[despServico], " +
+        "   [d].[despData], " +
+        "    [d].[despValor], " +
+        "    [d].[despFormaPagamento], " +
+        "   [d].[despTipoCartao], " +
+        "    [d].[despObservacao], " +
+        "    0 AS [numParcela], " +
+        "    [d].[despNumeroParcelas], " +
+        "   [d].[despesaStatusPag], " +
+        "    [d].[despIntegrado]" +
+        "    FROM   [despesa] [d]" +
+        "    UNION " +
+        "    SELECT " +
+        "    [p].[parcelaIdGlobal] AS [despIdGlobal], " +
+        "     'Parcela' AS [despServico], " +
+        "     [p].[parcelaData] AS [despData], " +
+        "     [p].[parcelaValor] AS [despValor], " +
+        "    'null' AS [despFormaPagamento], " +
+        "    'null' AS [despTipoCartao], " +
+        "     'null' AS [despObservacao], " +
+        "    [p].[parcelaNumero] AS [numParcela], " +
+        "     [p].[parcelaQuatParc] AS [despNumeroParcelas], " +
+        "    [p].[parcelaStatusPag] AS [despesaStatusPag]," +
+        "     [p].[parcelaIntegrado] AS [despIntegrado]" +
+        "  FROM   [parcelas] [p] " +
+        "   WHERE  [parcelaIdGlobal] LIKE '%desp%') AS consulta " +
+        " ORDER  BY 3 asc;");
     List<DespesaModel> lsDespesa = List();
     for (Map m in list) {
-      lsDespesa.add(DespesaModel.fromMap(m,false));
+      lsDespesa.add(DespesaModel.fromMap(m, false));
     }
     return lsDespesa;
   }
