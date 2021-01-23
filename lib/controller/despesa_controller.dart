@@ -4,11 +4,11 @@ import 'package:emanuellemepoupe/helperBD/parcela_helperdb.dart';
 import 'package:emanuellemepoupe/model/despesa_model.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:emanuellemepoupe/repository/despesa_repository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 part 'despesa_controller.g.dart';
 
 class DespesaController = _DespesaControllerBase with _$DespesaController;
-
 
 abstract class _DespesaControllerBase with Store {
   var despesaHelper = DespesaHelper();
@@ -16,6 +16,7 @@ abstract class _DespesaControllerBase with Store {
   var parcelaHelper = ParcelaHelper();
   var util = Util();
 
+  final numeroParcela = ValueNotifier<int>(0);
 
   @observable
   var despesaModel = DespesaModel();
@@ -49,6 +50,7 @@ abstract class _DespesaControllerBase with Store {
   @observable
   deleteRegistro(DespesaModel despesa) async {
     await despesaHelper.delete(despesa.despIdGlobal);
+    await parcelaHelper.delete(despesa.despIdGlobal);
     if (despesa.despIdGlobal.isNotEmpty)
       await repositoryHelper.deleteFirestore(despesa);
   }
@@ -168,11 +170,19 @@ abstract class _DespesaControllerBase with Store {
     var lista = await parcelaHelper.selectparcelaById(id);
     return lista;
   }
- 
+
   @observable
   Future<List> obtentaListaDeParcela(String id) async {
     var lista = await parcelaHelper.selectAll();
     return lista;
+  }
+
+  incrementeNumeroParcela() {
+    numeroParcela.value++;
+  }
+
+  decrementeNumeroParcela() {
+    numeroParcela.value--;
   }
 
   /*
@@ -208,6 +218,7 @@ abstract class _DespesaControllerBase with Store {
  */
   List obtenhaQuantidadeDeMeses(List<dynamic> listaDespesas) {
     List listaMesesConvertido = [];
+    List listaMesesOrdenada = [];
     List listaMeses;
 
     listaMeses = listaDespesas
@@ -216,14 +227,26 @@ abstract class _DespesaControllerBase with Store {
         .toList();
 
     listaMeses.forEach((data) {
+      data = util.formataDataMesAno(data);
+      data = data.replaceAll('/', '');
+      var mes = data.substring(0, 2);
+      var ano = data.substring(2, 6);
+      data = ano + mes;
       listaMesesConvertido.add(int.parse(data));
     });
 
+    ///Ordena em ordem crescente.
     listaMesesConvertido.sort();
 
-    return listaMesesConvertido;
+    listaMesesConvertido.forEach((data) {
+      data = data.toString();
+      var ano = data.substring(0, 4);
+      var mes = data.substring(4, 6);
+      data = mes + ano;
+      listaMesesOrdenada.add(data);
+    });
+    return listaMesesOrdenada;
   }
-
 
   /*
  *Função: Retorna o mês e o ano de uma data.

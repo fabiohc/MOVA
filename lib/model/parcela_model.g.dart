@@ -54,6 +54,21 @@ mixin _$ParcelaModel on _ParcelaModelBase, Store {
     });
   }
 
+  final _$parcelaQuatParcAtom = Atom(name: '_ParcelaModelBase.parcelaQuatParc');
+
+  @override
+  int get parcelaQuatParc {
+    _$parcelaQuatParcAtom.reportRead();
+    return super.parcelaQuatParc;
+  }
+
+  @override
+  set parcelaQuatParc(int value) {
+    _$parcelaQuatParcAtom.reportWrite(value, super.parcelaQuatParc, () {
+      super.parcelaQuatParc = value;
+    });
+  }
+
   final _$parcelaValorAtom = Atom(name: '_ParcelaModelBase.parcelaValor');
 
   @override
@@ -153,6 +168,17 @@ mixin _$ParcelaModel on _ParcelaModelBase, Store {
   }
 
   @override
+  dynamic alteraQuantParcelas(int value) {
+    final _$actionInfo = _$_ParcelaModelBaseActionController.startAction(
+        name: '_ParcelaModelBase.alteraQuantParcelas');
+    try {
+      return super.alteraQuantParcelas(value);
+    } finally {
+      _$_ParcelaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic alteraParcelaValor(String value) {
     final _$actionInfo = _$_ParcelaModelBaseActionController.startAction(
         name: '_ParcelaModelBase.alteraParcelaValor');
@@ -202,6 +228,7 @@ mixin _$ParcelaModel on _ParcelaModelBase, Store {
 parcelaId: ${parcelaId},
 parcelaIdGlobal: ${parcelaIdGlobal},
 parcelaNumero: ${parcelaNumero},
+parcelaQuatParc: ${parcelaQuatParc},
 parcelaValor: ${parcelaValor},
 parcelaData: ${parcelaData},
 parcelaStatusPag: ${parcelaStatusPag},

@@ -9,7 +9,7 @@ class CreateHelper {
   factory CreateHelper() => _instance;
   Database _db;
 
-Future<Database> get db async {
+  Future<Database> get db async {
     if (_db != null) {
       return _db;
     }
@@ -17,8 +17,8 @@ Future<Database> get db async {
     return db;
   }
 
-  Future<Database> initDb() async { 
-     Database db = await _db;
+  Future<Database> initDb() async {
+    Database db = await _db;
     final pasta = await getDatabasesPath();
     final pastaBD = join(pasta, "emanuelle.db");
 
@@ -61,11 +61,22 @@ Future<Database> get db async {
         "recIntegrado BOLEAN"
         ")";
 
+    final String sqlpessoa = "CREATE TABLE pessoa ("
+        "pessoaId INT PRIMARY KEY,"
+        "pessoaIdGlobal TEXT,"
+        "pessoaNome TEXT,"
+        "pessoaCpf INT,"
+        "pessoaDataNascimento TEXT,"
+        "pessoatelefone INT,"
+        "pessoaEmail TEXT,"
+        ")";
+
     return await openDatabase(pastaBD, version: 1,
         onCreate: (Database db, int newerVersion) async {
       await db.execute(sql);
       await db.execute(sqlparcelas);
       await db.execute(sqlreceita);
+      await db.execute(sqlpessoa);
       db.close();
     });
   }

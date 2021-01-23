@@ -12,7 +12,7 @@ var util = Util();
 
 abstract class _CarteiraControllerBase with Store {
   @observable
-  obtentaListaCompleta() async {
+  Future obtentaListaCompleta() async {
     List lista = await carteiraHelper.selectAll();
     return lista;
   }

@@ -1,6 +1,5 @@
 //import 'package:mePoupe/controller/util.dart';
 import 'package:emanuellemepoupe/controller/carteira_controller.dart';
-import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:mobx/mobx.dart';
 part 'despesa_model.g.dart';
 

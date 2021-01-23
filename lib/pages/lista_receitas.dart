@@ -109,7 +109,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
                   scrollDirection: Axis.horizontal,
                   itemCount: categorias.length,
                   itemBuilder: (context, index) {
-                    final categoria = categorias[index];                    
+                    final categoria = categorias[index];
                     return Container(
                       child: Row(
                         children: [
@@ -134,13 +134,11 @@ class _ListaReceitasState extends State<ListaReceitas> {
                         ],
                       ),
                     );
-                  }
-                  
-                  ),
+                  }),
             ),
           ),
           SizedBox(
-              height:size.height * .70,
+              height: size.height * .70,
               child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
@@ -420,8 +418,6 @@ class _ListaReceitasState extends State<ListaReceitas> {
                                     ],
                                   ),
                                 ),
-
-
                                 Observer(builder: (_) {
                                   return Row(
                                     children: [

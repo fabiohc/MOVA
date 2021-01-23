@@ -10,9 +10,9 @@ part of 'carteira_controller.dart';
 
 mixin _$CarteiraController on _CarteiraControllerBase, Store {
   @override
-  ObservableFuture obtentaListaCompleta() {
+  ObservableFuture<dynamic> obtentaListaCompleta() {
     final _$future = super.obtentaListaCompleta();
-    return ObservableFuture(_$future);
+    return ObservableFuture<dynamic>(_$future);
   }
 
   @override

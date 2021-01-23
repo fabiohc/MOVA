@@ -12,72 +12,6 @@ class _MenuInicioState extends State<MenuInicio> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-   
-/*
-    Widget buildMenu(String pathImgRight, String pathImgLeft) {
-      return Padding(
-        padding: EdgeInsets.only(top: 32),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(RotasNavegacao.MENU_RECEITAS);
-              },
-              child: getImage(pathImgRight),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  RotasNavegacao.MENU_DESPESAS,
-                );
-              },
-              child: getImage(pathImgLeft),
-            ),
-          ],
-        ),
-      );
-    }
-
-  
-    Container container = Container(
-      padding: EdgeInsets.only(
-        left: 15,
-        right: 15,
-      ),
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        stops: [0.3, 1.0],
-        colors: [
-          Color(0XFFF92B7F),
-          Color(0xFFF58524),
-        ],
-      )),
-      child: Container(
-        height: 500,
-        width: 400,
-        decoration: BoxDecoration(
-          color: kBackgroundColor,
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.3, 1.0],
-            colors: [
-              Color(0xFFFFFFFF),
-              Color(0xFFFFFFFF),
-            ],
-          ),
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
-        ),
-        alignment: Alignment.center,
-        child: column,
-      ),
-    );*/
-
     return Scaffold(
       //appBar: appBar,
       body: Stack(
@@ -137,10 +71,10 @@ class _MenuInicioState extends State<MenuInicio> {
                                 CategoryCard(
                                     title: "Relatórios",
                                     press: () {
-                                       Navigator.of(context).pushNamed(
-                                        RotasNavegacao.CARTEIRA);
+                                      Navigator.of(context)
+                                          .pushNamed(RotasNavegacao.CARTEIRA);
                                     },
-                                    svgSrc: "relatorio.png"),                                
+                                    svgSrc: "relatorio.png"),
                               ]),
                         ))
                       ])))

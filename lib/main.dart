@@ -1,3 +1,5 @@
+import 'package:emanuellemepoupe/pages/cadastro_pessoa.dart';
+import 'package:emanuellemepoupe/pages/despesa_pro.dart';
 import 'package:emanuellemepoupe/repository/receita_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,20 +18,21 @@ import 'package:emanuellemepoupe/pages/menu_receitas.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
 import 'package:emanuellemepoupe/repository/despesa_repository.dart';
 
+import 'config_midia_query.dart';
 import 'helperBD/create_helperdb.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  CreateHelper().db;
+  CreateHelper().db;  
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    DespesaRepository().selectListerneFirestore();
-    ReceitaRepository().selectListerneFirestore();
+  Widget build(BuildContext context) {     
+   // DespesaRepository().selectListerneFirestore();
+   //ReceitaRepository().selectListerneFirestore();
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         localizationsDelegates: [
@@ -41,7 +44,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           fontFamily: "Cairo",
           primarySwatch: Colors.purple,
-          scaffoldBackgroundColor: kBackgroundColor,
+          scaffoldBackgroundColor: kTextColor,
           textTheme:
               Theme.of(context).textTheme.apply(displayColor: kTextColor),
         ),
@@ -49,8 +52,8 @@ class MyApp extends StatelessWidget {
           RotasNavegacao.HOME: (_) => MenuInicio(),
           RotasNavegacao.CADASTRO_DESPESA: (_) => CadastroDespesa(),
           RotasNavegacao.CADASTRO_RECEITA: (_) => CadastroReceita(),
-          RotasNavegacao.MENU_DESPESAS: (_) => MenuDespesa(),
-          RotasNavegacao.MENU_RECEITAS: (_) => MenuReceitas(),
+          RotasNavegacao.MENU_DESPESAS: (_) => CadastroPessoa(),
+          RotasNavegacao.MENU_RECEITAS: (_) => Despesapro(),
           RotasNavegacao.LISTA_DESPESAS: (_) => ListaDespesas(),
           RotasNavegacao.LISTA_RECEITAS: (_) => ListaReceitas(),
           RotasNavegacao.EDITARREGISTRO: (_) => EditarRegistro(),

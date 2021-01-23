@@ -11,7 +11,7 @@ class Carteira extends StatefulWidget {
 }
 
 class _CarteiraState extends State<Carteira> {
-  final carteiraController = CarteiraController();
+  final  carteiraController = CarteiraController();
   final despesaHelper = DespesaHelper();
   var util = Util();
   List<CarteiraModel> listaCarteira = List();
@@ -20,7 +20,7 @@ class _CarteiraState extends State<Carteira> {
   @override
   void initState() {
     super.initState();
-    carteiraController.obtentaListaCompleta().then((list) {
+     carteiraController.obtentaListaCompleta().then((list) {
       setState(() {
         listaCarteira = list;
         quantidadeDeCards = util.obtenhaQuantidadeDeMeses(listaCarteira);

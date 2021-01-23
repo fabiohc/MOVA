@@ -97,7 +97,7 @@ class ParcelaHelper {
         where: "parcelaIdGlobal = ? and parcelaNumero = ?", whereArgs: [parcela.parcelaIdGlobal, parcela.parcelaNumero ]);
   }
 
-  Future<int> delete(String id) async {
+   delete(String id) async {
     Database dbparcela = await db;
     return await dbparcela
         .delete("parcelas", where: "parcelaIdGlobal = ?", whereArgs: [id]);

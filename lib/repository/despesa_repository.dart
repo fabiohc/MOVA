@@ -28,6 +28,30 @@ class DespesaRepository {
         .set(despesa.toMapFirebase());
   }
 
+    // ignore: missing_return
+  Future<DespesaModel> updateStatusPagamentoParcelaFirestore(DespesaModel despesa) async {
+   
+   
+         await db
+        .collection("despesa")
+        .doc(despesa.despIdGlobal).update({'parcelaModel/0': FieldValue.arrayUnion(["parcelaStatusPag:true"])});
+          
+
+          
+        
+  }
+/*
+ Future<DespesaModel> teste(DespesaModel despesa) async {
+    await db
+  
+.collection('despesa')
+.doc(despesa.despIdGlobal)
+.set(
+  { parcelaModel: [{ who: "third@test.com", when: new Date() }] },
+  { merge: true }
+)}*/
+
+
   // ignore: missing_return
   Future<DespesaModel> deleteFirestore(DespesaModel despesa) async {
     await db.collection("despesa").doc(despesa.despIdGlobal).delete();

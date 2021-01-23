@@ -1,4 +1,4 @@
-import 'package:brasil_fields/formatter/real_input_formatter.dart';
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -91,6 +91,7 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
   }
 
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text("Pagar"),
@@ -189,9 +190,6 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
                               }
                               return null;
                             },
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
                           ),
                           SizedBox(
                             height: 10,
@@ -246,18 +244,20 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
                           SizedBox(
                             height: 5,
                           ),
-                          TextFormField(                            
-                            decoration: InputDecoration(                              
+                          TextFormField(
+                            decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
-                                 borderSide: const BorderSide(color: Colors.purple, width: 1.5),
+                                borderSide: const BorderSide(
+                                    color: Colors.purple, width: 1.5),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.grey, width: 1.0),
-                              ),                              
+                                borderSide: const BorderSide(
+                                    color: Colors.grey, width: 1.0),
+                              ),
                               icon: Icon(Icons.short_text),
-                              labelText: "obs.:",                            
+                              labelText: "obs.:",
                             ),
-                             onChanged: (value) {
+                            onChanged: (value) {
                               despesaController.despesaModel
                                   .alteraDespdespObservacao(value);
                             },

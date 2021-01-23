@@ -54,6 +54,22 @@ mixin _$CarteiraModel on _CarteiraModelBase, Store {
     });
   }
 
+  final _$parcelaQuatParcAtom =
+      Atom(name: '_CarteiraModelBase.parcelaQuatParc');
+
+  @override
+  int get parcelaQuatParc {
+    _$parcelaQuatParcAtom.reportRead();
+    return super.parcelaQuatParc;
+  }
+
+  @override
+  set parcelaQuatParc(int value) {
+    _$parcelaQuatParcAtom.reportWrite(value, super.parcelaQuatParc, () {
+      super.parcelaQuatParc = value;
+    });
+  }
+
   final _$tipoAtom = Atom(name: '_CarteiraModelBase.tipo');
 
   @override
@@ -121,6 +137,17 @@ mixin _$CarteiraModel on _CarteiraModelBase, Store {
   }
 
   @override
+  dynamic alteraQuantParcelas(int value) {
+    final _$actionInfo = _$_CarteiraModelBaseActionController.startAction(
+        name: '_CarteiraModelBase.alteraQuantParcelas');
+    try {
+      return super.alteraQuantParcelas(value);
+    } finally {
+      _$_CarteiraModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic alteraTipo(String value) {
     final _$actionInfo = _$_CarteiraModelBaseActionController.startAction(
         name: '_CarteiraModelBase.alteraTipo');
@@ -148,6 +175,7 @@ mixin _$CarteiraModel on _CarteiraModelBase, Store {
 data: ${data},
 valor: ${valor},
 parcela: ${parcela},
+parcelaQuatParc: ${parcelaQuatParc},
 tipo: ${tipo},
 status: ${status}
     ''';

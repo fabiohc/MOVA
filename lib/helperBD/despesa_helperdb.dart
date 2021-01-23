@@ -1,9 +1,6 @@
 import 'package:emanuellemepoupe/model/despesa_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'create_helperdb.dart';
-
-final criadb = CreateHelper();
 
 class DespesaHelper {
   static final DespesaHelper _instance = DespesaHelper.internal();
@@ -107,7 +104,7 @@ class DespesaHelper {
         where: "despIdGlobal = ?", whereArgs: [despesa.despIdGlobal]);
   }
 
-  Future<int> delete(String id) async {
+  delete(String id) async {
     Database dbDespesa = await db;
     return await dbDespesa
         .delete("despesa", where: "despIdGlobal = ?", whereArgs: [id]);
