@@ -67,8 +67,8 @@ class CreateHelper {
         "pessoaNome TEXT,"
         "pessoaCpf INT,"
         "pessoaDataNascimento TEXT,"
-        "pessoatelefone INT,"
-        "pessoaEmail TEXT,"
+        "pessoaTelefone TEXT,"
+        "pessoaEmail TEXT"
         ")";
 
     return await openDatabase(pastaBD, version: 1,

@@ -3,6 +3,7 @@ import 'package:emanuellemepoupe/helperBD/despesa_helperdb.dart';
 import 'package:emanuellemepoupe/helperBD/parcela_helperdb.dart';
 import 'package:emanuellemepoupe/model/despesa_model.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
+import 'package:emanuellemepoupe/model/pessoa_model.dart';
 import 'package:emanuellemepoupe/repository/despesa_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
@@ -14,6 +15,7 @@ abstract class _DespesaControllerBase with Store {
   var despesaHelper = DespesaHelper();
   var repositoryHelper = DespesaRepository();
   var parcelaHelper = ParcelaHelper();
+  var pessoaModel = PessoaModel();
   var util = Util();
 
   final numeroParcela = ValueNotifier<int>(0);

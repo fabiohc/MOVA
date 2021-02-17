@@ -39,6 +39,11 @@ abstract class _PessoaModelBase with Store {
   @action
   alteraCPF(String value) => pessoaCpf = value;
 
+   @observable
+  PessoaModel pessoaModel;
+  @action
+  alteraPessoaModel(PessoaModel value) => pessoaModel = value;
+
   _PessoaModelBase();
 
   // ignore: unused_element

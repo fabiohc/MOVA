@@ -23,6 +23,29 @@ Widget buildvisibilidadeNumberPicker() {
     );
   }
 
+/*Conteine animation*/
+    new Container(
+                          padding: EdgeInsets.only(top: 25),
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(40)),
+                              color: Color(0xfff1f1f1)),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(bottom: 25),
+                                height: 3,
+                                width: 65,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Color(0xffd9dbdb)),
+                              )
+                            ],
+                          ),
+                        ),
+
   Widget numberPicker() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

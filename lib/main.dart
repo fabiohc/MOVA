@@ -1,5 +1,6 @@
 import 'package:emanuellemepoupe/pages/cadastro_pessoa.dart';
 import 'package:emanuellemepoupe/pages/despesa_pro.dart';
+import 'package:emanuellemepoupe/pages/lista_pessoa.dart';
 import 'package:emanuellemepoupe/repository/receita_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -52,13 +53,14 @@ class MyApp extends StatelessWidget {
           RotasNavegacao.HOME: (_) => MenuInicio(),
           RotasNavegacao.CADASTRO_DESPESA: (_) => CadastroDespesa(),
           RotasNavegacao.CADASTRO_RECEITA: (_) => CadastroReceita(),
-          RotasNavegacao.MENU_DESPESAS: (_) => CadastroPessoa(),
+          RotasNavegacao.CADASTRO_PESSOA: (_) => CadastroPessoa(),
           RotasNavegacao.MENU_RECEITAS: (_) => Despesapro(),
           RotasNavegacao.LISTA_DESPESAS: (_) => ListaDespesas(),
           RotasNavegacao.LISTA_RECEITAS: (_) => ListaReceitas(),
           RotasNavegacao.EDITARREGISTRO: (_) => EditarRegistro(),
           RotasNavegacao.EDITARRECEITA: (_) => EditarReceita(),
           RotasNavegacao.CARTEIRA: (_) => Carteira(),
+          RotasNavegacao.LISTA_PESSOAS: (_) => ListaPessoa(),
         });
   }
 }

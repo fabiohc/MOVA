@@ -33,6 +33,19 @@ class PessoaHelper {
     return pessoa;
   }
 
+  Future<int> update(PessoaModel pessoa) async {
+    Database dbPessoa = await db;
+    return await dbPessoa.update("pessoa", pessoa.toMap(),
+        where: "pessoaIdGlobal = ?", whereArgs: [pessoa.pessoaIdGlobal]);
+  }
+
+  delete(String id) async {
+    Database dbPessoa = await db;
+    return await dbPessoa
+        .delete("pessoa", where: "pessoaIdGlobal = ?", whereArgs: [id]);
+  }
+
+
   Future<PessoaModel> selectById(int id) async {
     Database dbPessoa = await db;
     List<Map> maps = await dbPessoa.query("pessoa",
@@ -54,30 +67,19 @@ class PessoaHelper {
     }
   }
 
-/*  Future<List<PessoaModel>> selectAll() async {
+  Future<List<PessoaModel>> selectAll() async {
     Database dbPessoa = await db;
     // List list = await dbPessoa.rawQuery("Select * from despesa");
-    List list = await dbPessoa.rawQuery("SELECT * 
-        ");
-    List<PessoaModel> lsDespesa = List();
+    List list = await dbPessoa.rawQuery("SELECT * from pessoa order by pessoaNome asc");
+    List<PessoaModel> lsPessoa = List();
     for (Map m in list) {
-      lsDespesa.add(PessoaModel.fromMap(m, false));
+      lsPessoa.add(PessoaModel.fromMap(m, false));
     }
-    return lsDespesa;
-  }*/
-
-  Future<int> update(PessoaModel pessoa) async {
-    Database dbPessoa = await db;
-    return await dbPessoa.update("pessoa", pessoa.toMap(),
-        where: "pessoaIdGlobal = ?", whereArgs: [pessoa.pessoaIdGlobal]);
+    return lsPessoa;
   }
 
-  delete(String id) async {
-    Database dbPessoa = await db;
-    return await dbPessoa
-        .delete("pessoa", where: "pessoaIdGlobal = ?", whereArgs: [id]);
-  }
-
+  
+ 
   Future close() async {
     Database dbPessoa = await db;
     dbPessoa.close();

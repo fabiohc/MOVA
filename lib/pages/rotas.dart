@@ -2,6 +2,7 @@ class RotasNavegacao {
   static const HOME = '/';
   static const CADASTRO_DESPESA = '/cadastroDespesa';
   static const CADASTRO_RECEITA = '/cadastroReceita';
+   static const CADASTRO_PESSOA = '/cadastro_pessoa';
   static const LISTA_DESPESAS = '/lista_despesas';
   static const LISTA_RECEITAS = '/lista_receitas';
   static const MENU_DESPESAS = '/menu_despesas';
@@ -10,4 +11,5 @@ class RotasNavegacao {
   static const EDITARRECEITA = '/editar_receita';  
   static const PARCELADETALHES = '/parcela_detalhes';  
   static const CARTEIRA = '/carteira.dart';  
+  static const LISTA_PESSOAS = '/lista_pessoa.dart'; 
 }

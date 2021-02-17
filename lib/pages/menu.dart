@@ -66,9 +66,26 @@ class _MenuInicioState extends State<MenuInicio> {
                                 ),
                                 CategoryCard(
                                     title: "Agenda",
-                                    press: () {},
+                                   press: () {
+                                    Navigator.of(context).pushNamed(
+                                        RotasNavegacao.LISTA_PESSOAS);
+                                  },
                                     svgSrc: "agenda.png"),
                                 CategoryCard(
+                                    title: "Relatórios",
+                                    press: () {
+                                      Navigator.of(context)
+                                          .pushNamed(RotasNavegacao.CARTEIRA);
+                                    },
+                                    svgSrc: "relatorio.png"),
+                                       CategoryCard(
+                                    title: "Relatórios",
+                                    press: () {
+                                      Navigator.of(context)
+                                          .pushNamed(RotasNavegacao.CARTEIRA);
+                                    },
+                                    svgSrc: "relatorio.png"),
+                                       CategoryCard(
                                     title: "Relatórios",
                                     press: () {
                                       Navigator.of(context)
