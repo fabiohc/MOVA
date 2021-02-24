@@ -18,10 +18,10 @@ class _ListaPessoaState extends State<ListaPessoa> {
   final pessoaController = PessoaController();
   List<PessoaModel> listaPessoasCompleta = List();
   List<PessoaModel> listaPessoas = List();
-
   TextEditingController filtro;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
-  Future<Null> refreshList() async {
+  Future<Null> atualizeLista() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(
         Duration(seconds: 2),
@@ -31,8 +31,6 @@ class _ListaPessoaState extends State<ListaPessoa> {
               });
             }));
   }
-
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -117,7 +115,7 @@ class _ListaPessoaState extends State<ListaPessoa> {
                   margin: EdgeInsets.symmetric(vertical: size.height * .28),
                   height: size.height * .72,
                   child: RefreshIndicator(
-                      onRefresh: refreshList,
+                      onRefresh: atualizeLista,
                       child: ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
@@ -216,7 +214,6 @@ class _ListaPessoaState extends State<ListaPessoa> {
           FlatButton(
               onPressed: () {
                 flush.dismiss(true);
-
                 return flush = Flushbar<bool>(
                   title: "Pronto!",
                   message: menssagemConfirmeAcao,

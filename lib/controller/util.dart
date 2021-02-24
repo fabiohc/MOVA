@@ -69,6 +69,30 @@ class Util {
     return mesAno;
   }
 
+  /*
+ *Função: Retorna o mês e o ano de uma data.
+ *Parametro(s):Data no formato mesAno: Exemplo "62020". 
+ *Retorno: Mês e ano no formato 'Myyyy'
+ */
+  String obtenhaMesAnoMyyyyParaMMyyyy(String data) {
+    var mes;
+    var ano;
+    var nunCaracter = data.length;
+
+    if (nunCaracter > 5) {
+      mes = data.substring(0, 2);
+      ano = data.substring(2, 6);
+    } else {
+      mes = data.substring(0, 1);
+      ano = data.substring(1, 5);
+    }
+
+    final mesAno = int.parse(mes) > 9
+        ? mes.toString() + ano.toString()
+        : '0' + mes.toString() + ano.toString();
+    return mesAno;
+  }
+
 /*
  *Função:
  *Parametro(s):
@@ -127,10 +151,20 @@ Retorno: Retorna ID Global.
       List<DespesaModel> listaDespesas) {
     var dataAtual = formatData(DateTime.now().toString());
     var anoMes = obtenhaMesAno(dataAtual);
-    listaDespesas = listaDespesas
+    var listaDespesasMesAtual = listaDespesas
         .where((x) => obtenhaMesAno(x.despData).contains(anoMes))
         .toList();
-    return listaDespesas;
+
+    if (listaDespesasMesAtual.length == 0) {
+      DateTime dateTime = Jiffy(DateTime.now()).subtract(months: 1);
+      var dataAtual = formatData(dateTime.toString());
+      var anoMes = obtenhaMesAno(dataAtual);
+      listaDespesas = listaDespesas
+          .where((x) => obtenhaMesAno(x.despData).contains(anoMes))
+          .toList();
+      return listaDespesas;
+    }
+    return listaDespesas = listaDespesasMesAtual;
   }
 
   /*
@@ -143,10 +177,20 @@ Retorno: Retorna ID Global.
       List<ReceitaModel> listaReceitas) {
     var dataAtual = formatData(DateTime.now().toString());
     var anoMes = obtenhaMesAno(dataAtual);
-    listaReceitas = listaReceitas
+    var listaReceitasMesAtual = listaReceitas
         .where((x) => obtenhaMesAno(x.recData).contains(anoMes))
         .toList();
-    return listaReceitas;
+
+    if (listaReceitasMesAtual.length == 0) {
+      DateTime dateTime = Jiffy(DateTime.now()).subtract(months: 1);
+      var dataAtual = formatData(dateTime.toString());
+      var anoMes = obtenhaMesAno(dataAtual);
+      listaReceitas = listaReceitas
+          .where((x) => obtenhaMesAno(x.recData).contains(anoMes))
+          .toList();
+      return listaReceitas;
+    }
+    return listaReceitas = listaReceitasMesAtual;
   }
 
   /*
@@ -168,8 +212,15 @@ Retorno: Retorna ID Global.
     return listaDespesas;
   }
 
-    @observable
-  List<DespesaModel> obtenhaRegistroDespesasPorMes(List<DespesaModel> listaDespesas,
+  /*
+ *Função: Retornar uma lista de despesas de um mês e ano.
+ *Parametro(s):Lista de despesas do tipo "List<DespesaModel>"
+ *Parametro(s):Mês e ano do tipo "String anoMes"
+ *Retorno: Lista de despesas filtrada por mês e ano.
+ */
+  @observable
+  List<DespesaModel> obtenhaRegistroDespesasPorMes(
+      List<DespesaModel> listaDespesas,
       [String anoMes]) {
     if (anoMes == null) {
       var dataAtual = formatData(DateTime.now().toString());
@@ -181,18 +232,24 @@ Retorno: Retorna ID Global.
     return listaDespesas;
   }
 
-
-     @observable
-  List<ReceitaModel> obtenhaRegistroReceitasPorMes(List<ReceitaModel> listaDespesas,
+  /*
+ *Função: Retorna uma lista de receitas de um mês e ano.
+ *Parametro(s):Lista de receitas do tipo "List<ReceitaModel>"
+ *Parametro(s):Mês e ano do tipo "String anoMes"
+ *Retorno: Lista de receitas filtrada por mês e ano.
+ */
+  @observable
+  List<ReceitaModel> obtenhaRegistroReceitasPorMes(
+      List<ReceitaModel> listaReceitas,
       [String anoMes]) {
     if (anoMes == null) {
       var dataAtual = formatData(DateTime.now().toString());
       anoMes = obtenhaMesAno(dataAtual);
     }
-    listaDespesas = listaDespesas
+    listaReceitas = listaReceitas
         .where((x) => obtenhaMesAno(x.recData).contains(anoMes))
         .toList();
-    return listaDespesas;
+    return listaReceitas;
   }
 
   /*
@@ -235,6 +292,7 @@ Retorno: Retorna ID Global.
       data = ano + mes;
       listaMesesConvertido.add(int.parse(data));
     });
+
     ///Ordena em ordem crescente.
     listaMesesConvertido.sort();
 

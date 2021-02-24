@@ -1,3 +1,4 @@
+import 'package:emanuellemepoupe/controller/despesa_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -6,14 +7,25 @@ class WidgetTipoPagamento extends StatefulWidget {
   final String caminhoIconSvg;
   final String descricao;
   final Color color;
+  final bool valor;
+  final Function onChanged;
+  final Widget radio;
 
-   WidgetTipoPagamento({this.height, this.caminhoIconSvg, this.descricao, this.color});
+  WidgetTipoPagamento(
+      {this.height,
+      this.caminhoIconSvg,
+      this.descricao,
+      this.color,
+      this.valor,
+      this.onChanged,
+      this.radio});
 
   @override
   _WidgetTipoPagamentoState createState() => _WidgetTipoPagamentoState();
 }
 
 class _WidgetTipoPagamentoState extends State<WidgetTipoPagamento> {
+  var despesaController = DespesaController();
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -40,7 +52,7 @@ class _WidgetTipoPagamentoState extends State<WidgetTipoPagamento> {
                 width: size.width * .23,
                 child: Row(
                   children: [
-                    Radio(value: null, groupValue: null, onChanged: null),
+                    widget.radio,
                     Spacer(),
                     SvgPicture.asset(
                       widget.caminhoIconSvg,

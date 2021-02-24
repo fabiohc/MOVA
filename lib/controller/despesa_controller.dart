@@ -7,6 +7,7 @@ import 'package:emanuellemepoupe/model/pessoa_model.dart';
 import 'package:emanuellemepoupe/repository/despesa_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
+
 part 'despesa_controller.g.dart';
 
 class DespesaController = _DespesaControllerBase with _$DespesaController;
@@ -18,73 +19,45 @@ abstract class _DespesaControllerBase with Store {
   var pessoaModel = PessoaModel();
   var util = Util();
 
-  final numeroParcela = ValueNotifier<int>(0);
-
   @observable
   var despesaModel = DespesaModel();
 
   @observable
   var parcelaModel = ParcelaModel();
 
-  @observable
-  insiraNovaDespesa() async {
-    despesaModel.alteraDespIdGlobal(util.obtenhaIdGlobal("desp"));
+// #region ValueNotifier
 
-    await despesaHelper.insert(despesaModel);
+  final numeroParcela = ValueNotifier<int>(0);
 
-    if (despesaModel.despNumeroParcelas > 1) {
-      var listaParcelas = obtenhaParcelas(despesaModel);
-      for (var parcela in listaParcelas) {
-        await parcelaHelper.insert(parcela);
-      }
-    }
+  final radioButton = ValueNotifier<bool>(false);
 
-    await repositoryHelper.insertFirestore(despesaModel);
+  final dataVencimento = ValueNotifier<DateTime>(DateTime.now());
+
+  alteraradio(bool value) {
+    radioButton.value = value;
   }
+
+  alteraDataVenvimento(DateTime value) {
+    dataVencimento.value = value;
+  }
+
+  decrementeNumeroParcela() {
+    if (numeroParcela.value > 0 && numeroParcela.value <= 12)
+      numeroParcela.value--;
+  }
+
+  incrementeNumeroParcela() {
+    if (numeroParcela.value > -1 && numeroParcela.value < 12)
+      numeroParcela.value++;
+  }
+
+// #endregion
 
   @observable
   atualizeDespesa() async {
     await despesaHelper.update(despesaModel);
     if (despesaModel.despIdGlobal.isNotEmpty)
       await repositoryHelper.updateFirestore(despesaModel);
-  }
-
-  @observable
-  deleteRegistro(DespesaModel despesa) async {
-    await despesaHelper.delete(despesa.despIdGlobal);
-    await parcelaHelper.delete(despesa.despIdGlobal);
-    if (despesa.despIdGlobal.isNotEmpty)
-      await repositoryHelper.deleteFirestore(despesa);
-  }
-
-  obtenhaParcelas(DespesaModel despesaModel) {
-    List<ParcelaModel> listParcelas = [];
-    List<Map> parcelas = [];
-
-    var _valorParcela = util.converteStringToDouble(despesaModel.despValor) /
-        despesaModel.despNumeroParcelas;
-    _valorParcela.toStringAsPrecision(9);
-
-    int contador = 0;
-    for (var i = 0; i < despesaModel.despNumeroParcelas; i++) {
-      contador++;
-      var parcelaModel = new ParcelaModel();
-      //parcelaModel.alteraParcelaId(contador);
-      parcelaModel.alteraParcelaIdGlobal(despesaModel.despIdGlobal);
-      parcelaModel.alteraParcelaNumero(contador);
-      parcelaModel.alteraQuantParcelas(despesaModel.despNumeroParcelas);
-      parcelaModel.alteraParcelaValor(_valorParcela.toString());
-      parcelaModel.alteraParcelaData(
-          util.obtenhaDataProximaParcela(despesaModel.despData, contador));
-      parcelaModel.alteraPacelaStatus(false);
-      listParcelas.add(parcelaModel);
-    }
-    listParcelas.forEach((ParcelaModel parcelaModel) {
-      Map parcela = parcelaModel.toMap();
-      parcelas.add(parcela);
-    });
-    despesaModel.alteraDespListaParcelas(parcelas);
-    return listParcelas;
   }
 
   atualizeDespesaFirebase(List<DespesaModel> despesaAddFirestore) async {
@@ -97,6 +70,20 @@ abstract class _DespesaControllerBase with Store {
         });
       }
     });
+  }
+
+  atualizeStatusPagamrnto() async {
+    await despesaHelper.update(despesaModel);
+    if (despesaModel.despIdGlobal.isNotEmpty)
+      await repositoryHelper.updateFirestore(despesaModel);
+  }
+
+  @observable
+  deleteRegistro(DespesaModel despesa) async {
+    await despesaHelper.delete(despesa.despIdGlobal);
+    await parcelaHelper.delete(despesa.despIdGlobal);
+    if (despesa.despIdGlobal.isNotEmpty)
+      await repositoryHelper.deleteFirestore(despesa);
   }
 
   @observable
@@ -112,16 +99,20 @@ abstract class _DespesaControllerBase with Store {
     });
   }
 
-  atualizeStatusPagamrnto() async {
-    await despesaHelper.update(despesaModel);
-    if (despesaModel.despIdGlobal.isNotEmpty)
-      await repositoryHelper.updateFirestore(despesaModel);
-  }
-
   @observable
-  Future<List> obtentaListaDespesas() async {
-    List lista = await despesaHelper.selectAll();
-    return lista;
+  insiraNovaDespesa() async {
+    despesaModel.alteraDespIdGlobal(util.obtenhaIdGlobal("desp"));
+
+    await despesaHelper.insert(despesaModel);
+
+    if (despesaModel.despNumeroParcelas > 1) {
+      var listaParcelas = obtenhaParcelas(despesaModel);
+      for (var parcela in listaParcelas) {
+        await parcelaHelper.insert(parcela);
+      }
+    }
+
+    await repositoryHelper.insertFirestore(despesaModel);
   }
 
   @observable
@@ -167,57 +158,36 @@ abstract class _DespesaControllerBase with Store {
     despesaAddFirestore.clear();
   }
 
-  @observable
-  Future<List> obtentaListaDeParcelasPorId(String id) async {
-    var lista = await parcelaHelper.selectparcelaById(id);
-    return lista;
-  }
+  obtenhaParcelas(DespesaModel despesaModel) {
+    List<ParcelaModel> listParcelas = [];
+    List<Map> parcelas = [];
 
-  @observable
-  Future<List> obtentaListaDeParcela(String id) async {
-    var lista = await parcelaHelper.selectAll();
-    return lista;
-  }
+    var _valorParcela = util.converteStringToDouble(despesaModel.despValor) /
+        despesaModel.despNumeroParcelas;
+    _valorParcela.toStringAsPrecision(9);
 
-  incrementeNumeroParcela() {
-    numeroParcela.value++;
-  }
-
-  decrementeNumeroParcela() {
-    numeroParcela.value--;
-  }
-
-  /*
- *Função: Retorna registro da categoria selecionada.
- *Parametro(s):Lista de despesas.
- *Parametro(s):Categoria selecionada.
- *Retorno: Retorna lista de despesas por categoria.
- */
-  List<DespesaModel> obtenhaRegistrosPorTipo(
-      List<DespesaModel> listaDespesas, String categoria) {
-    var dataAtual = util.formatData(DateTime.now().toString());
-    var anoMes = util.obtenhaMesAno(dataAtual);
-
-    if (!categoria.contains("Todos")) {
-      listaDespesas = listaDespesas
-          .where((x) =>
-              util.obtenhaMesAno(x.despData).contains(anoMes) &&
-              (x.despServico).contains(categoria))
-          .toList();
-    } else {
-      listaDespesas = listaDespesas
-          .where((x) => util.obtenhaMesAno(x.despData).contains(anoMes))
-          .toList();
+    int contador = 0;
+    for (var i = 0; i < despesaModel.despNumeroParcelas; i++) {
+      contador++;
+      var parcelaModel = new ParcelaModel();
+      //parcelaModel.alteraParcelaId(contador);
+      parcelaModel.alteraParcelaIdGlobal(despesaModel.despIdGlobal);
+      parcelaModel.alteraParcelaNumero(contador);
+      parcelaModel.alteraQuantParcelas(despesaModel.despNumeroParcelas);
+      parcelaModel.alteraParcelaValor(_valorParcela.toString());
+      parcelaModel.alteraParcelaData(
+          util.obtenhaDataProximaParcela(despesaModel.despData, contador));
+      parcelaModel.alteraPacelaStatus(false);
+      listParcelas.add(parcelaModel);
     }
-    return listaDespesas;
+    listParcelas.forEach((ParcelaModel parcelaModel) {
+      Map parcela = parcelaModel.toMap();
+      parcelas.add(parcela);
+    });
+    despesaModel.alteraDespListaParcelas(parcelas);
+    return listParcelas;
   }
 
-  /*
- *Função: Retorna o mês e o ano de uma data.
- *Parametro(s):Data
- *Parametro(s):Numero de incremento de Mês
- *Retorno: Mês e ano no formato 'Myyyy'
- */
   List obtenhaQuantidadeDeMeses(List<dynamic> listaDespesas) {
     List listaMesesConvertido = [];
     List listaMesesOrdenada = [];
@@ -237,7 +207,7 @@ abstract class _DespesaControllerBase with Store {
       listaMesesConvertido.add(int.parse(data));
     });
 
-    ///Ordena em ordem crescente.
+    /*Ordena em ordem crescente.*/
     listaMesesConvertido.sort();
 
     listaMesesConvertido.forEach((data) {
@@ -248,6 +218,55 @@ abstract class _DespesaControllerBase with Store {
       listaMesesOrdenada.add(data);
     });
     return listaMesesOrdenada;
+  }
+
+  List<DespesaModel> obtenhaRegistrosPorTipo(
+      List<DespesaModel> listaDespesas, String categoria) {
+    var dataAtual = util.formatData(DateTime.now().toString());
+    var anoMes = util.obtenhaMesAno(dataAtual);
+
+    if (!categoria.contains("Todos")) {
+      listaDespesas = listaDespesas
+          .where((x) =>
+              util.obtenhaMesAno(x.despData).contains(anoMes) &&
+              (x.despServico).contains(categoria))
+          .toList();
+    } else {
+      listaDespesas = listaDespesas
+          .where((x) => util.obtenhaMesAno(x.despData).contains(anoMes))
+          .toList();
+    }
+    return listaDespesas;
+  }
+
+  @observable
+  Future<List> obtentaListaDeParcela(String id) async {
+    var lista = await parcelaHelper.selectAll();
+    return lista;
+  }
+
+  /*
+ *Função: Retorna registro da categoria selecionada.
+ *Parametro(s):Lista de despesas.
+ *Parametro(s):Categoria selecionada.
+ *Retorno: Retorna lista de despesas por categoria.
+ */
+  @observable
+  Future<List> obtentaListaDeParcelasPorId(String id) async {
+    var lista = await parcelaHelper.selectparcelaById(id);
+    return lista;
+  }
+
+  /*
+ *Função: Retorna o mês e o ano de uma data.
+ *Parametro(s):Data
+ *Parametro(s):Numero de incremento de Mês
+ *Retorno: Mês e ano no formato 'Myyyy'
+ */
+  @observable
+  Future<List> obtentaListaDespesas() async {
+    List lista = await despesaHelper.selectAll();
+    return lista;
   }
 
   /*

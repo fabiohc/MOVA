@@ -1,7 +1,7 @@
+import 'package:emanuellemepoupe/pages/cadastro_despesa_receita.dart';
 import 'package:flutter/material.dart';
 import 'package:emanuellemepoupe/constants/constants_color.dart';
 import 'package:emanuellemepoupe/controller/despesa_controller.dart';
-import 'package:emanuellemepoupe/pages/cadastroDespesa.dart';
 import 'package:emanuellemepoupe/widgets/categoryCard.dart';
 
 class MenuDespesa extends StatefulWidget {
@@ -14,7 +14,6 @@ class _MenuDespesaState extends State<MenuDespesa> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    
 
     return Scaffold(
       //appBar: appBar,
@@ -60,8 +59,9 @@ class _MenuDespesaState extends State<MenuDespesa> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                CadastroDespesa(
-                                                  descriaoServico:
+                                                CadastroDespesaReceita(
+                                                  acao: 'pagar',
+                                                  descricaoServico:
                                                       despesaController
                                                           .despesaModel
                                                           .alteraDespServico(
@@ -77,8 +77,9 @@ class _MenuDespesaState extends State<MenuDespesa> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                CadastroDespesa(
-                                                  descriaoServico:
+                                                CadastroDespesaReceita(
+                                                  acao: 'pagar',
+                                                  descricaoServico:
                                                       despesaController
                                                           .despesaModel
                                                           .alteraDespServico(
@@ -93,8 +94,9 @@ class _MenuDespesaState extends State<MenuDespesa> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  CadastroDespesa(
-                                                    descriaoServico:
+                                                  CadastroDespesaReceita(
+                                                    acao: 'pagar',
+                                                    descricaoServico:
                                                         despesaController
                                                             .despesaModel
                                                             .alteraDespServico(
@@ -109,8 +111,9 @@ class _MenuDespesaState extends State<MenuDespesa> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  CadastroDespesa(
-                                                    descriaoServico:
+                                                  CadastroDespesaReceita(
+                                                    acao: 'pagar',
+                                                    descricaoServico:
                                                         despesaController
                                                             .despesaModel
                                                             .alteraDespServico(
@@ -121,10 +124,9 @@ class _MenuDespesaState extends State<MenuDespesa> {
                               ]),
                         ))
                       ]))),
-        
         ],
       ),
-     /* bottomNavigationBar:   BottomNavigationBar(
+      /* bottomNavigationBar:   BottomNavigationBar(
         fixedColor: Color(0XFFF92B7F),
         items: [
             BottomNavigationBarItem(

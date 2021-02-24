@@ -1,3 +1,4 @@
+import 'package:emanuellemepoupe/pages/cadastro_despesa_receita.dart';
 import 'package:flutter/material.dart';
 import 'package:emanuellemepoupe/constants/constants_color.dart';
 import 'package:emanuellemepoupe/pages/cadastroReceita.dart';
@@ -30,8 +31,9 @@ class _MenuReceitasState extends State<MenuReceitas> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CadastroReceita(
-                              descriaoServico: descRight,
+                        builder: (context) => CadastroDespesaReceita(
+                              acao: 'receber',
+                              descricaoServico: descRight,
                             )));
               },
               child: getImage(pathImgRight),
@@ -41,8 +43,9 @@ class _MenuReceitasState extends State<MenuReceitas> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CadastroReceita(
-                              descriaoServico: descLeft,
+                        builder: (context) => CadastroDespesaReceita(
+                              acao: 'receber',
+                              descricaoServico: descRight,
                             )));
               },
               child: getImage(pathImgLeft),
@@ -52,11 +55,6 @@ class _MenuReceitasState extends State<MenuReceitas> {
       );
     }
 
-
-
-   
-
-  
     return Scaffold(
       //appBar: appBar,
       body: Stack(
@@ -100,8 +98,10 @@ class _MenuReceitasState extends State<MenuReceitas> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => CadastroReceita(
-                                              descriaoServico: "Cílios"),
+                                          builder: (context) =>
+                                              CadastroDespesaReceita(
+                                                  acao: 'receber',
+                                                  descricaoServico: "Cílios"),
                                         ));
                                   },
                                 ),
@@ -112,9 +112,11 @@ class _MenuReceitasState extends State<MenuReceitas> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => CadastroReceita(
-                                              descriaoServico:
-                                                  "Micro fio a fio"),
+                                          builder: (context) =>
+                                              CadastroDespesaReceita(
+                                                  acao: 'receber',
+                                                  descricaoServico:
+                                                      "Micro fio a fio"),
                                         ));
                                   },
                                 ),
@@ -125,8 +127,9 @@ class _MenuReceitasState extends State<MenuReceitas> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                CadastroReceita(
-                                                    descriaoServico:
+                                                CadastroDespesaReceita(
+                                                    acao: 'receber',
+                                                    descricaoServico:
                                                         "Limpeza de pele"),
                                           ));
                                     },
@@ -138,8 +141,9 @@ class _MenuReceitasState extends State<MenuReceitas> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                CadastroReceita(
-                                                    descriaoServico:
+                                                CadastroDespesaReceita(
+                                                    acao: 'receber',
+                                                    descricaoServico:
                                                         "Desing sobrancelhas"),
                                           ));
                                     },
@@ -151,8 +155,9 @@ class _MenuReceitasState extends State<MenuReceitas> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                CadastroReceita(
-                                                    descriaoServico: "BBGlow"),
+                                                CadastroDespesaReceita(
+                                                    acao: 'receber',
+                                                    descricaoServico: "BBGlow"),
                                           ));
                                     },
                                     svgSrc: "bbglow.png"),
@@ -163,8 +168,10 @@ class _MenuReceitasState extends State<MenuReceitas> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                CadastroReceita(
-                                                    descriaoServico: "Peeling"),
+                                                CadastroDespesaReceita(
+                                                    acao: 'receber',
+                                                    descricaoServico:
+                                                        "Peeling"),
                                           ));
                                     },
                                     svgSrc: "bblips.png"),

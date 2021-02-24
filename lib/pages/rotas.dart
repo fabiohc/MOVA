@@ -1,7 +1,7 @@
 class RotasNavegacao {
   static const HOME = '/';
-  static const CADASTRO_DESPESA = '/cadastroDespesa';
-  static const CADASTRO_RECEITA = '/cadastroReceita';
+  static const CADASTRO_DESPESA = '/cadastro_despesa_receita';
+  static const CADASTRO_RECEITA = '/cadastro_despesa_receita';
    static const CADASTRO_PESSOA = '/cadastro_pessoa';
   static const LISTA_DESPESAS = '/lista_despesas';
   static const LISTA_RECEITAS = '/lista_receitas';

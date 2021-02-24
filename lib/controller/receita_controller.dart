@@ -192,24 +192,25 @@ abstract class _ReceitaControllerBase with Store {
  *Retorno: Retorna lista de despesas por categoria.
  */
   List<ReceitaModel> obtenhaRegistrosPorTipo(
-      List<ReceitaModel> listaReceitas, String categoria) {
-    var dataAtual = util.formatData(DateTime.now().toString());
-    var anoMes = util.obtenhaMesAno(dataAtual);
+      List<ReceitaModel> listaReceitas, String categoria, String mesAno) {
+    // var dataAtual = util.formatData(DateTime.now().toString());
+    // var mesAno = util.obtenhaMesAno(dataAtual);
+
+    mesAno = util.obtenhaMesAnoMyyyyParaMMyyyy(mesAno);
 
     if (!categoria.contains("Todos")) {
       listaReceitas = listaReceitas
           .where((x) =>
-              util.obtenhaMesAno(x.recData).contains(anoMes) &&
+              util.obtenhaMesAno(x.recData).contains(mesAno) &&
               (x.recServico).contains(categoria))
           .toList();
     } else {
       listaReceitas = listaReceitas
-          .where((x) => util.obtenhaMesAno(x.recData).contains(anoMes))
+          .where((x) => util.obtenhaMesAno(x.recData).contains(mesAno))
           .toList();
     }
     return listaReceitas;
   }
-
 
   /*
  *Função: Retorna o mês e o ano de uma data.
@@ -218,7 +219,8 @@ abstract class _ReceitaControllerBase with Store {
  *Retorno: Mês e ano no formato 'Myyyy'
  */
   @observable
-  Future<List<ReceitaModel>> obtenhaRegistroPorMes(List<ReceitaModel> listaDespesas,
+  Future<List<ReceitaModel>> obtenhaRegistroPorMes(
+      List<ReceitaModel> listaDespesas,
       [String anoMes]) async {
     if (anoMes == null) {
       var dataAtual = util.formatData(DateTime.now().toString());
@@ -227,6 +229,6 @@ abstract class _ReceitaControllerBase with Store {
     listaDespesas = listaDespesas
         .where((x) => util.obtenhaMesAno(x.recData).contains(anoMes))
         .toList();
-    return listaDespesas as List<ReceitaModel> ;
+    return listaDespesas as List<ReceitaModel>;
   }
 }
