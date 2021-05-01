@@ -7,3 +7,7 @@ const kBlueLightColor = Color(0xFFC7B8F5);
 const kBlueColor = Color(0xFF817DC0);
 const kShadowColor = Color(0xFFE6E6E6);
 const kBackgroundColor = Color(0xFFF8BDD0);
+
+const kGreenAccentColor = Color(0xFF69F0AE);
+const kRedAccentColor = Color(0xFFFF5252);
+const kOrangeAccentColor = Color(0xFFFFAB40);

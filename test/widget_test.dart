@@ -5,26 +5,58 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
+import 'package:emanuellemepoupe/controller/carteira_controller.dart';
+import 'package:emanuellemepoupe/controller/parcela_controller.dart';
+import 'package:emanuellemepoupe/controller/util.dart';
+import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:emanuellemepoupe/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  
+  //testeStatusPagamento();
+  testeConversaoMoeda();
+  
+}
+
+testeConversaoMoeda(){
+
+
+  ParcelaModel parcelaModel;
+
+   setUp(() {
+    util = Util();
+    parcelaModel = ParcelaModel();
+  });
+
+  test('Verifica se o tipo e DateTime', () {
+    parcelaModel.parcelaValor = "250,00";
+
+    var a = util.converteStringToDouble(parcelaModel.parcelaValor);
 
     // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(a, 444.44);
   });
+}
+
+testeStatusPagamento(){
+
+ParcelaController parcela;
+  ParcelaModel parcelaModel;
+
+  setUp(() {
+    parcela = ParcelaController();
+    parcelaModel = ParcelaModel();
+  });
+
+  test('Verifica se o tipo e DateTime', () {
+    parcelaModel.parcelaStatusPag = false;
+    parcelaModel.parcelaData = "19/03/2021";
+
+    var a = parcela.verificaStatusPagamento(parcelaModel);
+
+    // Verify that our counter starts at 0.
+    expect(a, "Nao pago X.svg");
+  });
+
 }

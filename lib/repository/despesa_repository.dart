@@ -3,10 +3,11 @@ import 'package:emanuellemepoupe/controller/despesa_controller.dart';
 import 'package:emanuellemepoupe/helperBD/despesa_helperdb.dart';
 import 'package:emanuellemepoupe/model/despesa_model.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DespesaRepository {
   FirebaseFirestore db = FirebaseFirestore.instance;
-  //final db = Firestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
   DespesaModel despesaModel;
   ParcelaModel parcelas;
   DespesaHelper despesaHelper;
@@ -14,58 +15,160 @@ class DespesaRepository {
 
   // ignore: missing_return
   Future<DespesaModel> insertFirestore(DespesaModel despesa) async {
+/*Inserindo despesa */
+
+    User ehUsuarioLogado = auth.currentUser;
+
     await db
+        .collection("usuarios")
+        .doc(ehUsuarioLogado.email)
         .collection("despesa")
         .doc(despesa.despIdGlobal)
         .set(despesa.toMapFirebase());
+
+/*Inserindo parcelas */
+    if (despesa.parcelaModel != null) {
+      despesa.parcelaModel.forEach((parcela) {
+        db
+            .collection("usuarios")
+            .doc(ehUsuarioLogado.email)
+            .collection("despesa")
+            .doc(despesa.despIdGlobal)
+            .collection("parcelas")
+            .doc(parcela.parcelaNumero.toString())
+            .set(parcela.toMap());
+      });
+    }
+    /*Inserindo cliente vinculado a despesa */
+    if (despesa.pessoaModel != null) {
+      db
+          .collection("usuarios")
+          .doc(ehUsuarioLogado.email)
+          .collection("despesa")
+          .doc(despesa.despIdGlobal)
+          .collection("cliente")
+          .doc(despesa.pessoaModel.pessoaIdGlobal.toString())
+          .set(despesa.pessoaModel.toMap());
+    }
   }
 
   // ignore: missing_return
   Future<DespesaModel> updateFirestore(DespesaModel despesa) async {
+    User ehUsuarioLogado = auth.currentUser;
     await db
+        .collection("usuarios")
+        .doc(ehUsuarioLogado.email)
         .collection("despesa")
         .doc(despesa.despIdGlobal)
         .set(despesa.toMapFirebase());
+
+/*Inserindo parcelas */
+    if (despesa.parcelaModel != null) {
+      despesa.parcelaModel.forEach((parcela) {
+        db
+            .collection("usuarios")
+            .doc(ehUsuarioLogado.email)
+            .collection("despesa")
+            .doc(despesa.despIdGlobal)
+            .collection("parcelas")
+            .doc(parcela.parcelaNumero.toString())
+            .set(parcela.toMap());
+      });
+    }
+    /*Inserindo cliente vinculado a despesa */
+    if (despesa.pessoaModel != null) {
+      db
+          .collection("usuarios")
+          .doc(ehUsuarioLogado.email)
+          .collection("despesa")
+          .doc(despesa.despIdGlobal)
+          .collection("cliente")
+          .doc(despesa.pessoaModel.pessoaIdGlobal.toString())
+          .set(despesa.pessoaModel.toMap());
+    }
   }
 
-    // ignore: missing_return
-  Future<DespesaModel> updateStatusPagamentoParcelaFirestore(DespesaModel despesa) async {
-   
-   
-         await db
+  // ignore: missing_return
+  Future<DespesaModel> updateParcelaFirestore(ParcelaModel parcela) async {
+    User ehUsuarioLogado = auth.currentUser;
+    db
+        .collection("usuarios")
+        .doc(ehUsuarioLogado.email)
         .collection("despesa")
-        .doc(despesa.despIdGlobal).update({'parcelaModel/0': FieldValue.arrayUnion(["parcelaStatusPag:true"])});
-          
-
-          
-        
+        .doc(parcela.parcelaIdGlobal)
+        .collection("parcelas")
+        .doc(parcela.parcelaNumero.toString())
+        .set(parcela.toMap());
   }
-/*
- Future<DespesaModel> teste(DespesaModel despesa) async {
-    await db
-  
-.collection('despesa')
-.doc(despesa.despIdGlobal)
-.set(
-  { parcelaModel: [{ who: "third@test.com", when: new Date() }] },
-  { merge: true }
-)}*/
 
+  // ignore: missing_return
+  Future<DespesaModel> deleteParcelasAntesUpdateFirestore(
+      DespesaModel despesa) async {
+    User ehUsuarioLogado = auth.currentUser;
+    if (despesa.parcelaModel != null) {
+      for (int numeroParcela = 1; numeroParcela <= 12; numeroParcela++) {
+        db
+            .collection("usuarios")
+            .doc(ehUsuarioLogado.email)
+            .collection("despesa")
+            .doc(despesa.despIdGlobal)
+            .collection("parcelas")
+            .doc(numeroParcela.toString())
+            .delete();
+      }
+    }
+  }
 
   // ignore: missing_return
   Future<DespesaModel> deleteFirestore(DespesaModel despesa) async {
-    await db.collection("despesa").doc(despesa.despIdGlobal).delete();
+    User ehUsuarioLogado = auth.currentUser;
+    if (despesa.pessoaModel != null) {
+      db
+          .collection("usuarios")
+          .doc(ehUsuarioLogado.email)
+          .collection("despesa")
+          .doc(despesa.despIdGlobal)
+          .collection("cliente")
+          .doc(despesa.pessoaModel.pessoaIdGlobal.toString())
+          .delete();
+    }
+
+    if (despesa.parcelaModel != null) {
+      despesa.parcelaModel.forEach((parcela) {
+        db
+            .collection("usuarios")
+            .doc(ehUsuarioLogado.email)
+            .collection("despesa")
+            .doc(despesa.despIdGlobal)
+            .collection("parcelas")
+            .doc(parcela.parcelaNumero.toString())
+            .delete();
+      });
+    }
+
+    await db
+        .collection("usuarios")
+        .doc(ehUsuarioLogado.email)
+        .collection("despesa")
+        .doc(despesa.despIdGlobal)
+        .delete();
   }
 
   // ignore: missing_return
   Future<DespesaModel> selectListerneFirestore() async {
     despesaController = new DespesaController();
+    User ehUsuarioLogado = auth.currentUser;
 
     var despesasAdicionadasFirestore = new List<DespesaModel>();
     var despesasAlteradasFirestore = new List<DespesaModel>();
     var despesasRemovidasFirestore = new List<DespesaModel>();
     db.snapshotsInSync();
-    db.collection("despesa").snapshots().listen((snapshots) {
+    db
+        .collection("usuarios")
+        .doc(ehUsuarioLogado.email)
+        .collection("despesa")
+        .snapshots()
+        .listen((snapshots) {
       despesasAdicionadasFirestore.clear();
       despesasAlteradasFirestore.clear();
       despesasRemovidasFirestore.clear();

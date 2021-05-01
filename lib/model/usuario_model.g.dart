@@ -9,6 +9,21 @@ part of 'usuario_model.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$UsuarioModel on _UsuarioModelBase, Store {
+  final _$idAtom = Atom(name: '_UsuarioModelBase.id');
+
+  @override
+  int get id {
+    _$idAtom.reportRead();
+    return super.id;
+  }
+
+  @override
+  set id(int value) {
+    _$idAtom.reportWrite(value, super.id, () {
+      super.id = value;
+    });
+  }
+
   final _$nomeAtom = Atom(name: '_UsuarioModelBase.nome');
 
   @override
@@ -58,6 +73,17 @@ mixin _$UsuarioModel on _UsuarioModelBase, Store {
       ActionController(name: '_UsuarioModelBase');
 
   @override
+  dynamic alteraId(int value) {
+    final _$actionInfo = _$_UsuarioModelBaseActionController.startAction(
+        name: '_UsuarioModelBase.alteraId');
+    try {
+      return super.alteraId(value);
+    } finally {
+      _$_UsuarioModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic alteraNome(String value) {
     final _$actionInfo = _$_UsuarioModelBaseActionController.startAction(
         name: '_UsuarioModelBase.alteraNome');
@@ -93,6 +119,7 @@ mixin _$UsuarioModel on _UsuarioModelBase, Store {
   @override
   String toString() {
     return '''
+id: ${id},
 nome: ${nome},
 email: ${email},
 senha: ${senha}

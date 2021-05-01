@@ -45,21 +45,10 @@ class PessoaHelper {
         .delete("pessoa", where: "pessoaIdGlobal = ?", whereArgs: [id]);
   }
 
-
-  Future<PessoaModel> selectById(int id) async {
+  Future<PessoaModel> selectById(String id) async {
     Database dbPessoa = await db;
-    List<Map> maps = await dbPessoa.query("pessoa",
-        columns: [
-          "pessoaId",
-          "pessoaIdGlobal",
-          "pessoaNome",
-          "pessoaDataNascimento",
-          "pessoaEmail",
-          "pessoaTelefone",
-          "pessoaCpf"
-        ],
-        where: "pessoaId = ?",
-        whereArgs: [id]);
+    List<Map> maps = await dbPessoa
+        .rawQuery("SELECT * FROM pessoa p WHERE  p.pessoaIdGlobal = ?", [id]);
     if (maps.length > 0) {
       return PessoaModel.fromMap(maps.first, false);
     } else {
@@ -70,7 +59,8 @@ class PessoaHelper {
   Future<List<PessoaModel>> selectAll() async {
     Database dbPessoa = await db;
     // List list = await dbPessoa.rawQuery("Select * from despesa");
-    List list = await dbPessoa.rawQuery("SELECT * from pessoa order by pessoaNome asc");
+    List list =
+        await dbPessoa.rawQuery("SELECT * from pessoa order by pessoaNome asc");
     List<PessoaModel> lsPessoa = List();
     for (Map m in list) {
       lsPessoa.add(PessoaModel.fromMap(m, false));
@@ -78,8 +68,6 @@ class PessoaHelper {
     return lsPessoa;
   }
 
-  
- 
   Future close() async {
     Database dbPessoa = await db;
     dbPessoa.close();

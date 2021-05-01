@@ -47,6 +47,8 @@ abstract class _CarteiraModelBase with Store {
     tipo = map["tipo"];
     status = map["status"] == 0 ? false : true;
   }
+
+  
   Map toMap() {
     Map<String, dynamic> map = {
       "data": data,

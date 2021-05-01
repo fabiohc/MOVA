@@ -1,5 +1,7 @@
 //import 'package:mePoupe/controller/util.dart';
 import 'package:emanuellemepoupe/controller/carteira_controller.dart';
+import 'package:emanuellemepoupe/model/parcela_model.dart';
+import 'package:emanuellemepoupe/model/pessoa_model.dart';
 import 'package:mobx/mobx.dart';
 part 'despesa_model.g.dart';
 
@@ -44,7 +46,7 @@ abstract class _DespelaModelBase with Store {
   @observable
   String despObservacao;
   @action
-  alteraDespdespObservacao(String value) => despObservacao = value;
+  alteraDespObservacao(String value) => despObservacao = value;
 
   @observable
   int despNumeroParcelas = 0;
@@ -57,29 +59,29 @@ abstract class _DespelaModelBase with Store {
   alteraDespesaStatusPag(bool value) => despesaStatusPag = value;
 
   @observable
-  bool despMostrarBotao = false;
-  @action
-  alteraDespMostrarBotao(bool value) => despMostrarBotao = value;
-
-  @observable
-  bool despMostrarParcelas = false;
-  @action
-  alteraDespMostrarParcelas(bool value) => despMostrarParcelas = value;
-
-  @observable
   bool despIntegrado = false;
   @action
   alteraDespIntegrado(bool value) => despIntegrado = value;
 
   @observable
-  List<Map> parcelaModel;
+  List<ParcelaModel> parcelaModel;
   @action
-  alteraDespListaParcelas(List<Map> value) => parcelaModel = value;
+  alteraDespListaParcelas(List<ParcelaModel> value) => parcelaModel = value;
 
   @observable
   List parcelaModelSnapShot;
   @action
   alteraDespListaParcelasSnapShot(List value) => parcelaModelSnapShot = value;
+
+  @observable
+  PessoaModel pessoaModel;
+  @action
+  alteraDespPessoaModel(PessoaModel value) => pessoaModel = value;
+
+  @observable
+  String despPessoaIdVinculado;
+  @action
+  alteradespPessoaIdVinculado(String value) => despPessoaIdVinculado = value;
 
   _DespelaModelBase();
   // var util = Util();
@@ -102,8 +104,9 @@ abstract class _DespelaModelBase with Store {
       despIntegrado = map["despIntegrado"] == 0 ? false : true;
     }
     parcelaModelSnapShot = map["parcelaModel"];
+    pessoaModel = map["pessoaModel"];
+    despPessoaIdVinculado = map["despPessoaIdVinculado"];
   }
-
 
   Map toMap() {
     Map<String, dynamic> map = {
@@ -116,7 +119,8 @@ abstract class _DespelaModelBase with Store {
       "despNumeroParcelas": despNumeroParcelas,
       "despObservacao": despObservacao,
       "despesaStatusPag": despesaStatusPag,
-      "despIntegrado": despIntegrado
+      "despIntegrado": despIntegrado,
+      "despPessoaIdVinculado": despPessoaIdVinculado
     };
 
     if (despId != null) {
@@ -135,9 +139,11 @@ abstract class _DespelaModelBase with Store {
       "despTipoCartao": despTipoCartao,
       "despNumeroParcelas": despNumeroParcelas,
       "despObservacao": despObservacao,
-      "parcelaModel": parcelaModel,
+      //"parcelaModel": parcelaModel,
+      //"pessoaModel": pessoaModel,
       "despesaStatusPag": despesaStatusPag,
-      "despIntegrado": despIntegrado
+      "despIntegrado": despIntegrado,
+      "despPessoaIdVinculado": despPessoaIdVinculado
     };
 
     if (despId != null) {
@@ -159,6 +165,7 @@ abstract class _DespelaModelBase with Store {
         "despObservacao: $despObservacao,"
         "despesaStatusPag: $despesaStatusPag"
         "despIntegrado: $despIntegrado"
+        "despPessoaIdVinculado: $despPessoaIdVinculado"
         "]";
   }
 }

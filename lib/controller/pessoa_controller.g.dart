@@ -9,6 +9,13 @@ part of 'pessoa_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PessoaController on _PessoaControllerBase, Store {
+  Computed<bool> _$isValidComputed;
+
+  @override
+  bool get isValid => (_$isValidComputed ??= Computed<bool>(() => super.isValid,
+          name: '_PessoaControllerBase.isValid'))
+      .value;
+
   final _$pessoaHelperAtom = Atom(name: '_PessoaControllerBase.pessoaHelper');
 
   @override
@@ -64,10 +71,17 @@ mixin _$PessoaController on _PessoaControllerBase, Store {
   }
 
   @override
+  ObservableFuture<PessoaModel> obtentaPessoasPorID(String pessoaIdGlobal) {
+    final _$future = super.obtentaPessoasPorID(pessoaIdGlobal);
+    return ObservableFuture<PessoaModel>(_$future);
+  }
+
+  @override
   String toString() {
     return '''
 pessoaHelper: ${pessoaHelper},
-pessoaModel: ${pessoaModel}
+pessoaModel: ${pessoaModel},
+isValid: ${isValid}
     ''';
   }
 }

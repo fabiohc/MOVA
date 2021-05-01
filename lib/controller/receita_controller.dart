@@ -1,49 +1,59 @@
 import 'package:emanuellemepoupe/controller/util.dart';
 import 'package:emanuellemepoupe/helperBD/parcela_helperdb.dart';
+import 'package:emanuellemepoupe/helperBD/pessoa_helperdb.dart';
 import 'package:emanuellemepoupe/helperBD/receita_helperdb.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:emanuellemepoupe/model/receita_model.dart';
 import 'package:emanuellemepoupe/repository/receita_repository.dart';
 import 'package:mobx/mobx.dart';
+import 'package:emanuellemepoupe/model/agenda_model.dart';
 part 'receita_controller.g.dart';
 
 class ReceitaController = _ReceitaControllerBase with _$ReceitaController;
 
 abstract class _ReceitaControllerBase with Store {
   var receitaHelper = ReceitaHelper();
-  @observable
-  var receitaModel = ReceitaModel();
+
   var repositoryHelper = ReceitaRepository();
   var parcelaHelper = ParcelaHelper();
+  var pessoaHelper = PessoaHelper();
+
+  @observable
+  var agendaModel = AgendaModel();
+
+  @observable
+  var receitaModel = ReceitaModel();
+  @observable
+  var parcelaModel = ParcelaModel();
+
   var util = Util();
 
   insiraNovaReceita() async {
     receitaModel.alteraRecIdFGlobal(util.obtenhaIdGlobal("rec"));
     await receitaHelper.insert(receitaModel);
 
-    if (receitaModel.recNumeroParcelas > 1) {
+    if (receitaModel.recNumeroParcelas > 0) {
       var listaParcelas = obtenhaParcelas(receitaModel);
       for (var parcela in listaParcelas) {
         await parcelaHelper.insert(parcela);
       }
     }
-
-    await repositoryHelper.insertFirestore(receitaModel);
+    if (receitaModel.recIdGlobal.isNotEmpty)
+      await repositoryHelper.insertFirestore(receitaModel);
   }
 
   obtenhaParcelas(ReceitaModel receitaModel) {
     List<ParcelaModel> listParcelas = [];
-    List<Map> parcelas = [];
+    //List<Map> parcelas = [];
 
     var _valorParcela = util.converteStringToDouble(receitaModel.recValor) /
         receitaModel.recNumeroParcelas;
-    _valorParcela.toStringAsPrecision(2);
+    _valorParcela.toStringAsPrecision(9);
 
     int contador = 0;
     for (var i = 0; i < receitaModel.recNumeroParcelas; i++) {
       contador++;
       var parcelaModel = new ParcelaModel();
-      //parcelaModel.alteraParcelaId(contador);
       parcelaModel.alteraParcelaIdGlobal(receitaModel.recIdGlobal);
       parcelaModel.alteraParcelaNumero(contador);
       parcelaModel.alteraQuantParcelas(receitaModel.recNumeroParcelas);
@@ -51,19 +61,27 @@ abstract class _ReceitaControllerBase with Store {
       parcelaModel.alteraParcelaData(
           util.obtenhaDataProximaParcela(receitaModel.recData, contador));
       parcelaModel.alteraPacelaStatus(false);
+      parcelaModel
+          .alteraPacelaPessoaIdVinculado(receitaModel.recPessoaIdVinculado);
       listParcelas.add(parcelaModel);
     }
-    listParcelas.forEach((ParcelaModel parcelaModel) {
-      Map parcela = parcelaModel.toMap();
-      parcelas.add(parcela);
-    });
-    receitaModel.alteraRecListaParcelas(parcelas);
+
+    receitaModel.alteraRecListaParcelas(listParcelas);
     return listParcelas;
   }
 
   @observable
   atualizeReceita() async {
     await receitaHelper.update(receitaModel);
+    await repositoryHelper.deleteParcelasAntesUpdateFirestore(receitaModel);
+
+    if (receitaModel.recNumeroParcelas > 0) {
+      var listaParcelas = obtenhaParcelas(receitaModel);
+      for (var parcela in listaParcelas) {
+        await parcelaHelper.update(parcela);
+      }
+    }
+
     if (receitaModel.recIdGlobal.isNotEmpty)
       await repositoryHelper.updateFirestore(receitaModel);
   }
@@ -71,6 +89,8 @@ abstract class _ReceitaControllerBase with Store {
   @observable
   deleteRegistro(ReceitaModel receita) async {
     await receitaHelper.delete(receita.recIdGlobal);
+    await parcelaHelper.delete(receita.recIdGlobal);
+
     if (receita.recIdGlobal.isNotEmpty)
       await repositoryHelper.deleteFirestore(receita);
   }
@@ -84,12 +104,39 @@ abstract class _ReceitaControllerBase with Store {
   @observable
   Future<List> obtentaListaDeParcelas(String id) async {
     var lista = await parcelaHelper.selectAll();
+
     return lista;
   }
 
-  obtentaListaReceitas() async {
-    List lista = await receitaHelper.selectAll();
-    return lista;
+  /*
+ *Função: Obtem a lista de receitas com suas parcelas e cliente vinculado.
+ *Retorno: Retorna a lista de receitas.
+ */
+  @observable
+  Future<List> obtentaListaReceitas() async {
+    var receitasCompletas = new List<ReceitaModel>();
+    var lista = await receitaHelper.selectAll();
+
+    /*Obtendo lista de parcelas da receira*/
+    lista.forEach((receita) {
+      if (receita.recNumeroParcelas > 0) {
+        var parcelas = parcelaHelper.selectparcelaById(receita.recIdGlobal);
+        parcelas.then((parcelas) {
+          receita.parcelaModel = parcelas;
+        });
+      }
+      /*Obtendo pessoa vinculada a receira*/
+      if (receita.recPessoaIdVinculado != null) {
+        var pessoa = pessoaHelper.selectById(receita.recPessoaIdVinculado);
+        pessoa.then((pessoa) {
+          receita.pessoaModel = pessoa;
+        });
+      }
+
+      receitasCompletas.add(receita);
+    });
+
+    return receitasCompletas;
   }
 
   @observable
@@ -229,6 +276,6 @@ abstract class _ReceitaControllerBase with Store {
     listaDespesas = listaDespesas
         .where((x) => util.obtenhaMesAno(x.recData).contains(anoMes))
         .toList();
-    return listaDespesas as List<ReceitaModel>;
+    return listaDespesas;
   }
 }

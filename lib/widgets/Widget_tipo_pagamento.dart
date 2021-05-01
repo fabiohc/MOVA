@@ -2,6 +2,7 @@ import 'package:emanuellemepoupe/controller/despesa_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+// ignore: must_be_immutable
 class WidgetTipoPagamento extends StatefulWidget {
   double height;
   final String caminhoIconSvg;

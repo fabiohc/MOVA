@@ -1,7 +1,6 @@
 import 'package:emanuellemepoupe/constants/constants_color.dart';
 import 'package:emanuellemepoupe/controller/pessoa_controller.dart';
 import 'package:emanuellemepoupe/model/pessoa_model.dart';
-import 'package:emanuellemepoupe/pages/cadastro_despesa_receita.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
 import 'package:emanuellemepoupe/widgets/navegacao.dart';
 import 'package:flushbar/flushbar.dart';

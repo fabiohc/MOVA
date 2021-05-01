@@ -3,12 +3,16 @@ import 'package:emanuellemepoupe/controller/pessoa_controller.dart';
 import 'package:emanuellemepoupe/model/pessoa_model.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
 import 'package:emanuellemepoupe/widgets/navegacao.dart';
+import 'package:emanuellemepoupe/controller/login_controller.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 
+// ignore: must_be_immutable
 class ListaPessoa extends StatefulWidget {
+  bool retonarcadastro = false;
+
+  ListaPessoa({this.retonarcadastro});
   @override
   _ListaPessoaState createState() => _ListaPessoaState();
   bool voltaMenu;
@@ -16,6 +20,7 @@ class ListaPessoa extends StatefulWidget {
 
 class _ListaPessoaState extends State<ListaPessoa> {
   final pessoaController = PessoaController();
+  final logincontroller = LoginController();
   List<PessoaModel> listaPessoasCompleta = List();
   List<PessoaModel> listaPessoas = List();
   TextEditingController filtro;
@@ -37,6 +42,7 @@ class _ListaPessoaState extends State<ListaPessoa> {
     super.initState();
     pessoaController.obtentaListaPessoas().then((list) {
       setState(() {
+        logincontroller.verifiqueUsuarioLogado();
         listaPessoasCompleta = list;
         listaPessoas = listaPessoasCompleta;
       });
@@ -56,36 +62,45 @@ class _ListaPessoaState extends State<ListaPessoa> {
                   height: size.height * .23,
                   decoration: BoxDecoration(color: kBlueColor),
                 ),
-                BottomNavBar(
-                  //  caminhoIconSvg: "assets/icons/Voltar ICon.svg",
-                  icon: SvgPicture.asset(
-                    "assets/icons/Voltar ICon.svg",
-                    color: Colors.white,
-                  ),
-                  margin: 10,
-                  alignment: Alignment.bottomLeft,
-                  // color: Colors.white.withOpacity(2),
-                  press: () {
-                    Navigator.of(context).pushNamed(RotasNavegacao.HOME);
-                  },
-                ),
-                BottomNavBar(
-                  icon: Icon(
-                    Icons.group_add_outlined,
-                    color: Colors.white,
-                  ),
-                  margin: 10,
-                  alignment: Alignment.topRight,
-                  //color: Colors.transparent,
-                  press: () {
-                    Navigator.of(context)
-                        .pushNamed(RotasNavegacao.CADASTRO_PESSOA);
-                  },
+                Row(
+                  children: [
+                    if (widget.retonarcadastro == null)
+                      Expanded(
+                          flex: 3,
+                          child: BottomNavBar(
+                            icon: SvgPicture.asset(
+                              "assets/icons/Voltar ICon.svg",
+                              color: Colors.white,
+                            ),
+                            margin: 10,
+                            alignment: Alignment.bottomLeft,
+                            press: () {
+                              Navigator.of(context)
+                                  .pushNamed(RotasNavegacao.HOME);
+                            },
+                            descricao: "LISTA DE CLIENTES",
+                          )),
+                          
+                    Expanded(
+                        flex: 1,
+                        child: BottomNavBar(
+                          icon: Icon(
+                            Icons.group_add_outlined,
+                            color: Colors.white,
+                          ),
+                          margin: 10,
+                          press: () {
+                            Navigator.of(context)
+                                .pushNamed(RotasNavegacao.CADASTRO_PESSOA);
+                          },
+                        ))
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+                    margin: EdgeInsets.symmetric(
+                        vertical: size.height * 0.19, horizontal: 10),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -123,7 +138,9 @@ class _ListaPessoaState extends State<ListaPessoa> {
                           itemBuilder: (context, index) {
                             var pessoa = listaPessoas[index];
                             return ListTile(
-                                onLongPress: () {
+                              
+                                onTap: () {
+                                  if(widget.retonarcadastro == true)
                                   Navigator.pop(context, pessoa);
                                   //PessoaModel.fromMap(pessoa.toMap(), false);
                                 },
@@ -131,11 +148,17 @@ class _ListaPessoaState extends State<ListaPessoa> {
                                     width: 60.0,
                                     height: 60.0,
                                     color: Colors.transparent,
-                                    child: CircleAvatar(
-                                      child: SvgPicture.asset(
-                                          "assets/icons/Image foto.svg"),
-                                      backgroundColor: Colors.white,
-                                    )),
+                                    child: pessoa.pessoafotourl == null
+                                        ? CircleAvatar(
+                                            child: SvgPicture.asset(
+                                                "assets/icons/Image foto.svg"),
+                                            backgroundColor: Colors.white,
+                                          )
+                                        : CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                                pessoa.pessoafotourl),
+                                          
+                                          )),
                                 title: Text("${pessoa.pessoaNome}",
                                     style: TextStyle(
                                       color: Colors.white,
@@ -146,43 +169,41 @@ class _ListaPessoaState extends State<ListaPessoa> {
                                       color: Colors.white,
                                       fontSize: 15.0,
                                     )),
-                                trailing: Observer(builder: (_) {
-                                  return Container(
-                                      width: size.width * .27,
-                                      color: Colors.transparent,
-                                      child: SizedBox(
-                                        width: size.width,
-                                        height: size.height,
-                                        child: Row(
-                                          children: [
-                                            IconButton(
-                                              icon: (SvgPicture.asset(
-                                                "assets/icons/editar.svg",
-                                                color: Colors.deepOrange,
-                                              )),
-                                              tooltip: "Editar",
-                                              onPressed: () {
-                                                Navigator.of(context).pushNamed(
-                                                    RotasNavegacao
-                                                        .CADASTRO_PESSOA,
-                                                    arguments: pessoa);
-                                              },
-                                            ),
-                                            IconButton(
-                                              icon: (SvgPicture.asset(
-                                                  "assets/icons/Trash.svg")),
-                                              tooltip: "Remover",
-                                              onPressed: () {
-                                                flushbarExcluir(
-                                                    "Confirmar remoção?",
-                                                    "Registro removido!",
-                                                    pessoa);
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ));
-                                }));
+                                trailing: Container(
+                                    width: size.width * .27,
+                                    color: Colors.transparent,
+                                    child: SizedBox(
+                                      width: size.width,
+                                      height: size.height,
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            icon: (SvgPicture.asset(
+                                              "assets/icons/editar.svg",
+                                              color: Colors.deepOrange,
+                                            )),
+                                            tooltip: "Editar",
+                                            onPressed: () {
+                                              Navigator.of(context).pushNamed(
+                                                  RotasNavegacao
+                                                      .CADASTRO_PESSOA,
+                                                  arguments: pessoa);
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: (SvgPicture.asset(
+                                                "assets/icons/Trash.svg")),
+                                            tooltip: "Remover",
+                                            onPressed: () {
+                                              flushbarExcluir(
+                                                  "Confirmar remoção?",
+                                                  "Registro removido!",
+                                                  pessoa);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    )));
                           })),
                 )
               ],

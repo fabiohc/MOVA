@@ -116,6 +116,52 @@ mixin _$PessoaModel on _PessoaModelBase, Store {
     });
   }
 
+  final _$pessoafotourlAtom = Atom(name: '_PessoaModelBase.pessoafotourl');
+
+  @override
+  String get pessoafotourl {
+    _$pessoafotourlAtom.reportRead();
+    return super.pessoafotourl;
+  }
+
+  @override
+  set pessoafotourl(String value) {
+    _$pessoafotourlAtom.reportWrite(value, super.pessoafotourl, () {
+      super.pessoafotourl = value;
+    });
+  }
+
+  final _$pessoaModelAtom = Atom(name: '_PessoaModelBase.pessoaModel');
+
+  @override
+  PessoaModel get pessoaModel {
+    _$pessoaModelAtom.reportRead();
+    return super.pessoaModel;
+  }
+
+  @override
+  set pessoaModel(PessoaModel value) {
+    _$pessoaModelAtom.reportWrite(value, super.pessoaModel, () {
+      super.pessoaModel = value;
+    });
+  }
+
+  final _$pessoaModelSnapShotAtom =
+      Atom(name: '_PessoaModelBase.pessoaModelSnapShot');
+
+  @override
+  List<dynamic> get pessoaModelSnapShot {
+    _$pessoaModelSnapShotAtom.reportRead();
+    return super.pessoaModelSnapShot;
+  }
+
+  @override
+  set pessoaModelSnapShot(List<dynamic> value) {
+    _$pessoaModelSnapShotAtom.reportWrite(value, super.pessoaModelSnapShot, () {
+      super.pessoaModelSnapShot = value;
+    });
+  }
+
   final _$_PessoaModelBaseActionController =
       ActionController(name: '_PessoaModelBase');
 
@@ -197,6 +243,39 @@ mixin _$PessoaModel on _PessoaModelBase, Store {
   }
 
   @override
+  dynamic alterapessoafotourl(String value) {
+    final _$actionInfo = _$_PessoaModelBaseActionController.startAction(
+        name: '_PessoaModelBase.alterapessoafotourl');
+    try {
+      return super.alterapessoafotourl(value);
+    } finally {
+      _$_PessoaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic alteraPessoaModel(PessoaModel value) {
+    final _$actionInfo = _$_PessoaModelBaseActionController.startAction(
+        name: '_PessoaModelBase.alteraPessoaModel');
+    try {
+      return super.alteraPessoaModel(value);
+    } finally {
+      _$_PessoaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic alteraDespListaParcelasSnapShot(List<dynamic> value) {
+    final _$actionInfo = _$_PessoaModelBaseActionController.startAction(
+        name: '_PessoaModelBase.alteraDespListaParcelasSnapShot');
+    try {
+      return super.alteraDespListaParcelasSnapShot(value);
+    } finally {
+      _$_PessoaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 pessoaId: ${pessoaId},
@@ -205,7 +284,10 @@ pessoaNome: ${pessoaNome},
 pessoaDataNascimento: ${pessoaDataNascimento},
 pessoaEmail: ${pessoaEmail},
 pessoaTelefone: ${pessoaTelefone},
-pessoaCpf: ${pessoaCpf}
+pessoaCpf: ${pessoaCpf},
+pessoafotourl: ${pessoafotourl},
+pessoaModel: ${pessoaModel},
+pessoaModelSnapShot: ${pessoaModelSnapShot}
     ''';
   }
 }

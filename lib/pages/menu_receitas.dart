@@ -1,9 +1,9 @@
 import 'package:emanuellemepoupe/pages/cadastro_despesa_receita.dart';
 import 'package:flutter/material.dart';
-import 'package:emanuellemepoupe/constants/constants_color.dart';
-import 'package:emanuellemepoupe/pages/cadastroReceita.dart';
 import 'package:emanuellemepoupe/widgets/categoryCard.dart';
-import 'cadastroReceita.dart';
+import 'package:emanuellemepoupe/widgets/navegacao.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:emanuellemepoupe/pages/rotas.dart';
 
 class MenuReceitas extends StatefulWidget {
   @override
@@ -56,26 +56,40 @@ class _MenuReceitasState extends State<MenuReceitas> {
     }
 
     return Scaffold(
-      //appBar: appBar,
+      
       body: Stack(
         children: [
           Container(
-            // Here the height of the container is 45% of our total height
             height: size.height * .35,
             decoration: BoxDecoration(
-              color: kTextColor,
+              color: Color(0xFFF4a47a3),
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
               ),
-              image: DecorationImage(
-                alignment: Alignment.center,
-                image: AssetImage("images/emanuelle.png"),
-              ),
             ),
+          ),
+          Align(
+            alignment: Alignment(0.0, -0.6),
+            child: SvgPicture.asset("assets/icons/mova.svg",
+                color: Colors.white, height: 40, width: 40),
+          ),
+          BottomNavBar(
+            icon: SvgPicture.asset(
+              "assets/icons/Voltar ICon.svg",
+              color: Colors.white,
+            ),
+            margin: 10,
+            alignment: Alignment.bottomLeft,
+            // color: Colors.white.withOpacity(2),
+            press: () {
+              Navigator.of(context).popAndPushNamed(RotasNavegacao.HOME);
+            },
+            descricao: "MENU RECEITAS",
           ),
           SafeArea(
               child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 30, vertical: size.height * 0.1),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -86,10 +100,10 @@ class _MenuReceitasState extends State<MenuReceitas> {
                         Expanded(
                             child: Container(
                           child: GridView.count(
-                              crossAxisCount: 2,
-                              childAspectRatio: .70,
-                              crossAxisSpacing: 40,
-                              mainAxisSpacing: 20,
+                              crossAxisCount: 3,
+                              childAspectRatio: .78,
+                              crossAxisSpacing: 15,
+                              mainAxisSpacing: 30,
                               children: <Widget>[
                                 CategoryCard(
                                   title: "Cílios",
@@ -135,7 +149,7 @@ class _MenuReceitasState extends State<MenuReceitas> {
                                     },
                                     svgSrc: "limpezapele.png"),
                                 CategoryCard(
-                                    title: "Desing sobrancelhas",
+                                    title: "Sobrancelhas",
                                     press: () {
                                       Navigator.push(
                                           context,

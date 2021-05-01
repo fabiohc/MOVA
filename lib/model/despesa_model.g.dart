@@ -162,38 +162,6 @@ mixin _$DespesaModel on _DespelaModelBase, Store {
     });
   }
 
-  final _$despMostrarBotaoAtom =
-      Atom(name: '_DespelaModelBase.despMostrarBotao');
-
-  @override
-  bool get despMostrarBotao {
-    _$despMostrarBotaoAtom.reportRead();
-    return super.despMostrarBotao;
-  }
-
-  @override
-  set despMostrarBotao(bool value) {
-    _$despMostrarBotaoAtom.reportWrite(value, super.despMostrarBotao, () {
-      super.despMostrarBotao = value;
-    });
-  }
-
-  final _$despMostrarParcelasAtom =
-      Atom(name: '_DespelaModelBase.despMostrarParcelas');
-
-  @override
-  bool get despMostrarParcelas {
-    _$despMostrarParcelasAtom.reportRead();
-    return super.despMostrarParcelas;
-  }
-
-  @override
-  set despMostrarParcelas(bool value) {
-    _$despMostrarParcelasAtom.reportWrite(value, super.despMostrarParcelas, () {
-      super.despMostrarParcelas = value;
-    });
-  }
-
   final _$despIntegradoAtom = Atom(name: '_DespelaModelBase.despIntegrado');
 
   @override
@@ -212,13 +180,13 @@ mixin _$DespesaModel on _DespelaModelBase, Store {
   final _$parcelaModelAtom = Atom(name: '_DespelaModelBase.parcelaModel');
 
   @override
-  List<Map<dynamic, dynamic>> get parcelaModel {
+  List<ParcelaModel> get parcelaModel {
     _$parcelaModelAtom.reportRead();
     return super.parcelaModel;
   }
 
   @override
-  set parcelaModel(List<Map<dynamic, dynamic>> value) {
+  set parcelaModel(List<ParcelaModel> value) {
     _$parcelaModelAtom.reportWrite(value, super.parcelaModel, () {
       super.parcelaModel = value;
     });
@@ -238,6 +206,38 @@ mixin _$DespesaModel on _DespelaModelBase, Store {
     _$parcelaModelSnapShotAtom.reportWrite(value, super.parcelaModelSnapShot,
         () {
       super.parcelaModelSnapShot = value;
+    });
+  }
+
+  final _$pessoaModelAtom = Atom(name: '_DespelaModelBase.pessoaModel');
+
+  @override
+  PessoaModel get pessoaModel {
+    _$pessoaModelAtom.reportRead();
+    return super.pessoaModel;
+  }
+
+  @override
+  set pessoaModel(PessoaModel value) {
+    _$pessoaModelAtom.reportWrite(value, super.pessoaModel, () {
+      super.pessoaModel = value;
+    });
+  }
+
+  final _$despPessoaIdVinculadoAtom =
+      Atom(name: '_DespelaModelBase.despPessoaIdVinculado');
+
+  @override
+  String get despPessoaIdVinculado {
+    _$despPessoaIdVinculadoAtom.reportRead();
+    return super.despPessoaIdVinculado;
+  }
+
+  @override
+  set despPessoaIdVinculado(String value) {
+    _$despPessoaIdVinculadoAtom.reportWrite(value, super.despPessoaIdVinculado,
+        () {
+      super.despPessoaIdVinculado = value;
     });
   }
 
@@ -322,11 +322,11 @@ mixin _$DespesaModel on _DespelaModelBase, Store {
   }
 
   @override
-  dynamic alteraDespdespObservacao(String value) {
+  dynamic alteraDespObservacao(String value) {
     final _$actionInfo = _$_DespelaModelBaseActionController.startAction(
-        name: '_DespelaModelBase.alteraDespdespObservacao');
+        name: '_DespelaModelBase.alteraDespObservacao');
     try {
-      return super.alteraDespdespObservacao(value);
+      return super.alteraDespObservacao(value);
     } finally {
       _$_DespelaModelBaseActionController.endAction(_$actionInfo);
     }
@@ -355,28 +355,6 @@ mixin _$DespesaModel on _DespelaModelBase, Store {
   }
 
   @override
-  dynamic alteraDespMostrarBotao(bool value) {
-    final _$actionInfo = _$_DespelaModelBaseActionController.startAction(
-        name: '_DespelaModelBase.alteraDespMostrarBotao');
-    try {
-      return super.alteraDespMostrarBotao(value);
-    } finally {
-      _$_DespelaModelBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic alteraDespMostrarParcelas(bool value) {
-    final _$actionInfo = _$_DespelaModelBaseActionController.startAction(
-        name: '_DespelaModelBase.alteraDespMostrarParcelas');
-    try {
-      return super.alteraDespMostrarParcelas(value);
-    } finally {
-      _$_DespelaModelBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   dynamic alteraDespIntegrado(bool value) {
     final _$actionInfo = _$_DespelaModelBaseActionController.startAction(
         name: '_DespelaModelBase.alteraDespIntegrado');
@@ -388,7 +366,7 @@ mixin _$DespesaModel on _DespelaModelBase, Store {
   }
 
   @override
-  dynamic alteraDespListaParcelas(List<Map<dynamic, dynamic>> value) {
+  dynamic alteraDespListaParcelas(List<ParcelaModel> value) {
     final _$actionInfo = _$_DespelaModelBaseActionController.startAction(
         name: '_DespelaModelBase.alteraDespListaParcelas');
     try {
@@ -410,6 +388,28 @@ mixin _$DespesaModel on _DespelaModelBase, Store {
   }
 
   @override
+  dynamic alteraDespPessoaModel(PessoaModel value) {
+    final _$actionInfo = _$_DespelaModelBaseActionController.startAction(
+        name: '_DespelaModelBase.alteraDespPessoaModel');
+    try {
+      return super.alteraDespPessoaModel(value);
+    } finally {
+      _$_DespelaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic alteradespPessoaIdVinculado(String value) {
+    final _$actionInfo = _$_DespelaModelBaseActionController.startAction(
+        name: '_DespelaModelBase.alteradespPessoaIdVinculado');
+    try {
+      return super.alteradespPessoaIdVinculado(value);
+    } finally {
+      _$_DespelaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 despId: ${despId},
@@ -422,11 +422,11 @@ despTipoCartao: ${despTipoCartao},
 despObservacao: ${despObservacao},
 despNumeroParcelas: ${despNumeroParcelas},
 despesaStatusPag: ${despesaStatusPag},
-despMostrarBotao: ${despMostrarBotao},
-despMostrarParcelas: ${despMostrarParcelas},
 despIntegrado: ${despIntegrado},
 parcelaModel: ${parcelaModel},
-parcelaModelSnapShot: ${parcelaModelSnapShot}
+parcelaModelSnapShot: ${parcelaModelSnapShot},
+pessoaModel: ${pessoaModel},
+despPessoaIdVinculado: ${despPessoaIdVinculado}
     ''';
   }
 }

@@ -161,37 +161,6 @@ mixin _$ReceitaModel on _ReceitaModelBase, Store {
     });
   }
 
-  final _$recMostrarBotaoAtom = Atom(name: '_ReceitaModelBase.recMostrarBotao');
-
-  @override
-  bool get recMostrarBotao {
-    _$recMostrarBotaoAtom.reportRead();
-    return super.recMostrarBotao;
-  }
-
-  @override
-  set recMostrarBotao(bool value) {
-    _$recMostrarBotaoAtom.reportWrite(value, super.recMostrarBotao, () {
-      super.recMostrarBotao = value;
-    });
-  }
-
-  final _$recMostrarParcelasAtom =
-      Atom(name: '_ReceitaModelBase.recMostrarParcelas');
-
-  @override
-  bool get recMostrarParcelas {
-    _$recMostrarParcelasAtom.reportRead();
-    return super.recMostrarParcelas;
-  }
-
-  @override
-  set recMostrarParcelas(bool value) {
-    _$recMostrarParcelasAtom.reportWrite(value, super.recMostrarParcelas, () {
-      super.recMostrarParcelas = value;
-    });
-  }
-
   final _$recIntegradoAtom = Atom(name: '_ReceitaModelBase.recIntegrado');
 
   @override
@@ -210,15 +179,30 @@ mixin _$ReceitaModel on _ReceitaModelBase, Store {
   final _$parcelaModelAtom = Atom(name: '_ReceitaModelBase.parcelaModel');
 
   @override
-  List<Map<dynamic, dynamic>> get parcelaModel {
+  List<ParcelaModel> get parcelaModel {
     _$parcelaModelAtom.reportRead();
     return super.parcelaModel;
   }
 
   @override
-  set parcelaModel(List<Map<dynamic, dynamic>> value) {
+  set parcelaModel(List<ParcelaModel> value) {
     _$parcelaModelAtom.reportWrite(value, super.parcelaModel, () {
       super.parcelaModel = value;
+    });
+  }
+
+  final _$pessoaModelAtom = Atom(name: '_ReceitaModelBase.pessoaModel');
+
+  @override
+  PessoaModel get pessoaModel {
+    _$pessoaModelAtom.reportRead();
+    return super.pessoaModel;
+  }
+
+  @override
+  set pessoaModel(PessoaModel value) {
+    _$pessoaModelAtom.reportWrite(value, super.pessoaModel, () {
+      super.pessoaModel = value;
     });
   }
 
@@ -236,6 +220,23 @@ mixin _$ReceitaModel on _ReceitaModelBase, Store {
     _$parcelaModelSnapShotAtom.reportWrite(value, super.parcelaModelSnapShot,
         () {
       super.parcelaModelSnapShot = value;
+    });
+  }
+
+  final _$recPessoaIdVinculadoAtom =
+      Atom(name: '_ReceitaModelBase.recPessoaIdVinculado');
+
+  @override
+  String get recPessoaIdVinculado {
+    _$recPessoaIdVinculadoAtom.reportRead();
+    return super.recPessoaIdVinculado;
+  }
+
+  @override
+  set recPessoaIdVinculado(String value) {
+    _$recPessoaIdVinculadoAtom.reportWrite(value, super.recPessoaIdVinculado,
+        () {
+      super.recPessoaIdVinculado = value;
     });
   }
 
@@ -353,28 +354,6 @@ mixin _$ReceitaModel on _ReceitaModelBase, Store {
   }
 
   @override
-  dynamic alteraRecMostrarBotao(bool value) {
-    final _$actionInfo = _$_ReceitaModelBaseActionController.startAction(
-        name: '_ReceitaModelBase.alteraRecMostrarBotao');
-    try {
-      return super.alteraRecMostrarBotao(value);
-    } finally {
-      _$_ReceitaModelBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic alteraRecMostrarParcelas(bool value) {
-    final _$actionInfo = _$_ReceitaModelBaseActionController.startAction(
-        name: '_ReceitaModelBase.alteraRecMostrarParcelas');
-    try {
-      return super.alteraRecMostrarParcelas(value);
-    } finally {
-      _$_ReceitaModelBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   dynamic alteraRecIntegrado(bool value) {
     final _$actionInfo = _$_ReceitaModelBaseActionController.startAction(
         name: '_ReceitaModelBase.alteraRecIntegrado');
@@ -386,11 +365,22 @@ mixin _$ReceitaModel on _ReceitaModelBase, Store {
   }
 
   @override
-  dynamic alteraRecListaParcelas(List<Map<dynamic, dynamic>> value) {
+  dynamic alteraRecListaParcelas(List<ParcelaModel> value) {
     final _$actionInfo = _$_ReceitaModelBaseActionController.startAction(
         name: '_ReceitaModelBase.alteraRecListaParcelas');
     try {
       return super.alteraRecListaParcelas(value);
+    } finally {
+      _$_ReceitaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic alteraRecPessoaModel(PessoaModel value) {
+    final _$actionInfo = _$_ReceitaModelBaseActionController.startAction(
+        name: '_ReceitaModelBase.alteraRecPessoaModel');
+    try {
+      return super.alteraRecPessoaModel(value);
     } finally {
       _$_ReceitaModelBaseActionController.endAction(_$actionInfo);
     }
@@ -402,6 +392,17 @@ mixin _$ReceitaModel on _ReceitaModelBase, Store {
         name: '_ReceitaModelBase.alteraRecListaParcelasSnapShot');
     try {
       return super.alteraRecListaParcelasSnapShot(value);
+    } finally {
+      _$_ReceitaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic alteraRecPessoaIdVinculado(String value) {
+    final _$actionInfo = _$_ReceitaModelBaseActionController.startAction(
+        name: '_ReceitaModelBase.alteraRecPessoaIdVinculado');
+    try {
+      return super.alteraRecPessoaIdVinculado(value);
     } finally {
       _$_ReceitaModelBaseActionController.endAction(_$actionInfo);
     }
@@ -420,11 +421,11 @@ recTipoCartao: ${recTipoCartao},
 recObservacao: ${recObservacao},
 recNumeroParcelas: ${recNumeroParcelas},
 recStatusPag: ${recStatusPag},
-recMostrarBotao: ${recMostrarBotao},
-recMostrarParcelas: ${recMostrarParcelas},
 recIntegrado: ${recIntegrado},
 parcelaModel: ${parcelaModel},
-parcelaModelSnapShot: ${parcelaModelSnapShot}
+pessoaModel: ${pessoaModel},
+parcelaModelSnapShot: ${parcelaModelSnapShot},
+recPessoaIdVinculado: ${recPessoaIdVinculado}
     ''';
   }
 }

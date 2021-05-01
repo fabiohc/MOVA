@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:emanuellemepoupe/model/carteira_model.dart';
 import 'package:emanuellemepoupe/model/despesa_model.dart';
+
 import 'package:mobx/mobx.dart';
 
 class Util {
@@ -15,9 +16,13 @@ class Util {
   formatData(String data) {
     initializeDateFormatting("pt_BR");
     var formatador = DateFormat.yMd("pt_BR");
-    DateTime dataConvertida = DateTime.parse(data);
-    String dataFormatada = formatador.format(dataConvertida);
-    return dataFormatada;
+    try {
+      DateTime dataConvertida = DateTime.parse(data);
+      String dataFormatada = formatador.format(dataConvertida);
+      return dataFormatada;
+    } catch (e) {
+      return "Data com fomato invalido!";
+    }
   }
 
   /*
@@ -39,6 +44,8 @@ class Util {
     }
   }
 
+  
+
 /*
  *Função:
  *Parametro(s):
@@ -52,6 +59,21 @@ class Util {
     return dataParcela;
   }
 
+  /*
+ *Função: Converter data de String para DateTime.
+ *Parametro(s): Data no formato String
+ *Retorno: Data do tipo DateTime
+ */
+  obtenhaDataStringParaDate(String data) {
+    try {
+      DateFormat inputFormat = DateFormat("dd/MM/yyyy");
+      DateTime dateTime = inputFormat.parse(data);
+      return dateTime;
+    } catch (e) {
+      return "Data com fomato invalido!";
+    }
+  }
+
 /*
  *Função: Retorna o mês e o ano de uma data.
  *Parametro(s):Data
@@ -60,7 +82,11 @@ class Util {
  */
   String obtenhaMesAno(String data, {int contadorMes}) {
     DateFormat inputFormat = DateFormat("dd/MM/yyyy");
-    DateTime dateTime = inputFormat.parse(data);
+    DateTime dateTime;
+    data != null
+        ? dateTime = inputFormat.parse(data)
+        : dateTime = new DateTime.now();
+
     var mes = dateTime.month;
     var ano = dateTime.year;
     final mesAno = mes > 9
@@ -114,7 +140,7 @@ Retorno: Retorna ID Global.
     DateTime data = DateTime.now();
     final DateFormat formatter = DateFormat('ddMMyyyy-Hms');
     final String dataFormatada = formatter.format(data);
-    String idGlobal = prefixo + dataFormatada + '_' + data.hashCode.toString();
+    String idGlobal = prefixo + dataFormatada + '_' + data.millisecondsSinceEpoch.toString();
     return idGlobal;
   }
 
@@ -266,7 +292,7 @@ Retorno: Retorna ID Global.
             x.tipo.contains(tipo) &&
             obtenhaMesAno(x.data).contains(mesDePesquisa))
         .fold(0.0, (p, e) => p + e.valor);
-    // soma = formatMoedaDoubleParaString(soma.toString());
+
     return soma;
   }
 

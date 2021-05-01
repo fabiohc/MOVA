@@ -23,23 +23,8 @@ class ReceitaHelper {
     final pasta = await getDatabasesPath();
     final pastaBD = join(pasta, "emanuelle.db");
 
-    final String sql = "CREATE TABLE receita ("
-        "recId INT PRIMARY KEY,"
-        "recIdGlobal TEXT,"
-        "recServico TEXT,"
-        "recValor DOUBLE,"
-        "recData TEXT,"
-        "recFormaPagamento TEXT,"
-        "recTipoCartao TEXT,"
-        "recNumeroParcelas INT,"
-        "recStatusPag BOLEAN,"
-        "recIntegrado BOLEAN"
-        ")";
-
-    return await openDatabase(pastaBD, version: 1,
-        onCreate: (Database db, int newerVersion) async {
-      await db.execute(sql);
-    });
+    return await openDatabase(pastaBD,
+        version: 1, onCreate: (Database db, int newerVersion) async {});
   }
 
   Future<ReceitaModel> insert(ReceitaModel receita) async {
@@ -72,13 +57,47 @@ class ReceitaHelper {
     }
   }
 
-  Future<List> selectAll() async {
+  Future<List<ReceitaModel>> selectAll() async {
     Database dbReceita = await db;
-    List list = await dbReceita.rawQuery("Select * from receita");
     List<ReceitaModel> listaReceitas = List();
+
+    List list = await dbReceita.rawQuery("SELECT * " +
+        " FROM   (SELECT  " +
+        "               [r].[recIdGlobal], " +
+        "               [r].[recServico], " +
+        "               [r].[recData], " +
+        "               [r].[recValor], " +
+        "               [r].[recFormaPagamento], " +
+        "               [r].[recTipoCartao], " +
+        "               [r].[recObservacao], " +
+        "               0 AS [numParcela], " +
+        "               [r].[recNumeroParcelas]," +
+        "               [r].[recStatusPag], " +
+        "               [r].[recIntegrado], " +
+        "               [r].[recPessoaIdVinculado]" +
+        "        FROM   [receita] [r]" +
+        "        UNION" +
+        "        SELECT " +
+        "               [p].[parcelaIdGlobal] AS [recIdGlobal], " +
+        "               'Parcela' AS [recServico], " +
+        "               [p].[parcelaData] AS [recData], " +
+        "               [p].[parcelaValor] AS [recValor], " +
+        "               'null' AS [recFormaPagamento], " +
+        "               'null' AS [recTipoCartao], " +
+        "               'null' AS [recObservacao], " +
+        "               [p].[parcelaNumero] AS [numParcela], " +
+        "               [p].[parcelaQuatParc] AS [recNumeroParcelas], " +
+        "               [p].[parcelaStatusPag] AS [recesaStatusPag], " +
+        "               [p].[parcelaIntegrado] AS [recIntegrado], " +
+        "               [p].[pacelaPessoaIdVinculado] AS [recPessoaIdVinculado]" +
+        "        FROM   [parcelas] [p]" +
+        "        WHERE  [parcelaIdGlobal] LIKE '%rec%') AS consulta" +
+        " ORDER  BY 3 asc;");
+
     for (Map m in list) {
-      listaReceitas.add(ReceitaModel.fromMap(m,false));
+      listaReceitas.add(ReceitaModel.fromMap(m, false));
     }
+
     return listaReceitas;
   }
 

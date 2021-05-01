@@ -1,5 +1,8 @@
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
+import 'package:emanuellemepoupe/controller/util.dart';
+import 'package:emanuellemepoupe/model/parcela_model.dart';
+import 'package:emanuellemepoupe/model/pessoa_model.dart';
 part 'receita_model.g.dart';
 
 class ReceitaModel = _ReceitaModelBase with _$ReceitaModel;
@@ -8,7 +11,7 @@ abstract class _ReceitaModelBase with Store {
   @observable
   int recId;
   @action
-  alteraRecId(int value) => recId = value;  
+  alteraRecId(int value) => recId = value;
 
   @observable
   String recIdGlobal;
@@ -56,31 +59,32 @@ abstract class _ReceitaModelBase with Store {
   alteraReceitStatusPag(bool value) => recStatusPag = value;
 
   @observable
-  bool recMostrarBotao = false;
-  @action
-  alteraRecMostrarBotao(bool value) => recMostrarBotao = value;
-
-  @observable
-  bool recMostrarParcelas = false;
-  @action
-  alteraRecMostrarParcelas(bool value) => recMostrarParcelas = value;
-
-  @observable
   bool recIntegrado = false;
   @action
   alteraRecIntegrado(bool value) => recIntegrado = value;
 
   @observable
-  List<Map> parcelaModel;
+  List<ParcelaModel> parcelaModel;
   @action
-  alteraRecListaParcelas(List<Map> value) => parcelaModel = value;
+  alteraRecListaParcelas(List<ParcelaModel> value) => parcelaModel = value;
+
+  @observable
+  PessoaModel pessoaModel;
+  @action
+  alteraRecPessoaModel(PessoaModel value) => pessoaModel = value;
 
   @observable
   List parcelaModelSnapShot;
   @action
   alteraRecListaParcelasSnapShot(List value) => parcelaModelSnapShot = value;
 
+  @observable
+  String recPessoaIdVinculado;
+  @action
+  alteraRecPessoaIdVinculado(String value) => recPessoaIdVinculado = value;
+
   _ReceitaModelBase();
+  Util util = Util();
 
   // ignore: unused_element
   _ReceitaModelBase.fromMap(Map map, bool eHInsertFarebase) {
@@ -99,6 +103,9 @@ abstract class _ReceitaModelBase with Store {
       recStatusPag = map["recStatusPag"] == 0 ? false : true;
       recIntegrado = map["recIntegrado"] == 0 ? false : true;
     }
+    parcelaModelSnapShot = map["parcelaModel"];
+    pessoaModel = map["pessoaModel"];
+   recPessoaIdVinculado = map["recPessoaIdVinculado"];
   }
 
   String formatMoedaDoubleParaString(String moedaBD) {
@@ -119,7 +126,8 @@ abstract class _ReceitaModelBase with Store {
       "recObservacao": recObservacao,
       "recNumeroParcelas": recNumeroParcelas,
       "recStatusPag": recStatusPag,
-      "recIntegrado": recIntegrado
+      "recIntegrado": recIntegrado,
+      "recPessoaIdVinculado": recPessoaIdVinculado
     };
 
     if (recId != null) {
@@ -132,15 +140,16 @@ abstract class _ReceitaModelBase with Store {
     Map<String, dynamic> map = {
       "recIdGlobal": recIdGlobal,
       "recServico": recServico,
-      "recValor": converteStringToDouble(recValor),
+      "recValor": util.converteStringToDouble(recValor),
       "recData": recData,
       "recFormaPagamento": recFormaPagamento,
       "recTipoCartao": recTipoCartao,
       "recNumeroParcelas": recNumeroParcelas,
       "recObservacao": recObservacao,
       "recStatusPag": recStatusPag,
-      "parcelaModel": parcelaModel,
-      "recIntegrado": recIntegrado
+      //"parcelaModel": parcelaModel,
+      "recIntegrado": recIntegrado,
+      "recPessoaIdVinculado": recPessoaIdVinculado
     };
 
     if (recId != null) {
@@ -160,10 +169,10 @@ abstract class _ReceitaModelBase with Store {
         "recTipoCartao: $recTipoCartao,"
         "recNumeroParcelas: $recNumeroParcelas,"
         "recStatusPag: $recStatusPag,"
-        "recIntegrado: $recIntegrado"
+        "recIntegrado: $recIntegrado,"
+        "recPessoaIdVinculado: $recPessoaIdVinculado"
         "]";
   }
-
 
   double converteStringToDouble(String valor) {
     valor = valor.replaceAll('.', '').replaceAll(',', '.');

@@ -131,6 +131,23 @@ mixin _$ParcelaModel on _ParcelaModelBase, Store {
     });
   }
 
+  final _$pacelaPessoaIdVinculadoAtom =
+      Atom(name: '_ParcelaModelBase.pacelaPessoaIdVinculado');
+
+  @override
+  String get pacelaPessoaIdVinculado {
+    _$pacelaPessoaIdVinculadoAtom.reportRead();
+    return super.pacelaPessoaIdVinculado;
+  }
+
+  @override
+  set pacelaPessoaIdVinculado(String value) {
+    _$pacelaPessoaIdVinculadoAtom
+        .reportWrite(value, super.pacelaPessoaIdVinculado, () {
+      super.pacelaPessoaIdVinculado = value;
+    });
+  }
+
   final _$_ParcelaModelBaseActionController =
       ActionController(name: '_ParcelaModelBase');
 
@@ -223,6 +240,17 @@ mixin _$ParcelaModel on _ParcelaModelBase, Store {
   }
 
   @override
+  dynamic alteraPacelaPessoaIdVinculado(String value) {
+    final _$actionInfo = _$_ParcelaModelBaseActionController.startAction(
+        name: '_ParcelaModelBase.alteraPacelaPessoaIdVinculado');
+    try {
+      return super.alteraPacelaPessoaIdVinculado(value);
+    } finally {
+      _$_ParcelaModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 parcelaId: ${parcelaId},
@@ -232,7 +260,8 @@ parcelaQuatParc: ${parcelaQuatParc},
 parcelaValor: ${parcelaValor},
 parcelaData: ${parcelaData},
 parcelaStatusPag: ${parcelaStatusPag},
-parcelaIntegrado: ${parcelaIntegrado}
+parcelaIntegrado: ${parcelaIntegrado},
+pacelaPessoaIdVinculado: ${pacelaPessoaIdVinculado}
     ''';
   }
 }

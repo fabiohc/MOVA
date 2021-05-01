@@ -40,12 +40,6 @@ mixin _$DespesaController on _DespesaControllerBase, Store {
   }
 
   @override
-  ObservableFuture insiraNovaDespesa() {
-    final _$future = super.insiraNovaDespesa();
-    return ObservableFuture(_$future);
-  }
-
-  @override
   ObservableFuture atualizeDespesa() {
     final _$future = super.atualizeDespesa();
     return ObservableFuture(_$future);
@@ -65,9 +59,9 @@ mixin _$DespesaController on _DespesaControllerBase, Store {
   }
 
   @override
-  ObservableFuture<List<dynamic>> obtentaListaDespesas() {
-    final _$future = super.obtentaListaDespesas();
-    return ObservableFuture<List<dynamic>>(_$future);
+  ObservableFuture insiraNovaDespesa() {
+    final _$future = super.insiraNovaDespesa();
+    return ObservableFuture(_$future);
   }
 
   @override
@@ -78,14 +72,20 @@ mixin _$DespesaController on _DespesaControllerBase, Store {
   }
 
   @override
-  ObservableFuture<List<dynamic>> obtentaListaDeParcelasPorId(String id) {
-    final _$future = super.obtentaListaDeParcelasPorId(id);
+  ObservableFuture<List<dynamic>> obtentaListaDeParcela(String id) {
+    final _$future = super.obtentaListaDeParcela(id);
     return ObservableFuture<List<dynamic>>(_$future);
   }
 
   @override
-  ObservableFuture<List<dynamic>> obtentaListaDeParcela(String id) {
-    final _$future = super.obtentaListaDeParcela(id);
+  ObservableFuture<List<ParcelaModel>> obtentaListaDeParcelasPorId(String id) {
+    final _$future = super.obtentaListaDeParcelasPorId(id);
+    return ObservableFuture<List<ParcelaModel>>(_$future);
+  }
+
+  @override
+  ObservableFuture<List<dynamic>> obtentaListaDespesas() {
+    final _$future = super.obtentaListaDespesas();
     return ObservableFuture<List<dynamic>>(_$future);
   }
 

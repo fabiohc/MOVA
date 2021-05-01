@@ -53,8 +53,8 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
                 padding: EdgeInsets.fromLTRB(28.0, 10.0, 28.0, 10.0),
                 onPressed: () {
                   despesaController.despesaModel.alteraDespTipoCartao("Débito");
-                  despesaController.despesaModel
-                      .alteraDespMostrarParcelas(false);
+                /*  despesaController.despesaModel
+                      .alteraDespMostrarParcelas(false);*/
                   buildvisibilidadeQtdParcelas();
                   setState(() => opacityLevelDebito = 1.0);
                   setState(() => opacityLevelCredito = 0.3);
@@ -79,8 +79,7 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
                     setState(() => opacityLevelDebito = 0.3);
                     despesaController.despesaModel
                         .alteraDespTipoCartao("Crédito");
-                    despesaController.despesaModel
-                        .alteraDespMostrarParcelas(true);
+                 
                     buildvisibilidadeQtdParcelas();
                   },
                 )),
@@ -91,7 +90,6 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
   }
 
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text("Pagar"),
@@ -259,7 +257,7 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
                             ),
                             onChanged: (value) {
                               despesaController.despesaModel
-                                  .alteraDespdespObservacao(value);
+                                  .alteraDespObservacao(value);
                             },
                           ),
                           SizedBox(
@@ -312,7 +310,7 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
                     ),
                     onPressed: () {
                       if (_valideValor.currentState.validate()) {
-                        despesaController.insiraNovaDespesa();
+                      //  despesaController.insiraNovaDespesa();
                         Flushbar(
                           title: "Pronto!",
                           message: "Registro salvo com sucesso",
@@ -356,8 +354,8 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
               despesaController.despesaModel
                   .alteraDespFormaPagamento("Dinheiro");
               despesaController.despesaModel.alteraDespNumeroParcelas(0);
-              despesaController.despesaModel.alteraDespMostrarBotao(false);
-              despesaController.despesaModel.alteraDespMostrarParcelas(false);
+      /*  despesaController.despesaModel.alteraDespMostrarBotao(false);
+              despesaController.despesaModel.alteraDespMostrarParcelas(false);*/
               buildvisibilidadeRaisedButtonDebitoCredito();
               setState(() => opacityLevelCartao = 0.3);
               setState(() => opacityLevelTransferencia = 0.3);
@@ -379,10 +377,10 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
         return GestureDetector(
             onTap: () {
               despesaController.despesaModel
-                  .alteraDespFormaPagamento("Transferido");
+                  .alteraDespFormaPagamento("Transferência");
               despesaController.despesaModel.alteraDespNumeroParcelas(0);
-              despesaController.despesaModel.alteraDespMostrarBotao(false);
-              despesaController.despesaModel.alteraDespMostrarParcelas(false);
+         /*     despesaController.despesaModel.alteraDespMostrarBotao(false);
+              despesaController.despesaModel.alteraDespMostrarParcelas(false);*/
               buildvisibilidadeRaisedButtonDebitoCredito();
               setState(() => opacityLevelTransferencia = 1.0);
               setState(() => opacityLevelCartao = 0.3);
@@ -403,8 +401,8 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
       Observer(builder: (_) {
         return GestureDetector(
             onTap: () {
-              despesaController.despesaModel.alteraDespFormaPagamento("Cartão");
-              despesaController.despesaModel.alteraDespMostrarBotao(true);
+             /* despesaController.despesaModel.alteraDespFormaPagamento("Cartão");
+              despesaController.despesaModel.alteraDespMostrarBotao(true);*/
               buildvisibilidadeRaisedButtonDebitoCredito();
               setState(() => opacityLevelTransferencia = 0.3);
               setState(() => opacityLevelCartao = 1.0);
@@ -433,7 +431,7 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
-            visible: despesaController.despesaModel.despMostrarParcelas,
+           // visible: despesaController.despesaModel.despMostrarParcelas,
             child: Container(
               child: buildTextFormFieldQtdParcelas(),
             ),
@@ -487,7 +485,7 @@ class _CadastroDespesaState extends State<CadastroDespesa> {
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
-            visible: despesaController.despesaModel.despMostrarBotao,
+           //visible: despesaController.despesaModel.despMostrarBotao,
             child: Container(
               child: buildRaisedButtonDebitoCredito(),
             ),

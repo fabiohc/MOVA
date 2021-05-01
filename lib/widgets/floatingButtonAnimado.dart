@@ -1,5 +1,3 @@
-import 'package:emanuellemepoupe/pages/lista_pessoa.dart';
-import 'package:emanuellemepoupe/pages/rotas.dart';
 import 'package:flutter/material.dart';
 
 class FloatingButtonAnimado extends StatefulWidget {
@@ -12,7 +10,6 @@ class _FloatingButtonAnimadoState extends State<FloatingButtonAnimado>
   bool isOpened = false;
   AnimationController _animationController;
   Animation<Color> _animateColor;
-  Animation<double> _animateIcon;
   Curve _curve = Curves.easeOut;
 
   @override
@@ -22,8 +19,6 @@ class _FloatingButtonAnimadoState extends State<FloatingButtonAnimado>
           ..addListener(() {
             setState(() {});
           });
-    _animateIcon =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _animateColor = ColorTween(
       begin: Colors.blue,
       end: Colors.red,
@@ -49,10 +44,6 @@ class _FloatingButtonAnimadoState extends State<FloatingButtonAnimado>
       _animationController.forward();
      //  Navigator.of(context).pushNamed(RotasNavegacao.LISTA_PESSOAS);
 
- final information = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          fullscreenDialog: true, builder: (context) => ListaPessoa()));
 
     } else {
       _animationController.reverse();

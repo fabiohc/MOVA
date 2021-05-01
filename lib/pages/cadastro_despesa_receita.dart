@@ -6,9 +6,11 @@ import 'package:emanuellemepoupe/controller/util.dart';
 import 'package:emanuellemepoupe/model/pessoa_model.dart';
 import 'package:emanuellemepoupe/pages/lista_pessoa.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
-import 'package:emanuellemepoupe/widgets/expansion_tile_cartao_custom.dart';
+import 'package:emanuellemepoupe/controller/compartilhado_controller.dart';
 import 'package:emanuellemepoupe/widgets/navegacao.dart';
 import 'package:emanuellemepoupe/widgets/widget_tipo_pagamento.dart';
+import 'package:emanuellemepoupe/controller/receita_controller.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -27,16 +29,22 @@ class CadastroDespesaReceita extends StatefulWidget {
 class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
     with SingleTickerProviderStateMixin {
   TabController _controller;
+
   final despesaController = DespesaController();
   final pessoaController = PessoaController();
+  final receitaController = ReceitaController();
+  final compartilhadoController = CompartilhadoController();
   var pessoaSelecionada = PessoaModel();
   var pessoaModel = PessoaModel();
+  final Util _util = Util();
+
   bool radioDinheiro = true;
   bool radioDebito = true;
   bool radioctransfer = true;
   bool radioCredito = true;
-  Util _util = Util();
+
   DateTime _dateTime = DateTime.now();
+  int numeroParcela = 0;
 
   @override
   void initState() {
@@ -51,6 +59,7 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       body: SafeArea(
           child: SingleChildScrollView(
               physics: NeverScrollableScrollPhysics(),
@@ -58,44 +67,55 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
               child: Stack(children: <Widget>[
                 Container(
                     height: size.height * .40,
-                    decoration: BoxDecoration(color: kBlueColor)),
-                BottomNavBar(
-                  //  caminhoIconSvg: "assets/icons/Voltar ICon.svg",
-                  icon: SvgPicture.asset(
-                    "assets/icons/Voltar ICon.svg",
-                    color: Colors.white,
-                  ),
-                  margin: 10,
-                  alignment: Alignment.bottomLeft,
-                  // color: Colors.white.withOpacity(2),
-                  press: () {
-                    Navigator.of(context).pushNamed(RotasNavegacao.HOME);
-                  },
-                ),
-                Container(
-                    padding: EdgeInsets.symmetric(horizontal: 70, vertical: 23),
-                    child: Text(
-                      "${widget.descricaoServico}",
-                      style: TextStyle(color: Colors.white),
-                    )),
-                BottomNavBar(
-                  //  caminhoIconSvg: "assets/icons/Voltar ICon.svg",
-                  icon: SvgPicture.asset(
-                    "assets/icons/historico.svg",
-                    color: Colors.white,
-                    height: 20,
-                    semanticsLabel: "Historico",
-                  ),
-                  margin: 10,
-                  alignment: Alignment.bottomRight,
-                  // color: Colors.white.withOpacity(2),
-                  press: () {
-                    widget.acao == "pagar"
-                        ? Navigator.of(context)
-                            .pushNamed(RotasNavegacao.LISTA_DESPESAS)
-                        : Navigator.of(context)
-                            .pushNamed(RotasNavegacao.LISTA_RECEITAS);
-                  },
+                    decoration: BoxDecoration(
+                        color: widget.acao == "pagar"
+                            ? Color(0xFF6b011f)
+                            : Color(0xFFF4a47a3))),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: BottomNavBar(
+                        icon: SvgPicture.asset(
+                          "assets/icons/Voltar ICon.svg",
+                          color: Colors.white,
+                        ),
+                        descricao: widget.acao == "pagar"
+                            ? despesaController.despesaModel
+                                .alteraDespServico("${widget.descricaoServico}")
+                            : receitaController.receitaModel
+                                .alteraRecServico("${widget.descricaoServico}"),
+                        margin: 10,
+                        alignment: Alignment.bottomLeft,
+                        press: () {
+                          widget.acao == "pagar"
+                              ? Navigator.of(context)
+                                  .popAndPushNamed(RotasNavegacao.MENU_DESPESAS)
+                              : Navigator.of(context).popAndPushNamed(
+                                  RotasNavegacao.MENU_RECEITAS);
+                        },
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: BottomNavBar(
+                          icon: SvgPicture.asset(
+                            "assets/icons/historico.svg",
+                            color: Colors.white,
+                            height: 20,
+                            semanticsLabel: "Historico",
+                          ),
+                          margin: 10,
+                          alignment: Alignment.bottomRight,
+                          press: () {
+                            widget.acao == "pagar"
+                                ? Navigator.of(context).popAndPushNamed(
+                                    RotasNavegacao.LISTA_DESPESAS)
+                                : Navigator.of(context).popAndPushNamed(
+                                    RotasNavegacao.LISTA_RECEITAS);
+                          },
+                        ))
+                  ],
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: size.height * .11),
@@ -131,11 +151,13 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                               valueListenable: pessoaController.pessoa,
                               builder: (context, value, child) {
                                 return TextFormField(
+                                  textInputAction: TextInputAction.next,
                                   autofocus: false,
                                   keyboardType: TextInputType.numberWithOptions(
                                       decimal: true),
-                                  initialValue:
-                                      despesaController.despesaModel.despValor,
+                                  initialValue: widget.acao == "pagar"
+                                      ? despesaController.despesaModel.despValor
+                                      : receitaController.receitaModel.recValor,
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(9),
                                     FilteringTextInputFormatter.digitsOnly,
@@ -155,8 +177,11 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     fontSize: 35.0,
                                   ),
                                   onChanged: (value) {
-                                    despesaController.despesaModel
-                                        .alteraDespValor(value);
+                                    widget.acao == "pagar"
+                                        ? despesaController.despesaModel
+                                            .alteraDespValor(value)
+                                        : receitaController.receitaModel
+                                            .alteraRecValor(value);
                                   },
                                 );
                               },
@@ -171,14 +196,25 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                 width: size.width * .4,
                                 child: ValueListenableBuilder(
                                   valueListenable:
-                                      despesaController.dataVencimento,
+                                      compartilhadoController.dataVencimento,
                                   builder: (context, value, child) {
                                     return TextFormField(
                                       controller: new TextEditingController(
-                                          text: _util.formatData(
-                                              despesaController
-                                                  .dataVencimento.value
-                                                  .toString())),
+                                          text: widget.acao == "pagar"
+                                              ? despesaController.despesaModel
+                                                  .alteraDespData(
+                                                      _util.formatData(
+                                                          compartilhadoController
+                                                              .dataVencimento
+                                                              .value
+                                                              .toString()))
+                                              : receitaController.receitaModel
+                                                  .alteraRecData(
+                                                      _util.formatData(
+                                                          compartilhadoController
+                                                              .dataVencimento
+                                                              .value
+                                                              .toString()))),
                                       autofocus: false,
                                       keyboardType:
                                           TextInputType.numberWithOptions(
@@ -195,9 +231,12 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20.0,
                                       ),
-                                      onChanged: (_valorServico) {
-                                        despesaController.despesaModel
-                                            .alteraDespValor(_valorServico);
+                                      onChanged: (value) {
+                                        widget.acao == "pagar"
+                                            ? despesaController.despesaModel
+                                                .alteraDespData(value)
+                                            : receitaController.receitaModel
+                                                .alteraRecData(value);
                                       },
                                     );
                                   },
@@ -213,11 +252,15 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     lastDate: new DateTime(2100),
                                   );
                                   if (dtpkr != null && dtpkr != _dateTime) {
-                                    despesaController
+                                    compartilhadoController
                                         .alteraDataVenvimento(dtpkr);
-                                    despesaController.despesaModel
-                                        .alteraDespData(
-                                            _util.formatData(dtpkr.toString()));
+                                    widget.acao == "pagar"
+                                        ? despesaController.despesaModel
+                                            .alteraDespData(_util
+                                                .formatData(dtpkr.toString()))
+                                        : receitaController.receitaModel
+                                            .alteraRecData(_util
+                                                .formatData(dtpkr.toString()));
                                   }
                                 }),
                           ],
@@ -282,6 +325,13 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     value: radioDinheiro,
                                     onChanged: (bool value) {
                                       setState(() {
+                                        widget.acao == "pagar"
+                                            ? despesaController.despesaModel
+                                                .alteraDespFormaPagamento(
+                                                    "Dinheiro")
+                                            : receitaController.receitaModel
+                                                .alteraRecFormaPagamento(
+                                                    "Dinheiro");
                                         radioDinheiro = false;
                                         radioDebito = true;
                                         radioctransfer = true;
@@ -290,23 +340,173 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     },
                                   ),
                                 ),
-                                ExpansionTileCuston(
-                                  radio: Radio(
-                                    groupValue: false,
-                                    value: radioCredito,
-                                    onChanged: (bool value) {
-                                      setState(() {
-                                        radioCredito = false;
-                                        radioctransfer = true;
-                                        radioDinheiro = true;
-                                        radioDebito = true;
-                                      });
-                                    },
+                                Container(
+                                  color: kBackgroundColor,
+                                  child: ExpansionTile(
+                                    backgroundColor: kBackgroundColor,
+                                    leading: Container(
+                                      width: size.width * .22,
+                                      child: Row(
+                                        children: [
+                                          Radio(
+                                            groupValue: false,
+                                            value: radioCredito,
+                                            onChanged: (bool value) {
+                                              setState(() {
+                                                if (widget.acao == "pagar") {
+                                                  despesaController.despesaModel
+                                                      .alteraDespFormaPagamento(
+                                                          "Cartão");
+                                                  despesaController.despesaModel
+                                                      .alteraDespTipoCartao(
+                                                          "Crédito");
+                                                } else {
+                                                  receitaController.receitaModel
+                                                      .alteraRecFormaPagamento(
+                                                          "Cartão");
+                                                  receitaController.receitaModel
+                                                      .alteraRecTipoCartao(
+                                                          "Crédito");
+                                                }
+                                                radioCredito = false;
+                                                radioctransfer = true;
+                                                radioDinheiro = true;
+                                                radioDebito = true;
+                                              });
+                                            },
+                                          ),
+                                          Spacer(),
+                                          SvgPicture.asset(
+                                            "assets/icons/credito.svg",
+                                            height: 25,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    title: new Text(
+                                      "CARTÃO CRÉDITO",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.0,
+                                      ),
+                                    ),
+                                    children: [
+                                      Container(
+                                        color: kTextColor,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      "Qual o número de parcelas?",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                  height: size.height * 0.01),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  FloatingActionButton(
+                                                      mini: true,
+                                                      child: Icon(
+                                                          Icons
+                                                              .exposure_neg_1_sharp,
+                                                          color:
+                                                              Colors.black87),
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          compartilhadoController
+                                                              .decrementeNumeroParcela();
+                                                          widget.acao == "pagar"
+                                                              ? despesaController
+                                                                  .despesaModel
+                                                                  .alteraDespNumeroParcelas(
+                                                                      compartilhadoController
+                                                                          .numeroParcela
+                                                                          .value)
+                                                              : receitaController
+                                                                  .receitaModel
+                                                                  .alteraRecNumeroParcelas(
+                                                                      compartilhadoController
+                                                                          .numeroParcela
+                                                                          .value);
+                                                        });
+                                                      }),
+                                                  Container(
+                                                    child:
+                                                        ValueListenableBuilder(
+                                                            valueListenable:
+                                                                compartilhadoController
+                                                                    .numeroParcela,
+                                                            builder: (context,
+                                                                value, child) {
+                                                              numeroParcela =
+                                                                  value;
+                                                              return Text(
+                                                                '$value',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      30.0,
+                                                                ),
+                                                              );
+                                                            }),
+                                                  ),
+                                                  FloatingActionButton(
+                                                      mini: true,
+                                                      child: Icon(
+                                                          Icons
+                                                              .exposure_plus_1_sharp,
+                                                          color:
+                                                              Colors.black87),
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          compartilhadoController
+                                                              .incrementeNumeroParcela();
+                                                          widget.acao == "pagar"
+                                                              ? despesaController
+                                                                  .despesaModel
+                                                                  .alteraDespNumeroParcelas(
+                                                                      compartilhadoController
+                                                                          .numeroParcela
+                                                                          .value)
+                                                              : receitaController
+                                                                  .receitaModel
+                                                                  .alteraRecNumeroParcelas(
+                                                                      compartilhadoController
+                                                                          .numeroParcela
+                                                                          .value);
+                                                        });
+                                                      }),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
                                 ValueListenableBuilder(
                                   valueListenable:
-                                      despesaController.radioButton,
+                                      compartilhadoController.radioButton,
                                   builder: (context, value, child) =>
                                       WidgetTipoPagamento(
                                     height: 0.17,
@@ -318,6 +518,19 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                       value: radioDebito,
                                       onChanged: (bool value) {
                                         setState(() {
+                                          if (widget.acao == "pagar") {
+                                            despesaController.despesaModel
+                                                .alteraDespFormaPagamento(
+                                                    "Cartão");
+                                            despesaController.despesaModel
+                                                .alteraDespTipoCartao("Débito");
+                                          } else {
+                                            receitaController.receitaModel
+                                                .alteraRecFormaPagamento(
+                                                    "Cartão");
+                                            receitaController.receitaModel
+                                                .alteraRecTipoCartao("Débito");
+                                          }
                                           radioDebito = false;
                                           radioDinheiro = true;
                                           radioctransfer = true;
@@ -338,6 +551,15 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     value: radioctransfer,
                                     onChanged: (bool value) {
                                       setState(() {
+                                        if (widget.acao == "pagar") {
+                                          despesaController.despesaModel
+                                              .alteraDespFormaPagamento(
+                                                  "Transferência");
+                                        } else {
+                                          receitaController.receitaModel
+                                              .alteraRecFormaPagamento(
+                                                  "Transferência");
+                                        }
                                         radioctransfer = false;
                                         radioDinheiro = true;
                                         radioDebito = true;
@@ -365,11 +587,23 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                                 width: 60.0,
                                                 height: 60.0,
                                                 color: Colors.transparent,
-                                                child: CircleAvatar(
-                                                  child: SvgPicture.asset(
-                                                      "assets/icons/Image foto.svg"),
-                                                  backgroundColor: Colors.white,
-                                                )),
+                                                child: pessoaController
+                                                            .pessoaModel
+                                                            .pessoafotourl ==
+                                                        null
+                                                    ? CircleAvatar(
+                                                        child: SvgPicture.asset(
+                                                            "assets/icons/Image foto.svg"),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      )
+                                                    : CircleAvatar(
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                                pessoaController
+                                                                    .pessoaModel
+                                                                    .pessoafotourl),
+                                                      )),
                                             title: Text(
                                               pessoaController.pessoaModel
                                                           .pessoaNome !=
@@ -490,8 +724,12 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                                           MaterialPageRoute(
                                                               fullscreenDialog:
                                                                   true,
-                                                              builder: (context) =>
-                                                                  ListaPessoa()));
+                                                              builder:
+                                                                  (context) =>
+                                                                      ListaPessoa(
+                                                                        retonarcadastro:
+                                                                            true,
+                                                                      )));
 
                                                   setState(() {
                                                     pessoaSelecionada =
@@ -515,24 +753,28 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                               child: Column(
                                 children: <Widget>[
                                   ListTile(
-                                      leading: Text("Descrição:"),
                                       title: TextFormField(
-                                        maxLines: 9,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        initialValue: despesaController
-                                            .despesaModel.despObservacao,
-                                        style: TextStyle(
-                                          //color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15.0,
-                                        ),
-                                        onChanged: (value) {
-                                          despesaController.despesaModel
-                                              .alteraDespdespObservacao(value);
-                                        },
-                                      )),
+                                    maxLines: 9,
+                                    maxLength: 250,
+                                    decoration: InputDecoration(
+                                      hintStyle: TextStyle(fontSize: 20),
+                                      hintText: "Descrição (250 caracteres.)",
+                                      border: InputBorder.none,
+                                    ),
+                                    initialValue: despesaController
+                                        .despesaModel.despObservacao,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
+                                    ),
+                                    onChanged: (value) {
+                                      widget.acao == "pagar"
+                                          ? despesaController.despesaModel
+                                              .alteraDespObservacao(value)
+                                          : receitaController.receitaModel
+                                              .alteraRecObservacao(value);
+                                    },
+                                  )),
                                 ],
                               ),
                             ),
@@ -563,10 +805,86 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                               backgroundColor: Colors.transparent),
                           textAlign: TextAlign.center,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          flushbarIncluir("Confirmar inclusão?",
+                              " Registro salvo com sucesso!");
+                        },
                       ),
                     ))
               ]))),
     );
+  }
+
+  Flushbar flushbarIncluir(String titleQuestione, String menssagemConfirmeAcao,
+      {dynamic objetoReceitaDespesa}) {
+    Flushbar flush;
+    return flush = Flushbar<bool>(
+      title: titleQuestione,
+      message: " ",
+      margin: EdgeInsets.all(10),
+      borderRadius: 8,
+      isDismissible: true,
+      mainButton: Row(
+        children: [
+          FlatButton(
+              onPressed: () {
+                flush.dismiss(false);
+              },
+              child: Text(
+                "Não",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              )),
+          FlatButton(
+              onPressed: () {
+                flush.dismiss(true);
+                return flush = Flushbar<bool>(
+                  title: "Pronto!",
+                  message: menssagemConfirmeAcao,
+                  margin: EdgeInsets.all(10),
+                  borderRadius: 8,
+                  duration: Duration(seconds: 3),
+                  backgroundGradient: LinearGradient(colors: [
+                    Colors.blue,
+                    Colors.teal
+                  ]), //duration: Duration(seconds: 3),
+                )..show(context).then((value) {
+                    if (widget.acao == "pagar") {
+                      despesaController.despesaModel
+                          .alteradespPessoaIdVinculado(
+                              pessoaController.pessoaModel.pessoaIdGlobal);
+                      despesaController.despesaModel
+                          .alteraDespPessoaModel(pessoaController.pessoaModel);
+                      despesaController.insiraNovaDespesa();
+
+                      Navigator.of(context).pop();
+                      Navigator.pushReplacementNamed(
+                          context, RotasNavegacao.LISTA_DESPESAS);
+                    } else {
+                      receitaController.receitaModel.alteraRecPessoaIdVinculado(
+                          pessoaController.pessoaModel.pessoaIdGlobal);
+                      receitaController.receitaModel
+                          .alteraRecPessoaModel(pessoaController.pessoaModel);
+                      receitaController.insiraNovaReceita();
+
+                      Navigator.of(context).pop();
+                      Navigator.pushReplacementNamed(
+                          context, RotasNavegacao.LISTA_RECEITAS);
+                    }
+                  });
+              },
+              child: Text(
+                "Sim",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              )),
+        ],
+      ),
+      backgroundGradient: LinearGradient(colors: [Colors.blue, Colors.teal]),
+    )..show(context);
   }
 }

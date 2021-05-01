@@ -11,7 +11,7 @@ class BarraPesquisa extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var pessoa_controller = PessoaController();
+    var pessoaController = PessoaController();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -30,7 +30,7 @@ class BarraPesquisa extends StatelessWidget {
           ),
           controller: filtro,
           onChanged: (value) {
-            var a = pessoa_controller.filtreListaPessoas(lista, value);
+            var a = pessoaController.filtreListaPessoas(lista, value);
             return a;
           },
         ),

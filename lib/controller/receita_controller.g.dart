@@ -9,6 +9,21 @@ part of 'receita_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ReceitaController on _ReceitaControllerBase, Store {
+  final _$agendaModelAtom = Atom(name: '_ReceitaControllerBase.agendaModel');
+
+  @override
+  AgendaModel get agendaModel {
+    _$agendaModelAtom.reportRead();
+    return super.agendaModel;
+  }
+
+  @override
+  set agendaModel(AgendaModel value) {
+    _$agendaModelAtom.reportWrite(value, super.agendaModel, () {
+      super.agendaModel = value;
+    });
+  }
+
   final _$receitaModelAtom = Atom(name: '_ReceitaControllerBase.receitaModel');
 
   @override
@@ -21,6 +36,21 @@ mixin _$ReceitaController on _ReceitaControllerBase, Store {
   set receitaModel(ReceitaModel value) {
     _$receitaModelAtom.reportWrite(value, super.receitaModel, () {
       super.receitaModel = value;
+    });
+  }
+
+  final _$parcelaModelAtom = Atom(name: '_ReceitaControllerBase.parcelaModel');
+
+  @override
+  ParcelaModel get parcelaModel {
+    _$parcelaModelAtom.reportRead();
+    return super.parcelaModel;
+  }
+
+  @override
+  set parcelaModel(ParcelaModel value) {
+    _$parcelaModelAtom.reportWrite(value, super.parcelaModel, () {
+      super.parcelaModel = value;
     });
   }
 
@@ -49,6 +79,12 @@ mixin _$ReceitaController on _ReceitaControllerBase, Store {
   }
 
   @override
+  ObservableFuture<List<dynamic>> obtentaListaReceitas() {
+    final _$future = super.obtentaListaReceitas();
+    return ObservableFuture<List<dynamic>>(_$future);
+  }
+
+  @override
   ObservableFuture insiraNovaReceitaFirebase(
       List<ReceitaModel> receitaAddFirestore) {
     final _$future = super.insiraNovaReceitaFirebase(receitaAddFirestore);
@@ -73,7 +109,9 @@ mixin _$ReceitaController on _ReceitaControllerBase, Store {
   @override
   String toString() {
     return '''
-receitaModel: ${receitaModel}
+agendaModel: ${agendaModel},
+receitaModel: ${receitaModel},
+parcelaModel: ${parcelaModel}
     ''';
   }
 }

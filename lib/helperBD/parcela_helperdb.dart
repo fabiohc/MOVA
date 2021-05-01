@@ -46,7 +46,8 @@ class ParcelaHelper {
           "parcelaValor",
           "parcelaData",
           "parcelaStatusPag",
-          "parcelaIntegrado"
+          "parcelaIntegrado",
+          "pacelaPessoaIdVinculado"
         ],
         where: "parcelaIdGlobal = ?",
         whereArgs: [id]);
@@ -68,7 +69,8 @@ class ParcelaHelper {
           "parcelaValor",
           "parcelaData",
           "parcelaStatusPag",
-          "parcelaIntegrado"
+          "parcelaIntegrado",
+          "pacelaPessoaIdVinculado"
         ],
         where: "parcelaIdGlobal = ?",
         whereArgs: [id]);
@@ -91,7 +93,7 @@ class ParcelaHelper {
     return lsparcela;
   }
 
-  Future<int> update(ParcelaModel parcela) async {
+  update(ParcelaModel parcela) async {
     Database dbparcela = await db;
     return await dbparcela.update("parcelas", parcela.toMap(),
         where: "parcelaIdGlobal = ? and parcelaNumero = ?", whereArgs: [parcela.parcelaIdGlobal, parcela.parcelaNumero ]);

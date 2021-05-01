@@ -7,16 +7,20 @@ class BottomNavBar extends StatelessWidget {
   final Function press;
   final AlignmentGeometry alignment;
   final Color color;
+  final Color colorfonte;
   final double margin;
-  const BottomNavBar(
-      {Key key,
-      this.icon,
-      this.caminhoIconSvg,
-      this.press,
-      this.alignment,
-      this.color,
-      this.margin})
-      : super(
+  final String descricao;
+  const BottomNavBar({
+    Key key,
+    this.icon,
+    this.caminhoIconSvg,
+    this.press,
+    this.alignment,
+    this.color,
+    this.margin,
+    this.descricao,
+    this.colorfonte
+  }) : super(
           key: key,
         );
 
@@ -30,25 +34,39 @@ class BottomNavBar extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Align(
-                      alignment:
-                          alignment == null ? Alignment.bottomLeft : alignment,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: margin == null ? 0.0 : margin),
-                          alignment: Alignment.center,
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                           // border: Border.all(color: Colors.white),
-                            color: color == null
-                                ? Colors.transparent.withOpacity(0.1)
-                                : color,
-                            shape: BoxShape.circle,
-                          ),
-                          child: icon != null
-                              ? icon
-                              : SvgPicture.asset(caminhoIconSvg)),
-                    )
+                    Row(
+                      children: [
+                        Align(
+                          alignment: alignment == null
+                              ? Alignment.bottomLeft
+                              : alignment,
+                          child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  vertical: margin == null ? 0.0 : margin),
+                              alignment: Alignment.center,
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                // border: Border.all(color: Colors.white),
+                                color: color == null
+                                    ? Colors.transparent.withOpacity(0.1)
+                                    : color,
+                                shape: BoxShape.circle,
+                              ),
+                              child: icon != null
+                                  ? icon
+                                  : SvgPicture.asset(caminhoIconSvg)),
+                        ),
+                        if ( descricao != null)
+                          Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 20),
+                              child: Text(
+                                descricao,
+                                style: TextStyle(color: colorfonte != null ? colorfonte :  Colors.white),
+                              )),
+                      ],
+                    ),
                   ]))),
     );
   }

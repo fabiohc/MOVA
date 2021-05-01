@@ -47,9 +47,14 @@ abstract class _ParcelaModelBase with Store {
   bool parcelaIntegrado = false;
   @action
   alteraParcelaIntegrado(bool value) => parcelaIntegrado = value;
+  
+  @observable
+  String pacelaPessoaIdVinculado;
+  @action
+  alteraPacelaPessoaIdVinculado(String value) => pacelaPessoaIdVinculado = value;
 
   _ParcelaModelBase();
-  Util util;
+  Util util = Util();
 
   // ignore: unused_element
   _ParcelaModelBase.fromMap(Map map, bool eHInsertFarebase) {
@@ -71,6 +76,7 @@ abstract class _ParcelaModelBase with Store {
       parcelaIntegrado = map["parcelaIntegrado"] == 0 ? false : true;
       parcelaStatusPag = map["parcelaStatusPag"] == 0 ? false : true;
     }
+    pacelaPessoaIdVinculado = map["pacelaPessoaIdVinculado"];
   }
 
   Map toMap() {
@@ -82,7 +88,8 @@ abstract class _ParcelaModelBase with Store {
       "parcelaValor": parcelaValor,
       "parcelaData": parcelaData,
       "parcelaStatusPag": parcelaStatusPag,
-      "parcelaIntegrado": parcelaIntegrado
+      "parcelaIntegrado": parcelaIntegrado,
+      "pacelaPessoaIdVinculado": pacelaPessoaIdVinculado
     };
 
     if (parcelaId != null) {
@@ -101,6 +108,7 @@ abstract class _ParcelaModelBase with Store {
         "parcelaData: $parcelaData,"
         "parcelaStatusPag: $parcelaStatusPag,"
         "parcelaIntegrado: $parcelaIntegrado,"
+        "pacelaPessoaIdVinculado: $pacelaPessoaIdVinculado"
         "]";
   }
 

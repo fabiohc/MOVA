@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:emanuellemepoupe/constants/constants_color.dart';
 import 'package:emanuellemepoupe/controller/despesa_controller.dart';
 import 'package:emanuellemepoupe/widgets/categoryCard.dart';
+import 'package:emanuellemepoupe/widgets/navegacao.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:emanuellemepoupe/pages/rotas.dart';
 
 class MenuDespesa extends StatefulWidget {
   @override
@@ -16,26 +19,41 @@ class _MenuDespesaState extends State<MenuDespesa> {
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
-      //appBar: appBar,
+
       body: Stack(
         children: [
           Container(
-            // Here the height of the container is 45% of our total height
+           
             height: size.height * .35,
             decoration: BoxDecoration(
-              color: kTextColor,
+              color: Color(0xFFF630000),
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
               ),
-              image: DecorationImage(
-                alignment: Alignment.center,
-                image: AssetImage("images/emanuelle.png"),
-              ),
             ),
+          ),
+          Align(
+            alignment: Alignment(0.0, -0.6),
+            child: SvgPicture.asset("assets/icons/mova.svg",
+                color: Colors.white, height: 40, width: 40),
+          ),
+          BottomNavBar(
+            icon: SvgPicture.asset(
+              "assets/icons/Voltar ICon.svg",
+              color: Colors.white,
+            ),
+            margin: 10,
+            alignment: Alignment.bottomLeft,
+            // color: Colors.white.withOpacity(2),
+            press: () {
+              Navigator.of(context).popAndPushNamed(RotasNavegacao.HOME);
+            },
+            descricao: "MENU DESPESAS",
           ),
           SafeArea(
               child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  padding:
+                       EdgeInsets.symmetric(horizontal: 30, vertical:size.height * 0.11),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -46,10 +64,10 @@ class _MenuDespesaState extends State<MenuDespesa> {
                         Expanded(
                             child: Container(
                           child: GridView.count(
-                              crossAxisCount: 2,
-                              childAspectRatio: .70,
-                              crossAxisSpacing: 40,
-                              mainAxisSpacing: 20,
+                              crossAxisCount: 3,
+                              childAspectRatio: .78,
+                              crossAxisSpacing: 15,
+                              mainAxisSpacing: 30,
                               children: <Widget>[
                                 CategoryCard(
                                   title: "Aluguel",
@@ -104,6 +122,40 @@ class _MenuDespesaState extends State<MenuDespesa> {
                                                   )));
                                     },
                                     svgSrc: "energia.png"),
+                                CategoryCard(
+                                    title: "Fornecedor",
+                                    press: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CadastroDespesaReceita(
+                                                    acao: 'pagar',
+                                                    descricaoServico:
+                                                        despesaController
+                                                            .despesaModel
+                                                            .alteraDespServico(
+                                                                "Fornecedor"),
+                                                  )));
+                                    },
+                                    svgSrc: "material.png"),
+                                CategoryCard(
+                                    title: "Transporte",
+                                    press: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CadastroDespesaReceita(
+                                                    acao: 'pagar',
+                                                    descricaoServico:
+                                                        despesaController
+                                                            .despesaModel
+                                                            .alteraDespServico(
+                                                                "Transporte"),
+                                                  )));
+                                    },
+                                    svgSrc: "transporte.png"),
                                 CategoryCard(
                                     title: "Outros",
                                     press: () {

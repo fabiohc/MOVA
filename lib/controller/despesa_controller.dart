@@ -1,11 +1,14 @@
+import 'package:emanuellemepoupe/controller/pessoa_controller.dart';
+import 'package:emanuellemepoupe/controller/parcela_controller.dart';
 import 'package:emanuellemepoupe/controller/util.dart';
 import 'package:emanuellemepoupe/helperBD/despesa_helperdb.dart';
 import 'package:emanuellemepoupe/helperBD/parcela_helperdb.dart';
+import 'package:emanuellemepoupe/helperBD/pessoa_helperdb.dart';
 import 'package:emanuellemepoupe/model/despesa_model.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:emanuellemepoupe/model/pessoa_model.dart';
 import 'package:emanuellemepoupe/repository/despesa_repository.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:mobx/mobx.dart';
 
 part 'despesa_controller.g.dart';
@@ -14,9 +17,12 @@ class DespesaController = _DespesaControllerBase with _$DespesaController;
 
 abstract class _DespesaControllerBase with Store {
   var despesaHelper = DespesaHelper();
+  var pessoaHelper = PessoaHelper();
   var repositoryHelper = DespesaRepository();
   var parcelaHelper = ParcelaHelper();
   var pessoaModel = PessoaModel();
+  var pessoaController = PessoaController();
+  var parcelaController = ParcelaController();
   var util = Util();
 
   @observable
@@ -25,37 +31,18 @@ abstract class _DespesaControllerBase with Store {
   @observable
   var parcelaModel = ParcelaModel();
 
-// #region ValueNotifier
-
-  final numeroParcela = ValueNotifier<int>(0);
-
-  final radioButton = ValueNotifier<bool>(false);
-
-  final dataVencimento = ValueNotifier<DateTime>(DateTime.now());
-
-  alteraradio(bool value) {
-    radioButton.value = value;
-  }
-
-  alteraDataVenvimento(DateTime value) {
-    dataVencimento.value = value;
-  }
-
-  decrementeNumeroParcela() {
-    if (numeroParcela.value > 0 && numeroParcela.value <= 12)
-      numeroParcela.value--;
-  }
-
-  incrementeNumeroParcela() {
-    if (numeroParcela.value > -1 && numeroParcela.value < 12)
-      numeroParcela.value++;
-  }
-
-// #endregion
-
   @observable
   atualizeDespesa() async {
     await despesaHelper.update(despesaModel);
+    await repositoryHelper.deleteParcelasAntesUpdateFirestore(despesaModel);
+
+    if (despesaModel.despNumeroParcelas > 0) {
+      var listaParcelas = obtenhaParcelas(despesaModel);
+      for (var parcela in listaParcelas) {
+        await parcelaHelper.update(parcela);
+      }
+    }
+
     if (despesaModel.despIdGlobal.isNotEmpty)
       await repositoryHelper.updateFirestore(despesaModel);
   }
@@ -74,6 +61,7 @@ abstract class _DespesaControllerBase with Store {
 
   atualizeStatusPagamrnto() async {
     await despesaHelper.update(despesaModel);
+
     if (despesaModel.despIdGlobal.isNotEmpty)
       await repositoryHelper.updateFirestore(despesaModel);
   }
@@ -82,6 +70,7 @@ abstract class _DespesaControllerBase with Store {
   deleteRegistro(DespesaModel despesa) async {
     await despesaHelper.delete(despesa.despIdGlobal);
     await parcelaHelper.delete(despesa.despIdGlobal);
+
     if (despesa.despIdGlobal.isNotEmpty)
       await repositoryHelper.deleteFirestore(despesa);
   }
@@ -102,16 +91,14 @@ abstract class _DespesaControllerBase with Store {
   @observable
   insiraNovaDespesa() async {
     despesaModel.alteraDespIdGlobal(util.obtenhaIdGlobal("desp"));
-
     await despesaHelper.insert(despesaModel);
-
-    if (despesaModel.despNumeroParcelas > 1) {
+   
+    if (despesaModel.despNumeroParcelas > 0) {
       var listaParcelas = obtenhaParcelas(despesaModel);
       for (var parcela in listaParcelas) {
         await parcelaHelper.insert(parcela);
       }
     }
-
     await repositoryHelper.insertFirestore(despesaModel);
   }
 
@@ -160,7 +147,7 @@ abstract class _DespesaControllerBase with Store {
 
   obtenhaParcelas(DespesaModel despesaModel) {
     List<ParcelaModel> listParcelas = [];
-    List<Map> parcelas = [];
+    //List<Map> parcelas = [];
 
     var _valorParcela = util.converteStringToDouble(despesaModel.despValor) /
         despesaModel.despNumeroParcelas;
@@ -170,7 +157,6 @@ abstract class _DespesaControllerBase with Store {
     for (var i = 0; i < despesaModel.despNumeroParcelas; i++) {
       contador++;
       var parcelaModel = new ParcelaModel();
-      //parcelaModel.alteraParcelaId(contador);
       parcelaModel.alteraParcelaIdGlobal(despesaModel.despIdGlobal);
       parcelaModel.alteraParcelaNumero(contador);
       parcelaModel.alteraQuantParcelas(despesaModel.despNumeroParcelas);
@@ -178,13 +164,15 @@ abstract class _DespesaControllerBase with Store {
       parcelaModel.alteraParcelaData(
           util.obtenhaDataProximaParcela(despesaModel.despData, contador));
       parcelaModel.alteraPacelaStatus(false);
+      parcelaModel
+          .alteraPacelaPessoaIdVinculado(despesaModel.despPessoaIdVinculado);
       listParcelas.add(parcelaModel);
     }
-    listParcelas.forEach((ParcelaModel parcelaModel) {
+    /*  listParcelas.forEach((ParcelaModel parcelaModel) {
       Map parcela = parcelaModel.toMap();
       parcelas.add(parcela);
-    });
-    despesaModel.alteraDespListaParcelas(parcelas);
+    });*/
+    despesaModel.alteraDespListaParcelas(listParcelas);
     return listParcelas;
   }
 
@@ -252,7 +240,7 @@ abstract class _DespesaControllerBase with Store {
  *Retorno: Retorna lista de despesas por categoria.
  */
   @observable
-  Future<List> obtentaListaDeParcelasPorId(String id) async {
+  Future<List<ParcelaModel>> obtentaListaDeParcelasPorId(String id) async {
     var lista = await parcelaHelper.selectparcelaById(id);
     return lista;
   }
@@ -265,8 +253,27 @@ abstract class _DespesaControllerBase with Store {
  */
   @observable
   Future<List> obtentaListaDespesas() async {
-    List lista = await despesaHelper.selectAll();
-    return lista;
+    var despesasCompletas = new List<DespesaModel>();
+    var lista = await despesaHelper.selectAll();
+
+    lista.forEach((despesa) {
+      if (despesa.despNumeroParcelas > 0) {
+        var parcelas = parcelaHelper.selectparcelaById(despesa.despIdGlobal);
+        parcelas.then((parcelas) {
+          despesa.parcelaModel = parcelas;
+        });
+      }
+      if (despesa.despPessoaIdVinculado != "null") {
+        var pessoa = pessoaHelper.selectById(despesa.despPessoaIdVinculado);
+        pessoa.then((pessoa) {
+          despesa.pessoaModel = pessoa;
+        });
+      }
+
+      despesasCompletas.add(despesa);
+    });
+
+    return despesasCompletas;
   }
 
   /*

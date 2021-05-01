@@ -1,13 +1,17 @@
+import 'package:emanuellemepoupe/constants/constants_color.dart';
+import 'package:emanuellemepoupe/controller/parcela_controller.dart';
+import 'package:emanuellemepoupe/controller/pessoa_controller.dart';
+import 'package:emanuellemepoupe/widgets/navegacao.dart';
+import 'package:emanuellemepoupe/widgets/despesa_detalhes.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import 'package:flutter_svg/svg.dart';
 import 'package:emanuellemepoupe/controller/despesa_controller.dart';
 import 'package:emanuellemepoupe/controller/util.dart';
 import 'package:emanuellemepoupe/helperBD/despesa_helperdb.dart';
 import 'package:emanuellemepoupe/model/despesa_model.dart';
-import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
 
 class ListaDespesas extends StatefulWidget {
@@ -18,10 +22,15 @@ class ListaDespesas extends StatefulWidget {
 class _ListaDespesaState extends State<ListaDespesas> {
   final despesaController = DespesaController();
   final despesaHelper = DespesaHelper();
+  final pessoaController = PessoaController();
+  final parcelaController = ParcelaController();
+
   var util = Util();
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
   List<DespesaModel> listaDespesas = List();
   List<DespesaModel> listaDespesasMesAtual = List();
-  dynamic quantidadeDeMeses;
+  dynamic quantidadeDeMeses = [];
+
   List<String> categorias = [
     "Todos",
     "Condominio",
@@ -49,95 +58,137 @@ class _ListaDespesaState extends State<ListaDespesas> {
     super.initState();
   }
 
+  Future<Null> atualizeLista() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(
+        Duration(seconds: 2),
+        () => despesaController.obtentaListaDespesas().then((list) {
+              setState(() {
+                listaDespesas = list;
+                quantidadeDeMeses =
+                    despesaController.obtenhaQuantidadeDeMeses(listaDespesas);
+                listaDespesasMesAtual =
+                    util.obtenhaDespesasDoMesAtual(listaDespesas);
+              });
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Lista de despesas"),
-          centerTitle: true,
-          backgroundColor: Color(0XFFF92B7F),
-        ),
         body: SingleChildScrollView(
             child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 40,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: quantidadeDeMeses.length,
-                    itemBuilder: (context, index) {
-                      final meses = quantidadeDeMeses[index];
-                      return Container(
-                        child: Row(
-                          children: [
-                            FlatButton(
-                              onPressed: () {
-                                setState(() {
-                                  listaDespesasMesAtual =
-                                      util.obtenhaRegistroDespesasPorMes(
-                                          listaDespesas, meses.toString());
-                                  selectedIndexMes = index;
-                                  selectedIndexTipo = 0;
-                                });
-                              },
-                              color: selectedIndexMes == index
-                                  ? Colors.deepPurple[200]
-                                  : Colors.transparent,
-                              child: Text(
-                                  util.formataDataMesAno(meses.toString())),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  side: BorderSide(color: Colors.white60)),
-                            ),
-                            SizedBox(width: 10)
-                          ],
-                        ),
-                      );
-                    }),
+            Stack(children: [
+              Container(
+                  height: size.height * .27,
+                  decoration: BoxDecoration(color: kBlueColor)),
+              Row(
+                children: [
+                  BottomNavBar(
+                    icon: SvgPicture.asset(
+                      "assets/icons/Voltar ICon.svg",
+                      color: Colors.white,
+                    ),
+                    margin: 10,
+                    alignment: Alignment.bottomLeft,
+                    // color: Colors.white.withOpacity(2),
+                    press: () {
+                      Navigator.of(context)
+                          .popAndPushNamed(RotasNavegacao.MENU_DESPESAS);
+                    },
+                    descricao: "LISTA DE DESPESAS",
+                  ),
+                ],
               ),
-            ),
-            Divider(),
-            SizedBox(
-              height: 40,
-              child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: categorias.length,
-                    itemBuilder: (context, index) {
-                      final categoria = categorias[index];
-                      return Container(
-                        child: Row(
-                          children: [
-                            FlatButton(
-                              onPressed: () {
-                                setState(() {
-                                  listaDespesasMesAtual =
-                                      despesaController.obtenhaRegistrosPorTipo(
-                                          listaDespesas, categoria);
-                                  selectedIndexTipo = index;
-                                });
-                              },
-                              color: selectedIndexTipo == index
-                                  ? Colors.deepPurple[200]
-                                  : Colors.transparent,
-                              child: Text(categorias[index]),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  side: BorderSide(color: Colors.white60)),
+              Padding(
+                padding: const EdgeInsets.only(top: 85),
+                child: SizedBox(
+                  height: 40,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: quantidadeDeMeses.length,
+                        itemBuilder: (context, index) {
+                          final meses = quantidadeDeMeses[index];
+                          return Container(
+                            child: Row(
+                              children: [
+                                FlatButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      listaDespesasMesAtual =
+                                          util.obtenhaRegistroDespesasPorMes(
+                                              listaDespesas, meses.toString());
+                                      selectedIndexMes = index;
+                                      selectedIndexTipo = 0;
+                                    });
+                                  },
+                                  color: selectedIndexMes == index
+                                      ? Colors.deepPurple[200]
+                                      : Colors.transparent,
+                                  child: Text(
+                                      util.formataDataMesAno(meses.toString())),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      side: BorderSide(color: Colors.white60)),
+                                ),
+                                SizedBox(width: 10)
+                              ],
                             ),
-                            SizedBox(width: 10)
-                          ],
-                        ),
-                      );
-                    }),
+                          );
+                        }),
+                  ),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.only(top: 117),
+                child: Divider(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 125),
+                child: SizedBox(
+                  height: 40,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categorias.length,
+                        itemBuilder: (context, index) {
+                          final categoria = categorias[index];
+                          return Container(
+                            child: Row(
+                              children: [
+                                FlatButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      listaDespesasMesAtual = despesaController
+                                          .obtenhaRegistrosPorTipo(
+                                              listaDespesas, categoria);
+                                      selectedIndexTipo = index;
+                                    });
+                                  },
+                                  color: selectedIndexTipo == index
+                                      ? Colors.deepPurple[200]
+                                      : Colors.transparent,
+                                  child: Text(categorias[index]),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      side: BorderSide(color: Colors.white60)),
+                                ),
+                                SizedBox(width: 10)
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
+                ),
+              )
+            ]),
             SizedBox(
-                height: size.height * .70,
+                height: size.height * .72,
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
@@ -145,425 +196,75 @@ class _ListaDespesaState extends State<ListaDespesas> {
                     itemBuilder: (context, index) {
                       final despesa = listaDespesasMesAtual[index];
                       valorPago = despesa.despesaStatusPag;
-                      return Card(
-                          child: Row(
+                      return Column(
                         children: [
-                          Observer(builder: (_) {
-                            return Checkbox(
+                          Row(
+                            children: [
+                              Checkbox(
                                 value: valorPago,
+                                activeColor: Colors.transparent,
+                                checkColor: Colors.greenAccent,
                                 onChanged: (bool value) {
                                   if (value == true) {
-                                    flush = Flushbar<bool>(
-                                      title: "Confirmar pagamento?",
-                                      message: " ",
-                                      margin: EdgeInsets.all(10),
-                                      borderRadius: 8,
-                                      isDismissible: true,
-                                      mainButton: Row(
-                                        children: [
-                                          FlatButton(
-                                              onPressed: () {
-                                                flush.dismiss(false);
-                                              },
-                                              child: Text(
-                                                "Não",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                ),
-                                              )),
-                                          FlatButton(
-                                              onPressed: () {
-                                                flush.dismiss(false);
-                                                setState(() {
-                                                  valorPago = true;
-                                                  despesa.despesaStatusPag =
-                                                      valorPago;
-                                                  despesaController
-                                                      .despesaModel = despesa;
-                                                  despesaController
-                                                      .atualizeDespesa();
-                                                });
-                                                Flushbar(
-                                                  title: "Pronto!",
-                                                  message:
-                                                      "Pagamento confirmado!",
-                                                  margin: EdgeInsets.all(10),
-                                                  borderRadius: 8,
-                                                  duration:
-                                                      Duration(seconds: 2),
-                                                  backgroundGradient:
-                                                      LinearGradient(colors: [
-                                                    Colors.blue,
-                                                    Colors.teal
-                                                  ]), //duration: Duration(seconds: 3),
-                                                )..show(context);
-                                              },
-                                              child: Text(
-                                                "Sim",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                ),
-                                              )),
-                                        ],
-                                      ),
-                                      backgroundGradient: LinearGradient(
-                                          colors: [
-                                            Colors.orange,
-                                            Colors.orangeAccent
-                                          ]),
-                                    )..show(context);
+                                    insiraPagametnoFlushbar(despesa);
                                   } else {
-                                    flush = Flushbar<bool>(
-                                      title: "Remover pagamento?",
-                                      message: " ",
-                                      margin: EdgeInsets.all(10),
-                                      borderRadius: 8,
-                                      isDismissible: true,
-                                      mainButton: Row(
-                                        children: [
-                                          FlatButton(
-                                              onPressed: () {
-                                                flush.dismiss(false);
-                                              },
-                                              child: Text(
-                                                "Não",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                ),
-                                              )),
-                                          FlatButton(
-                                              onPressed: () {
-                                                flush.dismiss(false);
-                                                setState(() {
-                                                  valorPago = false;
-                                                  despesa.despesaStatusPag =
-                                                      valorPago;
-                                                  despesaController
-                                                      .despesaModel = despesa;
-                                                  despesaController
-                                                      .atualizeDespesa();
-                                                });
-                                                Flushbar(
-                                                  title: "Pronto!",
-                                                  message:
-                                                      "Pagamento removido!",
-                                                  margin: EdgeInsets.all(10),
-                                                  borderRadius: 8,
-                                                  duration:
-                                                      Duration(seconds: 2),
-                                                  backgroundGradient:
-                                                      LinearGradient(colors: [
-                                                    Colors.blue,
-                                                    Colors.teal
-                                                  ]), //duration: Duration(seconds: 3),
-                                                )..show(context);
-                                              },
-                                              child: Text(
-                                                "Sim",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                ),
-                                              )),
-                                        ],
-                                      ),
-                                      backgroundGradient: LinearGradient(
-                                          colors: [
-                                            Colors.orange,
-                                            Colors.orangeAccent
-                                          ]),
-                                    )..show(context);
+                                    removaPagamentoFlushbar(despesa);
                                   }
                                 },
-                                checkColor: Colors.green);
-                          }),
-                          InkWell(
-                            onTap: () {
-                              List<ParcelaModel> listaParcelas = List();
-                              despesaController
-                                  .obtentaListaDeParcelasPorId(
-                                      despesa.despIdGlobal)
-                                  .then((list) {
-                                listaParcelas = list;
-                                return showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return new SimpleDialog(
-                                      children: <Widget>[
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.9,
-                                          child: Observer(builder: (_) {
-                                            return Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 1.0),
-                                                    child: Align(
-                                                        alignment: Alignment
-                                                            .bottomRight,
-                                                        child: IconButton(
-                                                            icon: Icon(
-                                                                Icons.cancel),
-                                                            color: Colors.amber,
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            })),
-                                                  ),
-                                                  Expanded(
-                                                    child: Card(
-                                                      child: ListView.separated(
-                                                        itemCount: listaParcelas
-                                                            .length,
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          final parcela =
-                                                              listaParcelas[
-                                                                  index];
-                                                          return ListTile(
-                                                            title: Text(
-                                                                "${parcela.parcelaNumero}ª Parcela"),
-                                                            subtitle: Text(
-                                                                "Valor: ${parcela.parcelaValor}  -  Data: ${parcela.parcelaData}"),
-                                                          );
-                                                        },
-                                                        separatorBuilder:
-                                                            (context, index) {
-                                                          return Divider(
-                                                              color: Colors
-                                                                  .blueGrey);
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ]);
-                                          }),
-                                        )
-                                      ],
-                                    );
-                                  },
-                                );
-                              });
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          despesa.despServico ?? "-",
-                                          style: GoogleFonts.lato(
-                                              textStyle: TextStyle(
-                                                  color: Colors.pinkAccent),
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.bold),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                        Text(
-                                          "Data: ${despesa.despData} " ?? "-",
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Colors.blueGrey[600]),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                        Text(
-                                          "Valor: ${despesa.despValor.toString()} " ??
-                                              "-",
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Colors.blueGrey[600]),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                        if (despesa.despFormaPagamento !=
-                                                null &&
-                                            despesa.despFormaPagamento !=
-                                                "null")
-                                          Text(
-                                            "Pago com: ${despesa.despFormaPagamento}" ??
-                                                "-",
-                                            style: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Colors.blueGrey[600]),
-                                            textAlign: TextAlign.start,
+                              ),
+                              Expanded(
+                                  flex: 2, child: DespesaDetalhes(despesa)),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  width: size.width * .5,
+                                  color: Colors.transparent,
+                                  child: SizedBox(
+                                    width: size.width * 0.10,
+                                    height: size.height * 0.1,
+                                    child: Row(
+                                      children: [
+                                        if (despesa.despServico != "Parcela")
+                                          IconButton(
+                                            icon: (SvgPicture.asset(
+                                              "assets/icons/editar.svg",
+                                              color: Colors.deepOrange,
+                                            )),
+                                            tooltip: "Editar",
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pushReplacementNamed(
+                                                      RotasNavegacao
+                                                          .EDITAR_DESPESA_RECEITA,
+                                                      arguments: despesa);
+                                            },
                                           ),
-                                        if (despesa.despTipoCartao != null &&
-                                            despesa.despTipoCartao != "null")
-                                          Text(
-                                            "Cartão: ${despesa.despTipoCartao}" ??
-                                                "-",
-                                            style: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Colors.blueGrey[600]),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        if (despesa.despNumeroParcelas !=
-                                                null &&
-                                            despesa.despNumeroParcelas > 0)
-                                          Text(
-                                            "Qtd parcelas: ${despesa.despNumeroParcelas}" ??
-                                                "-",
-                                            style: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Colors.blueGrey[600]),
-                                            textAlign: TextAlign.start,
+                                        if (despesa.despServico != "Parcela")
+                                          IconButton(
+                                            icon: (SvgPicture.asset(
+                                                "assets/icons/Trash.svg")),
+                                            tooltip: "Remover",
+                                            onPressed: () {
+                                              flushbarExcluir(
+                                                  "Confirmar remoção?",
+                                                  "Registro removido!",
+                                                  despesa);
+                                            },
                                           ),
                                       ],
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                          Observer(builder: (_) {
-                            return Row(
-                              children: [
-                                if (despesa.despObservacao != null &&
-                                    despesa.despObservacao != "null")
-                                  new IconButton(
-                                      icon: Icon(Icons.speaker_notes_outlined),
-                                      color: Colors.blueGrey,
-                                      padding: EdgeInsets.all(0),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return new SimpleDialog(
-                                              children: <Widget>[
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.3,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.3,
-                                                  child: Observer(builder: (_) {
-                                                    return Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: <Widget>[
-                                                          Align(
-                                                            alignment: Alignment.bottomRight,
-                                                            child: 
-                                                           Padding(
-                                                                    padding: const EdgeInsets
-                                                                    .only(
-                                                             
-                                                                    ),
-                                                                    child: IconButton(
-                                                                icon: Icon(Icons.cancel),
-                                                                color: Colors.amber,
-                                                                onPressed: () {
-                                                                  Navigator.of(context)
-                                                                      .pop();
-                                                                }),
-                                                                  )),
-                                                          Align(
-                                                            alignment: Alignment.bottomLeft,
-                                                            child: 
-                                                        
-                                                          Padding(
-                                                              padding: const EdgeInsets
-                                                                      .only(
-                                                                  left:
-                                                                      10.0),
-                                                              child: Text(
-                                                                  "Descrição"))),
-                                                          Expanded(
-                                                              child: Align(
-                                                            alignment: Alignment
-                                                                .topLeft,
-                                                            child: Text(
-                                                              "${despesa.despObservacao}",
-                                                            ),
-                                                          )),
-                                                        ]);
-                                                  }),
-                                                )
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      }),
-                                if (despesa.despServico != "Parcela")
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: IconButton(
-                                        icon: Icon(Icons.edit),
-                                        color: Colors.orange,
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pushReplacementNamed(
-                                                  RotasNavegacao.EDITARREGISTRO,
-                                                  arguments: despesa);
-                                        }),
-                                  ),
-                                if (despesa.despServico != "Parcela")
-                                  Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Observer(builder: (_) {
-                                        return IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.red,
-                                            padding: EdgeInsets.all(0),
-                                            onPressed: () {
-                                              despesaController
-                                                  .deleteRegistro(despesa);
-                                              Flushbar(
-                                                title: "Pronto!",
-                                                message: "Registro removido.",
-                                                margin: EdgeInsets.all(10),
-                                                borderRadius: 8,
-                                                backgroundGradient:
-                                                    LinearGradient(colors: [
-                                                  Colors.red,
-                                                  Colors.redAccent
-                                                ]),
-                                                duration: Duration(seconds: 2),
-                                              )..show(context);
-                                              despesaController
-                                                  .obtentaListaDespesas()
-                                                  .then((list) {
-                                                setState(() {
-                                                  listaDespesas = list;
-                                                  listaDespesasMesAtual = util
-                                                      .obtenhaDespesasDoMesAtual(
-                                                          listaDespesas);
-                                                });
-                                              });
-                                            });
-                                      }))
-                              ],
-                            );
-                          }),
+                          Divider(color: Colors.white)
                         ],
-                      ));
+                      );
                     })),
           ],
         )),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blueAccent,
           child: Icon(
@@ -575,5 +276,184 @@ class _ListaDespesaState extends State<ListaDespesas> {
             Navigator.of(context).pushNamed(RotasNavegacao.HOME);
           },
         ));
+  }
+
+  Flushbar flushbarExcluir(String titleQuestione, String menssagemConfirmeAcao,
+      DespesaModel despesa) {
+    Flushbar flush;
+    return flush = Flushbar<bool>(
+      title: titleQuestione,
+      message: " ",
+      margin: EdgeInsets.all(10),
+      borderRadius: 8,
+      isDismissible: true,
+      mainButton: Row(
+        children: [
+          FlatButton(
+              onPressed: () {
+                flush.dismiss(false);
+              },
+              child: Text(
+                "Não",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              )),
+          FlatButton(
+              onPressed: () {
+                flush.dismiss(true);
+                return flush = Flushbar<bool>(
+                  title: "Pronto!",
+                  message: menssagemConfirmeAcao,
+                  margin: EdgeInsets.all(10),
+                  borderRadius: 8,
+                  duration: Duration(seconds: 3),
+                  backgroundGradient: LinearGradient(colors: [
+                    Colors.red,
+                    Colors.redAccent
+                  ]), //duration: Duration(seconds: 3),
+                )..show(context).then((value) {
+                    despesaController.deleteRegistro(despesa);
+                    despesaController.obtentaListaDespesas().then((list) {
+                      setState(() {
+                        listaDespesas = list;
+                        quantidadeDeMeses = despesaController
+                            .obtenhaQuantidadeDeMeses(listaDespesas);
+                        listaDespesasMesAtual =
+                            util.obtenhaDespesasDoMesAtual(listaDespesas);
+                      });
+                    });
+                  });
+              },
+              child: Text(
+                "Sim",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              )),
+        ],
+      ),
+      backgroundGradient:
+          LinearGradient(colors: [Colors.red, Colors.redAccent]),
+    )..show(context);
+  }
+
+  insiraPagametnoFlushbar(DespesaModel despesa) {
+    flush = Flushbar<bool>(
+      title: "Confirmar pagamento?",
+      message: " ",
+      margin: EdgeInsets.all(10),
+      borderRadius: 8,
+      isDismissible: true,
+      mainButton: Row(
+        children: [
+          FlatButton(
+              onPressed: () {
+                flush.dismiss(false);
+              },
+              child: Text(
+                "Não",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              )),
+          FlatButton(
+              onPressed: () {
+                flush.dismiss(false);
+                setState(() {
+                  valorPago = true;
+                  despesa.despesaStatusPag = valorPago;
+                  despesaController.despesaModel = despesa;
+                  //despesaController.parcelaModel = parcela;
+                  despesa.despServico == "Parcela"
+                      ? parcelaController
+                          .atualizeStatusPagamentoParcela(despesa)
+                      : despesaController.atualizeDespesa();
+                });
+                Flushbar(
+                  title: "Pronto!",
+                  message: "Pagamento confirmado!",
+                  margin: EdgeInsets.all(10),
+                  borderRadius: 8,
+                  duration: Duration(seconds: 2),
+                  backgroundGradient: LinearGradient(colors: [
+                    Colors.blue,
+                    Colors.teal
+                  ]), //duration: Duration(seconds: 3),
+                )..show(context);
+              },
+              child: Text(
+                "Sim",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              )),
+        ],
+      ),
+      backgroundGradient:
+          LinearGradient(colors: [Colors.orange, Colors.orangeAccent]),
+    )..show(context);
+  }
+
+  removaPagamentoFlushbar(DespesaModel despesa) {
+    flush = Flushbar<bool>(
+      title: "Remover pagamento?",
+      message: " ",
+      margin: EdgeInsets.all(10),
+      borderRadius: 8,
+      isDismissible: true,
+      mainButton: Row(
+        children: [
+          FlatButton(
+              onPressed: () {
+                flush.dismiss(false);
+              },
+              child: Text(
+                "Não",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              )),
+          FlatButton(
+              onPressed: () {
+                flush.dismiss(false);
+                setState(() {
+                  valorPago = false;
+                  despesa.despesaStatusPag = valorPago;
+                  despesaController.despesaModel = despesa;
+                  despesa.despServico == "Parcela"
+                      ? parcelaController
+                          .atualizeStatusPagamentoParcela(despesa)
+                      : despesaController.atualizeDespesa();
+                });
+                Flushbar(
+                  title: "Pronto!",
+                  message: "Pagamento removido!",
+                  margin: EdgeInsets.all(10),
+                  borderRadius: 8,
+                  duration: Duration(seconds: 2),
+                  backgroundGradient: LinearGradient(colors: [
+                    Colors.blue,
+                    Colors.teal
+                  ]), //duration: Duration(seconds: 3),
+                )..show(context);
+              },
+              child: Text(
+                "Sim",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              )),
+        ],
+      ),
+      backgroundGradient:
+          LinearGradient(colors: [Colors.orange, Colors.orangeAccent]),
+    )..show(context);
   }
 }

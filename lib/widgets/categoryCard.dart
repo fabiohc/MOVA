@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:emanuellemepoupe/constants/constants_color.dart';
+import 'package:flutter_svg/svg.dart';
 
 class CategoryCard extends StatelessWidget {
   final String svgSrc;
   final String title;
   final Function press;
+  final Color color;
   const CategoryCard({
     Key key,
     this.svgSrc,
     this.title,
     this.press,
+     this.color = Colors.black
   }) : super(key: key);
 
   Widget getImage(String path) {
-    return Image.asset("images/$path");
+    if (path.contains("png")) {
+      return Image.asset("images/$path");
+    } else
+      return SvgPicture.asset(
+        "assets/icons/$path",
+        color: color ,
+        width: 40,
+        height: 40,
+      );
   }
 
   Widget build(BuildContext context) {
@@ -38,11 +49,13 @@ class CategoryCard extends StatelessWidget {
           child: InkWell(
             onTap: press,
             child: Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: <Widget>[
                   Spacer(),
-                  getImage(svgSrc),
+                  getImage(
+                    svgSrc,
+                  ),
                   Spacer(),
                   Text(
                     title,
@@ -51,7 +64,7 @@ class CategoryCard extends StatelessWidget {
                         .textTheme
                         // ignore: deprecated_member_use
                         .title
-                        .copyWith(fontSize: 15),
+                        .copyWith(fontSize: 12),
                   )
                 ],
               ),

@@ -39,10 +39,20 @@ abstract class _PessoaModelBase with Store {
   @action
   alteraCPF(String value) => pessoaCpf = value;
 
+  @observable
+  String pessoafotourl;
+  @action
+  alterapessoafotourl(String value) => pessoafotourl = value;
+
    @observable
   PessoaModel pessoaModel;
   @action
   alteraPessoaModel(PessoaModel value) => pessoaModel = value;
+
+  @observable
+  List pessoaModelSnapShot;
+  @action
+  alteraDespListaParcelasSnapShot(List value) => pessoaModelSnapShot = value;
 
   _PessoaModelBase();
 
@@ -55,6 +65,7 @@ abstract class _PessoaModelBase with Store {
     pessoaEmail = map["pessoaEmail"];
     pessoaTelefone = map["pessoaTelefone"];
     pessoaCpf = map["pessoaCpf"];
+    pessoafotourl = map["pessoafotourl"];
   }
 
   Map toMap() {
@@ -65,7 +76,8 @@ abstract class _PessoaModelBase with Store {
       "pessoaDataNascimento": pessoaDataNascimento,
       "pessoaEmail": pessoaEmail,
       "pessoaTelefone": pessoaTelefone,
-      "pessoaCpf": pessoaCpf
+      "pessoaCpf": pessoaCpf,
+      "pessoafotourl": pessoafotourl
     };
 
     if (pessoaId != null) {
@@ -81,7 +93,8 @@ abstract class _PessoaModelBase with Store {
       "pessoaDataNascimento": pessoaDataNascimento,
       "pessoaEmail": pessoaEmail,
       "pessoaTelefone": pessoaTelefone,
-      "pessoaCpf": pessoaCpf
+      "pessoaCpf": pessoaCpf,
+      "pessoafotourl": pessoafotourl
     };
 
     if (pessoaId != null) {
@@ -99,6 +112,7 @@ abstract class _PessoaModelBase with Store {
         "pessoaEmail: $pessoaEmail,"
         "pessoaTelefone: $pessoaTelefone"
         "pessoaCpf: $pessoaCpf"
+        "pessoafotourl: $pessoafotourl"
         "]";
   }
 }

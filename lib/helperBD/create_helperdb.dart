@@ -18,7 +18,6 @@ class CreateHelper {
   }
 
   Future<Database> initDb() async {
-    Database db = await _db;
     final pasta = await getDatabasesPath();
     final pastaBD = join(pasta, "emanuelle.db");
 
@@ -33,7 +32,8 @@ class CreateHelper {
         "despNumeroParcelas INT,"
         "despObservacao TEXT,"
         "despesaStatusPag BOLEAN,"
-        "despIntegrado BOLEAN"
+        "despIntegrado BOLEAN,"
+        "despPessoaIdVinculado TEXT"
         ")";
 
     final String sqlparcelas = "CREATE TABLE parcelas ("
@@ -44,7 +44,8 @@ class CreateHelper {
         "parcelaValor TEXT,"
         "parcelaData TEXT,"
         "parcelaStatusPag BOLEAN,"
-        "parcelaIntegrado BOLEAN"
+        "parcelaIntegrado BOLEAN,"
+        "pacelaPessoaIdVinculado TEXT"
         ")";
 
     final String sqlreceita = "CREATE TABLE receita ("
@@ -58,7 +59,8 @@ class CreateHelper {
         "recObservacao TEXT,"
         "recNumeroParcelas INT,"
         "recStatusPag BOLEAN,"
-        "recIntegrado BOLEAN"
+        "recIntegrado BOLEAN,"
+        "recPessoaIdVinculado TEXT"
         ")";
 
     final String sqlpessoa = "CREATE TABLE pessoa ("
@@ -68,7 +70,27 @@ class CreateHelper {
         "pessoaCpf INT,"
         "pessoaDataNascimento TEXT,"
         "pessoaTelefone TEXT,"
-        "pessoaEmail TEXT"
+        "pessoaEmail TEXT,"
+        "pessoafotourl TEXT"
+        ")";
+
+    final String sqlagenda = "CREATE TABLE agenda ("
+        "agenIdGlobal INT PRIMARY KEY,"
+        "agenTitulo TEXT,"
+        "agenDataInicio TEXT,"
+        "agenHoraInico TEXT,"
+        "agenHoraFim TEXT,"
+        "agenDescricao TEXT,"
+        "agenCor TEXT,"
+        "agenDiaTodo BOLEAN,"
+        "agenEventoAtivo BOLEAN,"
+        "agenPessoaIdVinculado TEXT"
+        ")";
+
+    final String sqlusuario = "CREATE TABLE usuario ("
+        "senha TEXT PRIMARY KEY,"
+        "nome TEXT,"
+        "email TEXT"
         ")";
 
     return await openDatabase(pastaBD, version: 1,
@@ -77,6 +99,8 @@ class CreateHelper {
       await db.execute(sqlparcelas);
       await db.execute(sqlreceita);
       await db.execute(sqlpessoa);
+      await db.execute(sqlagenda);
+      await db.execute(sqlusuario);
       db.close();
     });
   }

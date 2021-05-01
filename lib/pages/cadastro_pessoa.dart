@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:emanuellemepoupe/constants/constants_color.dart';
 import 'package:emanuellemepoupe/controller/pessoa_controller.dart';
 import 'package:emanuellemepoupe/model/pessoa_model.dart';
@@ -7,7 +9,9 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CadastroPessoa extends StatefulWidget {
   @override
@@ -16,6 +20,10 @@ class CadastroPessoa extends StatefulWidget {
 
 class _CadastroPessoaState extends State<CadastroPessoa> {
   final pessoaController = PessoaController();
+  List<File> _imagemSlecionada = List();
+  final picker = ImagePicker();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String url;
 
   @override
   Widget build(BuildContext context) {
@@ -43,22 +51,201 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
             press: () {
               Navigator.of(context).pushNamed(RotasNavegacao.LISTA_PESSOAS);
             },
+            descricao: "NOVO CLIENTE",
           ),
           Container(
-            margin: EdgeInsets.only(top: 10),
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            margin: EdgeInsets.only(top: 20),
+            padding: EdgeInsets.symmetric(
+                horizontal: size.width * .02, vertical: size.height * .05),
             child: Column(
               children: [
-                Container(
-                  alignment: Alignment.center,
-                  height: 150,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white),
-                    color: Colors.transparent.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  //child: SvgPicture.asset(caminhoIconSvg))
+                GestureDetector(
+                    onTap: () async {
+                      return showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return new SimpleDialog(
+                              title: Align(
+                                alignment: Alignment.bottomRight,
+                                child: IconButton(
+                                    icon: SvgPicture.asset(
+                                        "assets/icons/Close.svg"),
+                                    color: Colors.amber,
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    }),
+                              ),
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Text(
+                                        'Qual a origem da imagem?',
+                                        style: TextStyle(fontSize: 20),
+                                      )),
+                                ),
+                                SizedBox(
+                                  height: size.height * .010,
+                                ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(30.0),
+                                      child: Column(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 40,
+                                            backgroundColor: Colors.amberAccent,
+                                            child: IconButton(
+                                                icon: SvgPicture.asset(
+                                                    "assets/icons/camera.svg",
+                                                    color: Colors.black,
+                                                    height: 30,
+                                                    width: 30),
+                                                onPressed: () async {
+                                                  Navigator.of(context,
+                                                          rootNavigator: true)
+                                                      .pop('dialog');
+
+                                                  var pickedFile =
+                                                      await picker.getImage(
+                                                          source: ImageSource
+                                                              .camera);
+
+                                                  setState(() {
+                                                    if (pickedFile != null) {
+                                                      _imagemSlecionada.clear();
+
+                                                      _imagemSlecionada.add(
+                                                          File(
+                                                              pickedFile.path));
+                                                    }
+                                                  });
+
+                                                  url = await pessoaController
+                                                      .uploadImagem(File(
+                                                          pickedFile.path));
+                                                }),
+                                          ),
+                                          Text(
+                                            "Camera",
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(25.0),
+                                      child: Column(
+                                        children: [
+                                          CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.blueAccent,
+                                              radius: 40,
+                                              child: IconButton(
+                                                  color: Colors.blue,
+                                                  icon: SvgPicture.asset(
+                                                      "assets/icons/gallery.svg",
+                                                      color: Colors.black,
+                                                      height: 30,
+                                                      width: 30),
+                                                  onPressed: () async {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .pop('dialog');
+
+                                                    var pickedFile =
+                                                        await picker.getImage(
+                                                            source: ImageSource
+                                                                .gallery);
+
+                                                    setState(() {
+                                                      if (pickedFile != null) {
+                                                        _imagemSlecionada
+                                                            .clear();
+
+                                                        _imagemSlecionada.add(
+                                                            File(pickedFile
+                                                                .path));
+                                                      }
+                                                    });
+
+                                                    url = await pessoaController
+                                                        .uploadImagem(File(
+                                                            pickedFile.path));
+                                                  })),
+                                          Text(
+                                            "Galeria",
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            );
+                          });
+                    },
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          if (_imagemSlecionada == null ||
+                              _imagemSlecionada.length == 0 &&
+                                  pessoaController.pessoaModel.pessoafotourl ==
+                                      null)
+                            CircleAvatar(
+                              backgroundColor:
+                                  Colors.transparent.withOpacity(0.1),
+                              radius: size.width * 0.14,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Icon(Icons.add_a_photo,
+                                    size: 60, color: Colors.white),
+                              ),
+                            ),
+                          if (_imagemSlecionada != null &&
+                                  _imagemSlecionada.length > 0 ||
+                              pessoaController.pessoaModel.pessoafotourl !=
+                                  null)
+                            CircleAvatar(
+                              backgroundImage:
+                                  pessoaController.pessoaModel.pessoafotourl !=
+                                          null
+                                      ? NetworkImage(pessoaController
+                                          .pessoaModel.pessoafotourl)
+                                      : FileImage(_imagemSlecionada[0]),
+                              radius: size.width * 0.14,
+                            ),
+                          if (_imagemSlecionada != null &&
+                                  _imagemSlecionada.length > 0 ||
+                              pessoaController.pessoaModel.pessoafotourl !=
+                                  null)
+                            FlatButton.icon(
+                              label: Text(
+                                "Remover",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              color: Colors.transparent,
+                              icon: Icon(
+                                Icons.delete,
+                                semanticLabel: "Delete",
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _imagemSlecionada.clear();
+                                });
+                              },
+                            )
+                        ],
+                      ),
+                    )),
+                SizedBox(
+                  height: size.height * .05,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -68,19 +255,19 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(
+                        textInputAction: TextInputAction.next,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 15.0,
                         ),
-                        //   controller: _nome,
                         initialValue: pessoaController.pessoaModel.pessoaNome,
                         decoration: InputDecoration(
                           hintText: "Nome",
                           icon: SvgPicture.asset(
                             "assets/icons/User Icon.svg",
                             color: Colors.white,
-                            width: 20,
-                            height: 20,
+                            width: 25,
+                            height: 25,
                           ),
                           border: InputBorder.none,
                           hintStyle: TextStyle(
@@ -90,6 +277,10 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                           ),
                         ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (String value) {
+                          return pessoaController.valideNome();
+                        },
                         onChanged: (value) {
                           pessoaController.pessoaModel.alteraNome(value);
                         },
@@ -103,6 +294,7 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -117,10 +309,10 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                         icon: SvgPicture.asset(
                           "assets/icons/Phone.svg",
                           color: Colors.white,
-                          width: 20,
-                          height: 20,
+                          width: 30,
+                          height: 30,
                         ),
-                        hintText: "Telefone",
+                        hintText: "(00)00000-0000",
                         border: InputBorder.none,
                         hintStyle: TextStyle(
                           color: Colors.grey[400],
@@ -129,6 +321,10 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                         ),
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (String value) {
+                        return pessoaController.valideTelefone();
+                      },
                       onChanged: (value) {
                         pessoaController.pessoaModel
                             .alterapessoaTelefone(value);
@@ -144,6 +340,7 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
                       style: TextStyle(
                         color: Colors.grey[400],
                       ),
@@ -157,10 +354,10 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                           pessoaController.pessoaModel.pessoaDataNascimento,
                       decoration: InputDecoration(
                         icon: SvgPicture.asset(
-                          "assets/icons/Phone.svg",
+                          "assets/icons/bolo aniversario.svg",
                           color: Colors.white,
-                          width: 20,
-                          height: 20,
+                          width: 27,
+                          height: 27,
                         ),
                         hintText: "Dt. Nascimento",
                         border: InputBorder.none,
@@ -171,6 +368,10 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                         ),
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (String value) {
+                        return pessoaController.valideDataNascimento();
+                      },
                       onChanged: (value) {
                         pessoaController.pessoaModel.alteraDataNascimeto(value);
                       },
@@ -185,6 +386,7 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
+                      textInputAction: TextInputAction.next,
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -202,10 +404,14 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                         icon: SvgPicture.asset(
                           "assets/icons/Mail.svg",
                           color: Colors.white,
-                          width: 15,
-                          height: 15,
+                          width: 20,
+                          height: 20,
                         ),
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (String value) {
+                        return pessoaController.valideEmail();
+                      },
                       onChanged: (value) {
                         pessoaController.pessoaModel.alteraEmail(value);
                       },
@@ -220,6 +426,7 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
+                     
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -239,8 +446,17 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                         hintStyle: TextStyle(
                           color: Colors.grey[400],
                         ),
-                        icon: SvgPicture.asset("assets/icons/Trash.svg"),
+                        icon: SvgPicture.asset(
+                          "assets/icons/doc.svg",
+                          color: Colors.white,
+                          width: 30,
+                          height: 30,
+                        ),
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (String value) {
+                        return pessoaController.valideCPF();
+                      },
                       onChanged: (value) {
                         pessoaController.pessoaModel.alteraCPF(value);
                       },
@@ -257,25 +473,29 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                         color: Colors.transparent.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: FlatButton(
-                        child: Text(
-                          registroEditado != null ? "Alterar" : "Salvar",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 20,
-                              backgroundColor: Colors.transparent),
-                          textAlign: TextAlign.center,
-                        ),
-                        onPressed: () {
-                          flushbar(
-                              "Confirmar ação?",
-                              registroEditado != null
-                                  ? "Registro alterado com sucesso!"
-                                  : "Registro salvo com sucesso!",
-                              registroEditado != null ? true : false);
-                        },
-                      ),
+                      child: Observer(builder: (_) {
+                        return FlatButton(
+                          child: Text(
+                            registroEditado != null ? "Alterar" : "Salvar",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 20,
+                                backgroundColor: Colors.transparent),
+                            textAlign: TextAlign.center,
+                          ),
+                          onPressed: pessoaController.isValid
+                              ? () {
+                                  flushbar(
+                                      "Confirmar ação?",
+                                      registroEditado != null
+                                          ? "Registro alterado com sucesso!"
+                                          : "Registro salvo com sucesso!",
+                                      registroEditado != null ? true : false);
+                                }
+                              : null,
+                        );
+                      }),
                     ))
               ],
             ),
@@ -322,10 +542,13 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                     Colors.teal
                   ]), //duration: Duration(seconds: 3),
                 )..show(context).then((value) {
-                    if (ehAlteracao)
+                    if (ehAlteracao) {
+                      pessoaController.pessoaModel.alterapessoafotourl(url);
                       pessoaController.atualizePessoa();
-                    else
+                    } else {
+                      pessoaController.pessoaModel.alterapessoafotourl(url);
                       pessoaController.inserirPessoa();
+                    }
                     Navigator.of(context)
                         .pushNamed(RotasNavegacao.LISTA_PESSOAS);
                   });

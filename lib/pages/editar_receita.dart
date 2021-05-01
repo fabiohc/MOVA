@@ -294,8 +294,8 @@ class _EditarReceitaState extends State<EditarReceita> {
               receitaController.receitaModel
                   .alteraRecFormaPagamento("Dinheiro");
               receitaController.receitaModel.alteraRecNumeroParcelas(0);
-              receitaController.receitaModel.alteraRecMostrarBotao(false);
-              receitaController.receitaModel.alteraRecMostrarParcelas(false);
+        /*     receitaController.receitaModel.alteraRecMostrarBotao(false);
+              receitaController.receitaModel.alteraRecMostrarParcelas(false);*/
               buildvisibilidadeRaisedButtonDebitoCredito();
               setState(() => opacityLevelCartao = 0.3);
               setState(() => opacityLevelTransferencia = 0.3);
@@ -319,8 +319,8 @@ class _EditarReceitaState extends State<EditarReceita> {
               receitaController.receitaModel
                   .alteraRecFormaPagamento("Transferido");
               receitaController.receitaModel.alteraRecNumeroParcelas(0);
-              receitaController.receitaModel.alteraRecMostrarBotao(false);
-              receitaController.receitaModel.alteraRecMostrarParcelas(false);
+           /*   receitaController.receitaModel.alteraRecMostrarBotao(false);
+              receitaController.receitaModel.alteraRecMostrarParcelas(false);*/
               buildvisibilidadeRaisedButtonDebitoCredito();
               setState(() => opacityLevelTransferencia = 1.0);
               setState(() => opacityLevelCartao = 0.3);
@@ -342,7 +342,7 @@ class _EditarReceitaState extends State<EditarReceita> {
         return GestureDetector(
             onTap: () {
               receitaController.receitaModel.alteraRecFormaPagamento("Cartão");
-              receitaController.receitaModel.alteraRecMostrarBotao(true);
+             // receitaController.receitaModel.alteraRecMostrarBotao(true);
               buildvisibilidadeRaisedButtonDebitoCredito();
               setState(() => opacityLevelTransferencia = 0.3);
               setState(() => opacityLevelCartao = 1.0);
@@ -371,7 +371,7 @@ class _EditarReceitaState extends State<EditarReceita> {
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
-            visible: receitaController.receitaModel.recMostrarParcelas,
+          //  visible: receitaController.receitaModel.recMostrarParcelas,
             child: Container(
               child: buildTextFormFieldQtdParcelas(),
             ),
@@ -399,8 +399,8 @@ class _EditarReceitaState extends State<EditarReceita> {
                 padding: EdgeInsets.fromLTRB(28.0, 10.0, 28.0, 10.0),
                 onPressed: () {
                   receitaController.receitaModel.alteraRecTipoCartao("Débito");
-                  receitaController.receitaModel
-                      .alteraRecMostrarParcelas(false);
+            /*      receitaController.receitaModel
+                      .alteraRecMostrarParcelas(false);*/
                   buildvisibilidadeQtdParcelas();
                   setState(() => opacityLevelDebito = 1.0);
                   setState(() => opacityLevelCredito = 0.3);
@@ -425,8 +425,8 @@ class _EditarReceitaState extends State<EditarReceita> {
                     setState(() => opacityLevelDebito = 0.3);
                     receitaController.receitaModel
                         .alteraRecTipoCartao("Crédito");
-                    receitaController.receitaModel
-                        .alteraRecMostrarParcelas(true);
+                 /*   receitaController.receitaModel
+                        .alteraRecMostrarParcelas(true);*/
                     buildvisibilidadeQtdParcelas();
                   },
                 )),
@@ -473,7 +473,7 @@ class _EditarReceitaState extends State<EditarReceita> {
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
-            visible: receitaController.receitaModel.recMostrarBotao,
+           // visible: receitaController.receitaModel.recMostrarBotao,
             child: Container(
               child: buildRaisedButtonDebitoCredito(),
             ),
