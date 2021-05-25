@@ -10,6 +10,13 @@ class LoginUser {
           .then((firebaseUser) async {
         return true;
       }).catchError((onError) {
+     /*  if (onError.code == "user-not-found") {
+          return "Não há registro de usuário correspondente a este identificador.";
+        } else if (onError.code == "wrong-password") {
+          return "A senha é inválida ou o usuário não possui uma senha.";
+        } else if (onError.code == "invalid-email") {
+          return "O endereço de e-mail está formatado incorretamente";
+        }*/
         return false;
       });
 
@@ -18,6 +25,7 @@ class LoginUser {
     if (ehUsuarioLogado != null) {
       return true;
     }
+
     return false;
   }
 

@@ -4,12 +4,13 @@ import 'package:emanuellemepoupe/controller/despesa_controller.dart';
 import 'package:emanuellemepoupe/controller/pessoa_controller.dart';
 import 'package:emanuellemepoupe/controller/util.dart';
 import 'package:emanuellemepoupe/model/pessoa_model.dart';
-import 'package:emanuellemepoupe/pages/lista_pessoa.dart';
+import 'package:emanuellemepoupe/pages/cliente/lista_pessoa.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
 import 'package:emanuellemepoupe/controller/compartilhado_controller.dart';
 import 'package:emanuellemepoupe/widgets/navegacao.dart';
 import 'package:emanuellemepoupe/widgets/widget_tipo_pagamento.dart';
 import 'package:emanuellemepoupe/controller/receita_controller.dart';
+import 'package:emanuellemepoupe/validacao/valide_datas.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -118,7 +119,7 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(vertical: size.height * .11),
+                  margin: EdgeInsets.symmetric(vertical: size.height * .07),
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 25),
                   child: Column(
                     children: [
@@ -135,7 +136,7 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                           ),
                         ],
                       ),
-                      SizedBox(height: size.height * .03),
+                      SizedBox(height: size.height * .01),
                       Row(children: <Widget>[
                         Text(
                           "R\$ ",
@@ -144,11 +145,10 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                             fontSize: 20.0,
                           ),
                         ),
-                        SizedBox(
-                            height: 20,
-                            width: size.width * .5,
+                        Expanded(
+                            flex: 1,
                             child: ValueListenableBuilder(
-                              valueListenable: pessoaController.pessoa,
+                              valueListenable: compartilhadoController.valor,
                               builder: (context, value, child) {
                                 return TextFormField(
                                   textInputAction: TextInputAction.next,
@@ -164,6 +164,9 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     RealInputFormatter(centavos: true)
                                   ],
                                   decoration: InputDecoration(
+                                    hintText: "00,00",
+                                    hintStyle: TextStyle(
+                                        color: Colors.grey, fontSize: 20),
                                     contentPadding: EdgeInsets.all(4.0),
                                     border: InputBorder.none,
                                     labelStyle: TextStyle(
@@ -174,8 +177,16 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400,
-                                    fontSize: 35.0,
+                                    fontSize: 30.0,
                                   ),
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (String value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Informe um valor!";
+                                    }
+                                    return null;
+                                  },
                                   onChanged: (value) {
                                     widget.acao == "pagar"
                                         ? despesaController.despesaModel
@@ -187,13 +198,13 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                               },
                             )),
                       ]),
-                      SizedBox(height: 15),
+                     
                       Container(
                         child: Row(
                           children: [
                             SizedBox(
-                                height: 30,
-                                width: size.width * .4,
+                                height: 35,
+                                width: size.width * .5,
                                 child: ValueListenableBuilder(
                                   valueListenable:
                                       compartilhadoController.dataVencimento,
@@ -231,6 +242,17 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20.0,
                                       ),
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      validator: (String value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "Informe um data válida!";
+                                        } else if (value.length > 9) {
+                                          return ValideDatas()
+                                              .validedata(value);
+                                        }
+                                        return null;
+                                      },
                                       onChanged: (value) {
                                         widget.acao == "pagar"
                                             ? despesaController.despesaModel
@@ -315,6 +337,12 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                           children: <Widget>[
                             new ListView(
                               children: [
+                                if (compartilhadoController.radioButton.value ==
+                                    false)
+                                  Text("Selecione uma forma de pagamento!",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 12)),
                                 WidgetTipoPagamento(
                                   height: 0.17,
                                   descricao: 'DINHEIRO',
@@ -324,7 +352,11 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     groupValue: false,
                                     value: radioDinheiro,
                                     onChanged: (bool value) {
+                                      compartilhadoController
+                                          .alteraradio(value);
                                       setState(() {
+                                        compartilhadoController
+                                            .valideCheckRadio(value);
                                         widget.acao == "pagar"
                                             ? despesaController.despesaModel
                                                 .alteraDespFormaPagamento(
@@ -353,6 +385,8 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                             value: radioCredito,
                                             onChanged: (bool value) {
                                               setState(() {
+                                                compartilhadoController
+                                                    .alteraradio(value);
                                                 if (widget.acao == "pagar") {
                                                   despesaController.despesaModel
                                                       .alteraDespFormaPagamento(
@@ -504,40 +538,37 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     ],
                                   ),
                                 ),
-                                ValueListenableBuilder(
-                                  valueListenable:
-                                      compartilhadoController.radioButton,
-                                  builder: (context, value, child) =>
-                                      WidgetTipoPagamento(
-                                    height: 0.17,
-                                    descricao: 'CARTÃO DÉBITO',
-                                    caminhoIconSvg: "assets/icons/debito.svg",
-                                    color: kBlueLightColor,
-                                    radio: Radio(
-                                      groupValue: false,
-                                      value: radioDebito,
-                                      onChanged: (bool value) {
-                                        setState(() {
-                                          if (widget.acao == "pagar") {
-                                            despesaController.despesaModel
-                                                .alteraDespFormaPagamento(
-                                                    "Cartão");
-                                            despesaController.despesaModel
-                                                .alteraDespTipoCartao("Débito");
-                                          } else {
-                                            receitaController.receitaModel
-                                                .alteraRecFormaPagamento(
-                                                    "Cartão");
-                                            receitaController.receitaModel
-                                                .alteraRecTipoCartao("Débito");
-                                          }
-                                          radioDebito = false;
-                                          radioDinheiro = true;
-                                          radioctransfer = true;
-                                          radioCredito = true;
-                                        });
-                                      },
-                                    ),
+                                WidgetTipoPagamento(
+                                  height: 0.17,
+                                  descricao: 'CARTÃO DÉBITO',
+                                  caminhoIconSvg: "assets/icons/debito.svg",
+                                  color: kBlueLightColor,
+                                  radio: Radio(
+                                    groupValue: false,
+                                    value: radioDebito,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        compartilhadoController
+                                            .alteraradio(value);
+                                        if (widget.acao == "pagar") {
+                                          despesaController.despesaModel
+                                              .alteraDespFormaPagamento(
+                                                  "Cartão");
+                                          despesaController.despesaModel
+                                              .alteraDespTipoCartao("Débito");
+                                        } else {
+                                          receitaController.receitaModel
+                                              .alteraRecFormaPagamento(
+                                                  "Cartão");
+                                          receitaController.receitaModel
+                                              .alteraRecTipoCartao("Débito");
+                                        }
+                                        radioDebito = false;
+                                        radioDinheiro = true;
+                                        radioctransfer = true;
+                                        radioCredito = true;
+                                      });
+                                    },
                                   ),
                                 ),
                                 WidgetTipoPagamento(
@@ -551,6 +582,8 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                     value: radioctransfer,
                                     onChanged: (bool value) {
                                       setState(() {
+                                        compartilhadoController
+                                            .alteraradio(value);
                                         if (widget.acao == "pagar") {
                                           despesaController.despesaModel
                                               .alteraDespFormaPagamento(
@@ -690,58 +723,58 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                                             ),
                                           ),
                                           ListTile(
-                                              dense: true,
-                                              isThreeLine: false,
-                                              contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      40, 0, 0, 0),
-                                              leading: SvgPicture.asset(
-                                                "assets/icons/bolo aniversario.svg",
-                                                color: Colors.grey,
-                                                width: 22,
-                                                height: 22,
-                                              ),
-                                              title: Observer(builder: (_) {
-                                                return Text(
-                                                  pessoaController.pessoaModel
-                                                              .pessoaDataNascimento !=
-                                                          null
-                                                      ? "${pessoaController.pessoaModel.pessoaDataNascimento}"
-                                                      : "Aniversário: ",
-                                                  style: TextStyle(
-                                                    //color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 15.0,
-                                                  ),
-                                                );
-                                              }),
-                                              trailing: FloatingActionButton(
-                                                backgroundColor: Colors.blue,
-                                                onPressed: () async {
-                                                  PessoaModel information =
-                                                      await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              fullscreenDialog:
-                                                                  true,
-                                                              builder:
-                                                                  (context) =>
-                                                                      ListaPessoa(
-                                                                        retonarcadastro:
-                                                                            true,
-                                                                      )));
-
-                                                  setState(() {
-                                                    pessoaSelecionada =
-                                                        information;
-                                                  });
-                                                },
-                                                child: Icon(Icons.search),
-                                                tooltip: "Pesquisar",
-                                              )),
+                                            dense: true,
+                                            isThreeLine: false,
+                                            contentPadding: EdgeInsets.fromLTRB(
+                                                40, 0, 0, 0),
+                                            leading: SvgPicture.asset(
+                                              "assets/icons/bolo aniversario.svg",
+                                              color: Colors.grey,
+                                              width: 22,
+                                              height: 22,
+                                            ),
+                                            title: Observer(builder: (_) {
+                                              return Text(
+                                                pessoaController.pessoaModel
+                                                            .pessoaDataNascimento !=
+                                                        null
+                                                    ? "${pessoaController.pessoaModel.pessoaDataNascimento}"
+                                                    : "Aniversário: ",
+                                                style: TextStyle(
+                                                  //color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15.0,
+                                                ),
+                                              );
+                                            }),
+                                          ),
                                         ],
                                       );
                                     }),
+                                    Positioned(
+                                        right: 10.0,
+                                        bottom: 10,
+                                        child: FloatingActionButton(
+                                          backgroundColor: Colors.blue,
+                                          onPressed: () async {
+                                            PessoaModel information =
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        fullscreenDialog: true,
+                                                        builder: (context) =>
+                                                            ListaPessoa(
+                                                              retonarcadastro:
+                                                                  true,
+                                                            )));
+
+                                            setState(() {
+                                              pessoaSelecionada = information;
+                                            });
+                                          },
+                                          child: Icon(Icons.search),
+                                          tooltip: "Pesquisar",
+                                        ))
                                   ],
                                 )),
                             new Container(
@@ -750,15 +783,15 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                               width: MediaQuery.of(context).size.width,
                               decoration:
                                   BoxDecoration(color: Color(0xfff1f1f1)),
-                              child: Column(
+                              child: Wrap(
                                 children: <Widget>[
                                   ListTile(
                                       title: TextFormField(
                                     maxLines: 9,
-                                    maxLength: 250,
+                                    maxLength: 200,
                                     decoration: InputDecoration(
-                                      hintStyle: TextStyle(fontSize: 20),
-                                      hintText: "Descrição (250 caracteres.)",
+                                      hintStyle: TextStyle(fontSize: 15),
+                                      hintText: "Descrição (200 caracteres.)",
                                       border: InputBorder.none,
                                     ),
                                     initialValue: despesaController
@@ -791,25 +824,37 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                       width: size.width,
                       height: size.height * 0.1,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueAccent),
-                        color: Colors.transparent.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: FlatButton(
-                        child: Text(
-                          "Salvar",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 20,
-                              backgroundColor: Colors.transparent),
-                          textAlign: TextAlign.center,
-                        ),
-                        onPressed: () {
-                          flushbarIncluir("Confirmar inclusão?",
-                              " Registro salvo com sucesso!");
-                        },
-                      ),
+                      child: Observer(builder: (_) {
+                        return RaisedButton(
+                            color: Color(0xff0BBFD6),
+                            shape: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                            child: Text(
+                              "Salvar",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  backgroundColor: Colors.transparent),
+                              textAlign: TextAlign.center,
+                            ),
+                            onPressed: widget.acao == "pagar"
+                                ? despesaController.isValid
+                                    ? () async {
+                                        flushbarIncluir("Confirmar inclusão?",
+                                            " Registro salvo com sucesso!");
+                                      }
+                                    : null
+                                : receitaController.isValid
+                                    ? () async {
+                                        flushbarIncluir("Confirmar inclusão?",
+                                            " Registro salvo com sucesso!");
+                                      }
+                                    : null);
+                      }),
                     ))
               ]))),
     );
@@ -850,14 +895,14 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                     Colors.blue,
                     Colors.teal
                   ]), //duration: Duration(seconds: 3),
-                )..show(context).then((value) {
+                )..show(context).then((value) async {
                     if (widget.acao == "pagar") {
                       despesaController.despesaModel
                           .alteradespPessoaIdVinculado(
                               pessoaController.pessoaModel.pessoaIdGlobal);
                       despesaController.despesaModel
                           .alteraDespPessoaModel(pessoaController.pessoaModel);
-                      despesaController.insiraNovaDespesa();
+                      await despesaController.insiraNovaDespesa();
 
                       Navigator.of(context).pop();
                       Navigator.pushReplacementNamed(
@@ -867,7 +912,7 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                           pessoaController.pessoaModel.pessoaIdGlobal);
                       receitaController.receitaModel
                           .alteraRecPessoaModel(pessoaController.pessoaModel);
-                      receitaController.insiraNovaReceita();
+                      await receitaController.insiraNovaReceita();
 
                       Navigator.of(context).pop();
                       Navigator.pushReplacementNamed(

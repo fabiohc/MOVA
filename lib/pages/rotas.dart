@@ -1,4 +1,8 @@
 class RotasNavegacao {
+  final login;
+  RotasNavegacao([this.login]);
+  
+ 
   static const LOGIN = '/';
   static const HOME = '/menu.dart';
   static const CADASTRO_USUARIO = '/cadastro_usuario.dart';
@@ -15,4 +19,5 @@ class RotasNavegacao {
   static const LISTA_PESSOAS = '/lista_pessoa.dart';
   static const AGENDA = '/agenda.dart';
   static const CADASTRO_EVENTO = '/cadastro_evento.dart';
+  static const EDITAR_EVENTO = '/editar_evento.dart';
 }

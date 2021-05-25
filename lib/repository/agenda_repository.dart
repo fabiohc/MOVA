@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emanuellemepoupe/model/agenda_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:emanuellemepoupe/controller/agenda_controller.dart';
-import 'package:emanuellemepoupe/model/usuario_model.dart';
 
 class AgendaRepository {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -17,6 +16,27 @@ class AgendaRepository {
         .collection("agenda")
         .doc(agenda.agenIdGlobal)
         .set(agenda.toMap());
+  }
+
+   updateFirestore(AgendaModel agenda) async {
+    User ehUsuarioLogado = auth.currentUser;
+    await db
+        .collection("usuarios")
+        .doc(ehUsuarioLogado.email)
+        .collection("agenda")
+        .doc(agenda.agenIdGlobal)
+        .set(agenda.toMap());
+  }
+
+
+  deleteFirestore(AgendaModel agenda) async {
+    User ehUsuarioLogado = auth.currentUser;
+    await db
+        .collection("usuarios")
+        .doc(ehUsuarioLogado.email)
+        .collection("agenda")
+        .doc(agenda.agenIdGlobal)
+        .delete();
   }
 
   // ignore: missing_return

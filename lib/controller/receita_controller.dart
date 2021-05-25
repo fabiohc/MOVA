@@ -4,7 +4,9 @@ import 'package:emanuellemepoupe/helperBD/pessoa_helperdb.dart';
 import 'package:emanuellemepoupe/helperBD/receita_helperdb.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:emanuellemepoupe/model/receita_model.dart';
+import 'package:emanuellemepoupe/repository/parcela_repository.dart';
 import 'package:emanuellemepoupe/repository/receita_repository.dart';
+import 'package:emanuellemepoupe/validacao/valide_datas.dart';
 import 'package:mobx/mobx.dart';
 import 'package:emanuellemepoupe/model/agenda_model.dart';
 part 'receita_controller.g.dart';
@@ -17,6 +19,7 @@ abstract class _ReceitaControllerBase with Store {
   var repositoryHelper = ReceitaRepository();
   var parcelaHelper = ParcelaHelper();
   var pessoaHelper = PessoaHelper();
+  var parcelaRepository = ParcelaRepository();
 
   @observable
   var agendaModel = AgendaModel();
@@ -27,6 +30,37 @@ abstract class _ReceitaControllerBase with Store {
   var parcelaModel = ParcelaModel();
 
   var util = Util();
+
+  @computed
+  bool get isValid {
+    return valideDataNascimento() == null &&
+        valideCheckRadio() == null &&
+        valideValor() == null;
+  }
+
+  String valideDataNascimento() {
+    if (receitaModel.recValor == null || receitaModel.recValor.isEmpty) {
+      return "Informe um data válida!";
+    } else if (receitaModel.recValor.length > 9) {
+      return ValideDatas().validedata(receitaModel.recValor);
+    }
+    return null;
+  }
+
+  valideCheckRadio() {
+    if (receitaModel.recFormaPagamento == null ||
+        receitaModel.recFormaPagamento.isEmpty) {
+      return "Informe uma forma de pagamento!";
+    }
+    return null;
+  }
+
+  valideValor() {
+    if (receitaModel.recValor == null || receitaModel.recValor.isEmpty) {
+      return "Informe um valor!";
+    }
+    return null;
+  }
 
   insiraNovaReceita() async {
     receitaModel.alteraRecIdFGlobal(util.obtenhaIdGlobal("rec"));
@@ -93,6 +127,9 @@ abstract class _ReceitaControllerBase with Store {
 
     if (receita.recIdGlobal.isNotEmpty)
       await repositoryHelper.deleteFirestore(receita);
+
+    if (receita.recIdGlobal.isNotEmpty)
+      await parcelaRepository.deleteFiresore(receita.parcelaModel);
   }
 
   @observable

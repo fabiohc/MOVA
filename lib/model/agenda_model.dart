@@ -1,9 +1,9 @@
 import 'package:mobx/mobx.dart';
+import 'package:emanuellemepoupe/model/pessoa_model.dart';
 part 'agenda_model.g.dart';
 
 class AgendaModel = _AgendaModelBase with _$AgendaModel;
-
-abstract class _AgendaModelBase with Store {
+ abstract class _AgendaModelBase with Store {
   @observable
   String agenIdGlobal;
   @action
@@ -53,6 +53,11 @@ abstract class _AgendaModelBase with Store {
   String agenPessoaIdVinculado;
   @action
   alteraAgenPessoaIdVinculado(String value) => agenPessoaIdVinculado = value;
+
+  @observable
+  PessoaModel pessoaModel;
+  @action
+  alteraAgenPessoaModel(PessoaModel value) => pessoaModel = value;
 
   @observable
   List agendaModelSnapShot;

@@ -9,11 +9,8 @@ import 'package:emanuellemepoupe/controller/agenda_controller.dart';
 import 'package:emanuellemepoupe/controller/carteira_controller.dart';
 import 'package:emanuellemepoupe/controller/parcela_controller.dart';
 import 'package:emanuellemepoupe/controller/util.dart';
-import 'package:emanuellemepoupe/helperBD/agenda_helperdb.dart';
-import 'package:emanuellemepoupe/model/agenda_model.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/intl.dart';
 
 void main() {
   //testeStatusPagamento();
@@ -21,8 +18,7 @@ void main() {
 }
 
 testeAgenda() {
-  AgendaModel agendaModel;
-  AgendaHelper agendahelper;
+
   
   setUp(() {
     util = Util();

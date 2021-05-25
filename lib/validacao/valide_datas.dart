@@ -18,6 +18,7 @@ class ValideDatas {
 
       return null;
     } catch (e) {
+      if(data.length > 0 && data.length < 10)  return null;
       return "Data com fomato invalido!";
     }
   }

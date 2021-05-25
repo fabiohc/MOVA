@@ -1,6 +1,5 @@
 import 'package:emanuellemepoupe/pages/cadastro_despesa_receita.dart';
 import 'package:flutter/material.dart';
-import 'package:emanuellemepoupe/constants/constants_color.dart';
 import 'package:emanuellemepoupe/controller/despesa_controller.dart';
 import 'package:emanuellemepoupe/widgets/categoryCard.dart';
 import 'package:emanuellemepoupe/widgets/navegacao.dart';

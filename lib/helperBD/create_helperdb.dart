@@ -1,8 +1,21 @@
+import 'package:emanuellemepoupe/repository/agenda_repository.dart';
+import 'package:emanuellemepoupe/repository/despesa_repository.dart';
+import 'package:emanuellemepoupe/repository/parcela_repository.dart';
+import 'package:emanuellemepoupe/repository/pessoa_repository.dart';
+import 'package:emanuellemepoupe/repository/receita_repository.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class CreateHelper {
   static final CreateHelper _instance = CreateHelper.internal();
+
+  inicializaDadosFirebase() {
+    DespesaRepository().selectListerneFirestore();
+    ReceitaRepository().selectListerneFirestore();
+    PessoaRepository().selectListerneFirestore();
+    AgendaRepository().selectListerneFirestore();
+    ParcelaRepository().selectListerneFirestore();
+  }
 
   CreateHelper.internal();
 

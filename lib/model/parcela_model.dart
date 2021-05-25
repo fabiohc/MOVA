@@ -81,7 +81,7 @@ abstract class _ParcelaModelBase with Store {
 
   Map toMap() {
     Map<String, dynamic> map = {
-      "parcelaId": parcelaId,
+      //"parcelaId": parcelaId,
       "parcelaIdGlobal": parcelaIdGlobal,
       "parcelaNumero": parcelaNumero,
       "parcelaQuatParc" : parcelaQuatParc,
@@ -92,9 +92,7 @@ abstract class _ParcelaModelBase with Store {
       "pacelaPessoaIdVinculado": pacelaPessoaIdVinculado
     };
 
-    if (parcelaId != null) {
-      map["parcelaId"] = parcelaId;
-    }
+    
     return map;
   }
 

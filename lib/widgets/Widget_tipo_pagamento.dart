@@ -31,41 +31,26 @@ class _WidgetTipoPagamentoState extends State<WidgetTipoPagamento> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return GestureDetector(
-        onTap: () {
-          setState(() {
-            widget.height > 0.13 ? widget.height = 0.13 : widget.height = 0.17;
-          });
-        },
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 100),
-          curve: Curves.easeIn,
-          width: size.width * .94,
-          height: size.width * widget.height,
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12), topRight: Radius.circular(12))),
-          child: Container(
-            width: size.width,
-            height: size.height * .10,
-            child: ListTile(
-              leading: Container(
-                width: size.width * .23,
-                child: Row(
-                  children: [
-                    widget.radio,
-                    Spacer(),
-                    SvgPicture.asset(
-                      widget.caminhoIconSvg,
-                      height: 25,
-                    )
-                  ],
-                ),
-              ),
-              title: Text(widget.descricao),
-              tileColor: widget.color,
-            ),
+    return Container(
+      width: size.width,
+      height: size.height * .0999,
+      child: ListTile(
+        leading: Container(
+          width: size.width * .23,
+          child: Row(
+            children: [
+              widget.radio,
+              Spacer(),
+              SvgPicture.asset(
+                widget.caminhoIconSvg,
+                height: 25,
+              )
+            ],
           ),
-        ));
+        ),
+        title: Text(widget.descricao),
+        tileColor: widget.color,
+      ),
+    );
   }
 }

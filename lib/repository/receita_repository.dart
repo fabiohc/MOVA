@@ -22,6 +22,15 @@ class ReceitaRepository {
 /*Inserindo parcelas */
     if (receita.parcelaModel != null) {
       receita.parcelaModel.forEach((parcela) {
+        /*Inserindo parcela na tabela parcelas */
+        db
+            .collection("usuarios")
+            .doc(ehUsuarioLogado.email)
+            .collection("parcelas")
+            .doc(parcela.parcelaIdGlobal + parcela.parcelaNumero.toString())
+            .set(parcela.toMap());
+
+        /*Inserindo parcela na tabela despesa/parcelas */
         db
             .collection("usuarios")
             .doc(ehUsuarioLogado.email)
@@ -33,7 +42,8 @@ class ReceitaRepository {
       });
     }
     /*Inserindo cliente vinculado a despesa */
-    if (receita.pessoaModel != null) {
+    if (receita.pessoaModel != null) if (receita.pessoaModel.pessoaIdGlobal !=
+        null) {
       db
           .collection("usuarios")
           .doc(ehUsuarioLogado.email)
@@ -55,7 +65,7 @@ class ReceitaRepository {
         .doc(receita.recIdGlobal)
         .set(receita.toMapFirebase());
 
-    /*Inserindo parcelas */
+    /*Atualizando parcelas */
     if (receita.parcelaModel != null) {
       receita.parcelaModel.forEach((parcela) {
         db
@@ -68,7 +78,7 @@ class ReceitaRepository {
             .set(parcela.toMap());
       });
     }
-    /*Inserindo cliente vinculado a despesa */
+    /*Atualizando cliente vinculado a despesa */
     if (receita.pessoaModel != null) {
       db
           .collection("usuarios")
@@ -138,8 +148,12 @@ class ReceitaRepository {
             .delete();
       });
     }
-
-    await db.collection("receita").doc(receita.recIdGlobal).delete();
+    await db
+        .collection("usuarios")
+        .doc(ehUsuarioLogado.email)
+        .collection("receita")
+        .doc(receita.recIdGlobal)
+        .delete();
   }
 
   // ignore: missing_return

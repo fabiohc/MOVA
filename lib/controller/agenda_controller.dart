@@ -1,6 +1,9 @@
 import 'package:emanuellemepoupe/controller/util.dart';
+import 'package:emanuellemepoupe/controller/pessoa_controller.dart';
 import 'package:emanuellemepoupe/helperBD/agenda_helperdb.dart';
+import 'package:emanuellemepoupe/helperBD/pessoa_helperdb.dart';
 import 'package:emanuellemepoupe/repository/agenda_repository.dart';
+import 'package:emanuellemepoupe/validacao/valide_datas.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
@@ -14,6 +17,10 @@ class AgendaController = _AgendaControllerBase with _$AgendaController;
 abstract class _AgendaControllerBase with Store {
   @observable
   var agendaModel = AgendaModel();
+
+  final pessoaHelper = new PessoaHelper();
+
+  final pessoaController = new PessoaController();
 
   final agendahelper = new AgendaHelper();
 
@@ -47,6 +54,45 @@ abstract class _AgendaControllerBase with Store {
     switchConcluido.value = value;
   }
 
+  @computed
+  bool get isValid {
+    return valideHoraFim() == null &&
+        valideHoraInicio() == null &&
+        valideTitulo() == null &&
+        valideData() == null;
+  }
+
+  String valideHoraInicio() {
+    if (horaInicio == null || horaInicio.value.isEmpty) {
+      return "Hora inícial";
+    }
+    return null;
+  }
+
+  String valideHoraFim() {
+    if (horaFim == null || horaFim.value.isEmpty) {
+      return "Hora Final";
+    }
+    return null;
+  }
+
+  String valideTitulo() {
+    if (agendaModel.agenTitulo == null || agendaModel.agenTitulo.isEmpty) {
+      return "Informe um titulo para o compromisso!";
+    }
+    return null;
+  }
+
+  String valideData() {
+    if (agendaModel.agenDataInicio == null ||
+        agendaModel.agenDataInicio.isEmpty) {
+      return "Informe um data válida!";
+    } else if (agendaModel.agenDataInicio.length > 9) {
+      return ValideDatas().validedata(agendaModel.agenDataInicio);
+    }
+    return null;
+  }
+
   insereEvento() async {
     agendaModel.alteraAgenIdGlobal(((util.obtenhaIdGlobal("agen"))));
 
@@ -54,7 +100,6 @@ abstract class _AgendaControllerBase with Store {
         formateDataAgenda(agendaModel.agenDataInicio, horaInicio.value);
     final dataHoraFim =
         formateDataAgenda(agendaModel.agenDataInicio, horaFim.value);
-
     agendaModel
         .alteraAgenDataInicio(agendaModel.agenDataInicio.replaceAll("/", "-"));
     agendaModel.alteraAgenHoraInico(dataHoraInicio);
@@ -63,6 +108,24 @@ abstract class _AgendaControllerBase with Store {
     await agendahelper.insert(agendaModel);
 
     await agendaRepository.insertFirestore(agendaModel);
+  }
+
+  updateEvento(AgendaModel evento) async {
+    final dataHoraInicio =
+        formateDataAgenda(evento.agenDataInicio, evento.agenHoraInico);
+    final dataHoraFim = formateDataAgenda(evento.agenDataInicio, evento.agenHoraFim);
+    evento.alteraAgenDataInicio(evento.agenDataInicio.replaceAll("/", "-"));
+    evento.alteraAgenHoraInico(dataHoraInicio);
+    evento.alteraAgenHoraFim(dataHoraFim);
+
+    agendahelper.update(evento);
+    await agendaRepository.updateFirestore(evento);
+  }
+
+  deleteRegistro(AgendaModel evento) {
+    agendahelper.delete(evento.agenIdGlobal);
+
+    agendaRepository.deleteFirestore(evento);
   }
 
   obtenhaEventosAgenda() async {
@@ -98,7 +161,7 @@ abstract class _AgendaControllerBase with Store {
                   : element.agenDescricao,
               isAllDay: element.agenDiaTodo,
               isDone: element.agenEventoAtivo,
-              location: " ",
+              location: element.agenIdGlobal,
               color: kOrangeAccentColor));
 
           listaCompromissos.add(compromisso);
@@ -140,6 +203,55 @@ abstract class _AgendaControllerBase with Store {
     }
   }
 
+  preparaEditarEvento(NeatCleanCalendarEvent event) async {
+    DateFormat dateFormat = DateFormat("dd-MM-yyyy");
+    AgendaModel evento = AgendaModel();
+
+    String data = dateFormat.format(DateTime(
+      event.startTime.year,
+      event.startTime.month,
+      event.startTime.day,
+    ));
+
+    String horaInicio = DateFormat('Hm').format(DateTime(
+        event.startTime.year,
+        event.startTime.month,
+        event.startTime.day,
+        event.startTime.hour,
+        event.startTime.minute));
+    String horaFim = DateFormat('Hm').format(DateTime(
+        event.endTime.year,
+        event.endTime.month,
+        event.endTime.day,
+        event.endTime.hour,
+        event.endTime.minute));
+
+    await agendahelper
+        .selectById(event.location)
+        .then((eventoCadastrado) async {
+      if (eventoCadastrado.agenPessoaIdVinculado != null) {
+        await pessoaHelper
+            .selectById(eventoCadastrado.agenPessoaIdVinculado)
+            .then((pessoa) {
+          evento.alteraAgenPessoaModel(pessoa);
+        });
+
+        //
+      }
+    });
+
+    evento.alteraAgenTitulo(event.summary);
+    evento.alteraAgenIdGlobal(event.location);
+    evento.alteraAgenDescricao(event.description);
+    evento.alteraAgenDataInicio(data);
+    evento.alteraAgenHoraInico(horaInicio);
+    evento.alteraAgenHoraFim(horaFim);
+    evento.alteraAgenDiaTodo(event.isAllDay);
+    evento.alteraAgenEventoAtivo(event.isDone);
+
+    return evento;
+  }
+
   @observable
   deleteRegistroFirestore(List<AgendaModel> despesaAddFirestore) async {
     despesaAddFirestore.forEach((eventoFirebase) {
@@ -153,6 +265,7 @@ abstract class _AgendaControllerBase with Store {
     });
   }
 
+  @observable
   atualizeEventoFirebase(List<AgendaModel> despesaAddFirestore) async {
     despesaAddFirestore.forEach((eventoFirebase) {
       agendahelper.update(eventoFirebase);

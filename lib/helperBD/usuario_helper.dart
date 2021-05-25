@@ -1,4 +1,3 @@
-import 'package:emanuellemepoupe/model/receita_model.dart';
 import 'package:emanuellemepoupe/model/usuario_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';

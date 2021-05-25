@@ -1,6 +1,7 @@
 import 'package:emanuellemepoupe/model/usuario_model.dart';
 import 'package:emanuellemepoupe/repository/cadastro_repository.dart';
 import 'package:mobx/mobx.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 part 'cadastro_controller.g.dart';
 
@@ -9,7 +10,24 @@ class CadastroController = _CadastroControllerBase with _$CadastroController;
 abstract class _CadastroControllerBase with Store {
   var servico = CadastreUser();
 
+  @observable
   var usuarioModel = UsuarioModel();
+
+  var nome = ValueNotifier<String>('');
+  var email = ValueNotifier<String>('');
+  var senha = ValueNotifier<String>('');
+
+  mudanome(String value) {
+    nome.value = value;
+  }
+
+  mudaemail(String value) {
+    email.value = value;
+  }
+
+  mudasenha(String value) {
+    senha.value = value;
+  }
 
   @computed
   bool get isValid {
@@ -68,7 +86,7 @@ abstract class _CadastroControllerBase with Store {
         }
       }
 
-      removaPreferencias() {}
+    //  removaPreferencias() {}
 
 /*
 Envia email

@@ -8,6 +8,8 @@ import 'package:emanuellemepoupe/model/despesa_model.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:emanuellemepoupe/model/pessoa_model.dart';
 import 'package:emanuellemepoupe/repository/despesa_repository.dart';
+import 'package:emanuellemepoupe/repository/parcela_repository.dart';
+import 'package:emanuellemepoupe/validacao/valide_datas.dart';
 
 import 'package:mobx/mobx.dart';
 
@@ -19,6 +21,7 @@ abstract class _DespesaControllerBase with Store {
   var despesaHelper = DespesaHelper();
   var pessoaHelper = PessoaHelper();
   var repositoryHelper = DespesaRepository();
+  var parcelaRepository = ParcelaRepository();
   var parcelaHelper = ParcelaHelper();
   var pessoaModel = PessoaModel();
   var pessoaController = PessoaController();
@@ -31,13 +34,44 @@ abstract class _DespesaControllerBase with Store {
   @observable
   var parcelaModel = ParcelaModel();
 
+  @computed
+  bool get isValid {
+    return valideDataNascimento() == null &&
+        valideCheckRadio() == null &&
+        valideValor() == null;
+  }
+
+  String valideDataNascimento() {
+    if (despesaModel.despValor == null || despesaModel.despValor.isEmpty) {
+      return "Informe um data válida!";
+    } else if (despesaModel.despValor.length > 9) {
+      return ValideDatas().validedata(despesaModel.despValor);
+    }
+    return null;
+  }
+
+  valideCheckRadio() {
+    if (despesaModel.despFormaPagamento == null ||
+        despesaModel.despFormaPagamento.isEmpty) {
+      return "Informe uma forma de pagamento!";
+    }
+    return null;
+  }
+
+  valideValor() {
+    if (despesaModel.despValor == null || despesaModel.despValor.isEmpty) {
+      return "Informe um valor!";
+    }
+    return null;
+  }
+
   @observable
   atualizeDespesa() async {
     await despesaHelper.update(despesaModel);
     await repositoryHelper.deleteParcelasAntesUpdateFirestore(despesaModel);
 
     if (despesaModel.despNumeroParcelas > 0) {
-      var listaParcelas = obtenhaParcelas(despesaModel);
+      var listaParcelas = crieParcelas(despesaModel);
       for (var parcela in listaParcelas) {
         await parcelaHelper.update(parcela);
       }
@@ -59,20 +93,17 @@ abstract class _DespesaControllerBase with Store {
     });
   }
 
-  atualizeStatusPagamrnto() async {
-    await despesaHelper.update(despesaModel);
-
-    if (despesaModel.despIdGlobal.isNotEmpty)
-      await repositoryHelper.updateFirestore(despesaModel);
-  }
-
   @observable
   deleteRegistro(DespesaModel despesa) async {
     await despesaHelper.delete(despesa.despIdGlobal);
+    
     await parcelaHelper.delete(despesa.despIdGlobal);
 
     if (despesa.despIdGlobal.isNotEmpty)
       await repositoryHelper.deleteFirestore(despesa);
+
+    if (despesa.despIdGlobal.isNotEmpty)
+      await parcelaRepository.deleteFiresore(despesa.parcelaModel);
   }
 
   @observable
@@ -92,9 +123,9 @@ abstract class _DespesaControllerBase with Store {
   insiraNovaDespesa() async {
     despesaModel.alteraDespIdGlobal(util.obtenhaIdGlobal("desp"));
     await despesaHelper.insert(despesaModel);
-   
+
     if (despesaModel.despNumeroParcelas > 0) {
-      var listaParcelas = obtenhaParcelas(despesaModel);
+      var listaParcelas = await crieParcelas(despesaModel);
       for (var parcela in listaParcelas) {
         await parcelaHelper.insert(parcela);
       }
@@ -110,9 +141,6 @@ abstract class _DespesaControllerBase with Store {
     if (listaDespLocal.length == 0) {
       listaNovosRegistros = despesaAddFirestore;
     } else {
-      /* var a = listaDespLocal.map((e) => e).toSet().toList();
-      var b = despesaAddFirestore.map((e) => e).toSet().toList();*/
-
       despesaAddFirestore.forEach((novoRegistro) {
         var existeRegistro = listaDespLocal
             .any((x) => x.despIdGlobal.contains(novoRegistro.despIdGlobal));
@@ -121,12 +149,6 @@ abstract class _DespesaControllerBase with Store {
           listaNovosRegistros.add(novoRegistro);
         }
       });
-
-      /* listaDespLocal.forEach((listalocal) {
-        listaNovosRegistros = despesaAddFirestore
-            .where((x) => (x.despIdGlobal.(listalocal.despIdGlobal)))
-            .toList();
-      });*/
     }
 
     if (listaNovosRegistros != null && listaNovosRegistros.length > 0) {
@@ -145,9 +167,8 @@ abstract class _DespesaControllerBase with Store {
     despesaAddFirestore.clear();
   }
 
-  obtenhaParcelas(DespesaModel despesaModel) {
+  crieParcelas(DespesaModel despesaModel) {
     List<ParcelaModel> listParcelas = [];
-    //List<Map> parcelas = [];
 
     var _valorParcela = util.converteStringToDouble(despesaModel.despValor) /
         despesaModel.despNumeroParcelas;
@@ -256,14 +277,14 @@ abstract class _DespesaControllerBase with Store {
     var despesasCompletas = new List<DespesaModel>();
     var lista = await despesaHelper.selectAll();
 
-    lista.forEach((despesa) {
+    lista.forEach((despesa) async {
       if (despesa.despNumeroParcelas > 0) {
-        var parcelas = parcelaHelper.selectparcelaById(despesa.despIdGlobal);
-        parcelas.then((parcelas) {
-          despesa.parcelaModel = parcelas;
-        });
+        parcelaHelper
+            .selectparcelaById(despesa.despIdGlobal)
+            .then((value) => despesa.parcelaModel = value);
       }
-      if (despesa.despPessoaIdVinculado != "null") {
+
+      if (despesa.despPessoaIdVinculado != null) {
         var pessoa = pessoaHelper.selectById(despesa.despPessoaIdVinculado);
         pessoa.then((pessoa) {
           despesa.pessoaModel = pessoa;

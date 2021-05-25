@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:emanuellemepoupe/controller/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
 import 'package:emanuellemepoupe/widgets/categoryCard.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:emanuellemepoupe/pages/login_usuario.dart';
+import 'package:emanuellemepoupe/pages/usuario/login_usuario.dart';
 import '../constants/constants_color.dart';
 
 class MenuInicio extends StatefulWidget {
@@ -21,7 +19,7 @@ class _MenuInicioState extends State<MenuInicio> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor:kTextColor,
+      backgroundColor: kTextColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -47,7 +45,7 @@ class _MenuInicioState extends State<MenuInicio> {
           Container(
             height: size.height * .35,
             decoration: BoxDecoration(
-              color:Color(0xFF23689b) ,
+              color: Color(0xFF23689b),
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
               ),
@@ -117,10 +115,7 @@ class _MenuInicioState extends State<MenuInicio> {
                                     svgSrc: "Calendario.svg"),
                                 CategoryCard(
                                   title: "Configurar",
-                                  press: () {
-                                    Navigator.of(context)
-                                        .pushNamed(RotasNavegacao.CARTEIRA);
-                                  },
+                                  press: () {},
                                   svgSrc: "Settings.svg",
                                 ),
                               ]),
@@ -137,10 +132,16 @@ class _MenuInicioState extends State<MenuInicio> {
         logincontroller.deslogarUsuario();
         logincontroller.salvePreferencias(false);
         print("false");
-        Navigator.pushReplacement(
+
+        // Navigator.pushReplacementNamed(context, RotasNavegacao.LOGIN);
+
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => Login()),
+            (Route<dynamic> route) => false);
+        /*   Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Login()),
-        );
+        );*/
 
         break;
       case 'Configurações':

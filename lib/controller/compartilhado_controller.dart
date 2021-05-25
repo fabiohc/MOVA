@@ -2,6 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter/material.dart';
 import 'package:emanuellemepoupe/controller/despesa_controller.dart';
+import 'package:emanuellemepoupe/model/despesa_model.dart';
 part 'compartilhado_controller.g.dart';
 
 class CompartilhadoController = _CompartilhadoControllerBase
@@ -10,11 +11,16 @@ class CompartilhadoController = _CompartilhadoControllerBase
 abstract class _CompartilhadoControllerBase with Store {
   var despesaController = DespesaController();
 
+  @observable
+  var despesaModel = DespesaModel();
+
   // #region ValueNotifier
 
   final dataVencimento = ValueNotifier<DateTime>(DateTime.now());
 
   final numeroParcela = ValueNotifier<int>(0);
+
+  final valor = ValueNotifier<String>("");
 
   final radioButton = ValueNotifier<bool>(false);
 
@@ -26,12 +32,23 @@ abstract class _CompartilhadoControllerBase with Store {
 
   final radioCredito = ValueNotifier<bool>(true);
 
-  alteraradioEdicao(String forma, [String tipo]) {
+
+  valideCheckRadio([dynamic check]) {
+    if (check == null) check = false;
+    if (check == false) {
+      alteraradio(check);
+      return "Selecione uma forma de pagamento!";
+    }
+    return null;
+  }
+
+  alteraradioEdicao([String forma, String tipo]) {
     if (forma == "Dinheiro") {
       radioDinheiro.value = false;
       radioDebito.value = true;
       radioctransfer.value = true;
       radioCredito.value = true;
+      return "tipo";
     }
 
     if (forma == "Transferência") {
@@ -39,6 +56,7 @@ abstract class _CompartilhadoControllerBase with Store {
       radioDebito.value = true;
       radioctransfer.value = false;
       radioCredito.value = true;
+      return "tipo";
     }
 
     if (forma == "Cartão" && tipo == "Crédito") {
@@ -46,6 +64,7 @@ abstract class _CompartilhadoControllerBase with Store {
       radioDebito.value = true;
       radioctransfer.value = true;
       radioCredito.value = false;
+      return "tipo";
     }
 
     if (forma == "Cartão" && tipo == "Débito") {
@@ -53,7 +72,10 @@ abstract class _CompartilhadoControllerBase with Store {
       radioDebito.value = false;
       radioctransfer.value = true;
       radioCredito.value = true;
+      return "tipo";
     }
+
+    return null;
   }
 
   alteraradio(bool value) {
@@ -90,6 +112,4 @@ abstract class _CompartilhadoControllerBase with Store {
       return false;
     }
   }
-
-
 }

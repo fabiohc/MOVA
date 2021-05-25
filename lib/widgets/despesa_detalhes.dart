@@ -28,10 +28,11 @@ class _DespesaDetalhesState extends State<DespesaDetalhes> {
           context: context,
           builder: (BuildContext context) {
             return new SimpleDialog(
+              
               children: <Widget>[
                 Container(
                     width: MediaQuery.of(context).size.width * 0.9,
-                    height: MediaQuery.of(context).size.height * 0.9,
+                    height: MediaQuery.of(context).size.height * 0.99,
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -49,7 +50,7 @@ class _DespesaDetalhesState extends State<DespesaDetalhes> {
                           ),
                           Expanded(
                             child: ListView(
-                                scrollDirection: Axis.vertical,
+                                scrollDirection: Axis.vertical,                                    
                                 shrinkWrap: true,
                                 children: [
                                   Column(
@@ -181,7 +182,7 @@ class _DespesaDetalhesState extends State<DespesaDetalhes> {
                                                             0)
                                                       Text(
                                                         "",
-                                                        //  "${parcela.parcelaNumero} / ${despesa.despNumeroParcelas}" ?? "-",
+                                                     //   "${widget.despesa.parcelaNumero} / ${widget.despesa.despNumeroParcelas}" ?? "-",
                                                         style: TextStyle(
                                                             fontSize: 14.0,
                                                             color: Colors.white,
@@ -204,6 +205,7 @@ class _DespesaDetalhesState extends State<DespesaDetalhes> {
                                                 color: Colors.blueAccent),
                                             child: PessoaDespesa(
                                                 widget.despesa.pessoaModel)),
+                                      if(widget.despesa.despObservacao != null && widget.despesa.despObservacao != "null")
                                       Container(
                                         height: size.height * .15,
                                         decoration: BoxDecoration(
@@ -245,6 +247,7 @@ class _DespesaDetalhesState extends State<DespesaDetalhes> {
                                       ),
                                       if (widget.despesa.parcelaModel != null)
                                         ListView.separated(
+                                            physics: NeverScrollableScrollPhysics(),
                                           scrollDirection: Axis.vertical,
                                           shrinkWrap: true,
                                           itemCount: widget

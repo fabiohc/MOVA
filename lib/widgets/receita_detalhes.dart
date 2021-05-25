@@ -30,9 +30,9 @@ class _ReceitaDetalhesState extends State<ReceitaDetalhes> {
             return new SimpleDialog(
               children: <Widget>[
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  child:  Column(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: MediaQuery.of(context).size.height * 0.9,
+                    child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Padding(
@@ -197,88 +197,91 @@ class _ReceitaDetalhesState extends State<ReceitaDetalhes> {
                                           ],
                                         ),
                                       ),
-                                      if(widget.receita.pessoaModel != null)
-                                      Container(
+                                      if (widget.receita.pessoaModel != null)
+                                        Container(
+                                            height: size.height * .15,
+                                            decoration: BoxDecoration(
+                                                color: Colors.blueAccent),
+                                            child: PessoaDespesa(
+                                                widget.receita.pessoaModel)),
+                                      if (widget.receita.recObservacao != null && widget.receita.recObservacao != "null")
+                                        Container(
                                           height: size.height * .15,
                                           decoration: BoxDecoration(
                                               color: Colors.blueAccent),
-                                          child: PessoaDespesa(
-                                              widget.receita.pessoaModel)),
-                                      Container(
-                                        height: size.height * .15,
-                                        decoration: BoxDecoration(
-                                            color: Colors.blueAccent),
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    "Descrição",
-                                                    style: TextStyle(
-                                                        fontSize: 15.0,
-                                                        color: Colors.white),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ],
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      "Descrição",
+                                                      style: TextStyle(
+                                                          fontSize: 15.0,
+                                                          color: Colors.white),
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    "${widget.receita.recObservacao}",
-                                                    style: TextStyle(
-                                                        fontSize: 14.0,
-                                                        color: Colors.white),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 5),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      "${widget.receita.recObservacao}",
+                                                      style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          color: Colors.white),
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      if( widget.receita.parcelaModel != null)
-                                      ListView.separated(
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        itemCount:
-                                            widget.receita.parcelaModel.length,
-                                        itemBuilder: (context, index) {
-                                          final parcela = widget
-                                              .receita.parcelaModel[index];
-                                          var icon = parcelaController
-                                              .verificaStatusPagamento(parcela);
-                                          return ListTile(
-                                            leading: SvgPicture.asset(
-                                              icon[0]["icon"],
-                                              color: icon[0]["color"],
-                                              width: 10,
-                                              height: 10,
-                                            ),
-                                            title: Text(
-                                                "${parcela.parcelaNumero}ª Parcela"),
-                                            subtitle: Text(
-                                                "R\$ ${parcela.parcelaValor}\n${parcela.parcelaData}"),
-                                          );
-                                        },
-                                        separatorBuilder: (context, index) {
-                                          return Divider(
-                                              color: Colors.blueGrey);
-                                        },
-                                      ),
+                                      if (widget.receita.parcelaModel != null)
+                                        ListView.separated(
+                                             physics: NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          itemCount: widget
+                                              .receita.parcelaModel.length,
+                                          itemBuilder: (context, index) {
+                                            final parcela = widget
+                                                .receita.parcelaModel[index];
+                                            var icon = parcelaController
+                                                .verificaStatusPagamento(
+                                                    parcela);
+                                            return ListTile(
+                                              leading: SvgPicture.asset(
+                                                icon[0]["icon"],
+                                                color: icon[0]["color"],
+                                                width: 10,
+                                                height: 10,
+                                              ),
+                                              title: Text(
+                                                  "${parcela.parcelaNumero}ª Parcela"),
+                                              subtitle: Text(
+                                                  "R\$ ${parcela.parcelaValor}\n${parcela.parcelaData}"),
+                                            );
+                                          },
+                                          separatorBuilder: (context, index) {
+                                            return Divider(
+                                                color: Colors.blueGrey);
+                                          },
+                                        ),
                                     ],
                                   )
                                 ]),
                           )
-                        ])
-                 
-                )
+                        ]))
               ],
             );
           },

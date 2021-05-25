@@ -1,47 +1,53 @@
 import 'package:emanuellemepoupe/controller/login_controller.dart';
-import 'package:emanuellemepoupe/pages/cadastro_evento.dart';
-import 'package:emanuellemepoupe/pages/cadastro_pessoa.dart';
+import 'package:emanuellemepoupe/controller/compartilhado_controller.dart';
+import 'package:emanuellemepoupe/pages/agenda/cadastro_evento.dart';
+import 'package:emanuellemepoupe/pages/cliente/cadastro_pessoa.dart';
 import 'package:emanuellemepoupe/pages/cadastro_despesa_receita.dart';
-import 'package:emanuellemepoupe/pages/agenda.dart';
-import 'package:emanuellemepoupe/pages/lista_pessoa.dart';
+import 'package:emanuellemepoupe/pages/agenda/agenda.dart';
+import 'package:emanuellemepoupe/pages/cliente/lista_pessoa.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:emanuellemepoupe/repository/agenda_repository.dart';
-import 'package:emanuellemepoupe/repository/receita_repository.dart';
-import 'package:emanuellemepoupe/repository/despesa_repository.dart';
-import 'package:emanuellemepoupe/repository/pessoa_repository.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:emanuellemepoupe/constants/constants_color.dart';
 import 'package:emanuellemepoupe/pages/editar_despesa_receita.dart';
-import 'package:emanuellemepoupe/pages/carteira.dart';
-import 'package:emanuellemepoupe/pages/lista_despesas.dart';
-import 'package:emanuellemepoupe/pages/lista_receitas.dart';
+import 'package:emanuellemepoupe/pages/carteira/carteira.dart';
+import 'package:emanuellemepoupe/pages/pagar/lista_despesas.dart';
+import 'package:emanuellemepoupe/pages/receber/lista_receitas.dart';
 import 'package:emanuellemepoupe/pages/menu.dart';
 import 'package:emanuellemepoupe/pages/menu_despesas.dart';
 import 'package:emanuellemepoupe/pages/menu_receitas.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
-import 'package:emanuellemepoupe/pages/cadastro_usuario.dart';
-import 'package:emanuellemepoupe/pages/login_usuario.dart';
+import 'package:emanuellemepoupe/pages/usuario/cadastro_usuario.dart';
+import 'package:emanuellemepoupe/pages/usuario/login_usuario.dart';
+import 'package:emanuellemepoupe/pages/agenda/editar_evento.dart';
+import 'package:flutter/services.dart';
 
 import 'helperBD/create_helperdb.dart';
 
+dynamic userLogado;
+bool conectado;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   CreateHelper().db;
-  runApp(MyApp());
+
+  final logincontroller = LoginController();
+  final compartilhadoController = CompartilhadoController();
+  conectado = await compartilhadoController.verifiqueConexao();
+  if (conectado == true) {
+    userLogado = await logincontroller.verifiqueUsuarioLogado();
+  } else {
+    userLogado = await logincontroller.getPreferencias();
+  }
+
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  final logincontroller = LoginController();
   @override
   Widget build(BuildContext context) {
-    DespesaRepository().selectListerneFirestore();
-    ReceitaRepository().selectListerneFirestore();
-    PessoaRepository().selectListerneFirestore();
-    AgendaRepository().selectListerneFirestore();
-
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         localizationsDelegates: [
@@ -58,10 +64,11 @@ class MyApp extends StatelessWidget {
           textTheme:
               Theme.of(context).textTheme.apply(displayColor: kTextColor),
         ),
+        initialRoute: userLogado == false ? '/' : '/menu.dart',
         routes: {
-          RotasNavegacao.LOGIN: (_) => Login(),
+          '/': (context) => Login(),
+          '/menu.dart': (context) => MenuInicio(),
           RotasNavegacao.CADASTRO_USUARIO: (_) => Cadastro(),
-          RotasNavegacao.HOME: (_) => MenuInicio(),
           RotasNavegacao.CADASTRO_DESPESA: (_) => CadastroDespesaReceita(),
           // ignore: equal_keys_in_map
           RotasNavegacao.CADASTRO_RECEITA: (_) => CadastroDespesaReceita(),
@@ -75,6 +82,7 @@ class MyApp extends StatelessWidget {
           RotasNavegacao.LISTA_PESSOAS: (_) => ListaPessoa(),
           RotasNavegacao.AGENDA: (_) => Agenda(),
           RotasNavegacao.CADASTRO_EVENTO: (_) => CadastroEvento(),
+          RotasNavegacao.EDITAR_EVENTO: (_) => EditarEvento(),
         });
   }
 }

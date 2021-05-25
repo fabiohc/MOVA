@@ -5,8 +5,9 @@ import 'package:emanuellemepoupe/controller/pessoa_controller.dart';
 import 'package:emanuellemepoupe/controller/util.dart';
 import 'package:emanuellemepoupe/model/pessoa_model.dart';
 import 'package:emanuellemepoupe/model/despesa_model.dart';
+import 'package:emanuellemepoupe/validacao/valide_datas.dart';
 import 'package:emanuellemepoupe/model/receita_model.dart';
-import 'package:emanuellemepoupe/pages/lista_pessoa.dart';
+import 'package:emanuellemepoupe/pages/cliente/lista_pessoa.dart';
 import 'package:emanuellemepoupe/pages/rotas.dart';
 import 'package:emanuellemepoupe/controller/compartilhado_controller.dart';
 import 'package:emanuellemepoupe/widgets/navegacao.dart';
@@ -64,7 +65,10 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
           ModalRoute.of(context).settings.arguments;
 
       receitaController.receitaModel = registroEditado;
-      pessoaController.pessoaModel = registroEditado.pessoaModel;
+
+      registroEditado.pessoaModel != null
+          ? pessoaController.pessoaModel = registroEditado.pessoaModel
+          : pessoaController.pessoaModel = PessoaModel();
 
       compartilhadoController.alteraradioEdicao(
           registroEditado.recFormaPagamento, registroEditado.recTipoCartao);
@@ -93,7 +97,10 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
               child: Stack(children: <Widget>[
                 Container(
                     height: size.height * .40,
-                    decoration: BoxDecoration(color: kBlueColor)),
+                    decoration: BoxDecoration(
+                        color: widget.acao == "pagar"
+                            ? Color(0xFF6b011f)
+                            : Color(0xFFF4a47a3))),
                 BottomNavBar(
                   icon: SvgPicture.asset(
                     "assets/icons/Voltar ICon.svg",
@@ -101,6 +108,11 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                   ),
                   margin: 10,
                   alignment: Alignment.bottomLeft,
+                  descricao: acao == "pagar"
+                      ? despesaController.despesaModel
+                          .alteraDespServico("Editando despesa ")
+                      : receitaController.receitaModel
+                          .alteraRecServico("Editando receita"),
                   // color: Colors.white.withOpacity(2),
                   press: () {
                     acao == "pagar"
@@ -110,16 +122,6 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                             .popAndPushNamed(RotasNavegacao.LISTA_RECEITAS);
                   },
                 ),
-                Container(
-                    padding: EdgeInsets.symmetric(horizontal: 70, vertical: 23),
-                    child: Text(
-                      acao == "pagar"
-                          ? despesaController.despesaModel
-                              .alteraDespServico("Editando despesa ")
-                          : receitaController.receitaModel
-                              .alteraRecServico("Editando receita"),
-                      style: TextStyle(color: Colors.white),
-                    )),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: size.height * .11),
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 25),
@@ -147,9 +149,8 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                             fontSize: 20.0,
                           ),
                         ),
-                        SizedBox(
-                            height: 20,
-                            width: size.width * .5,
+                        Expanded(
+                            flex: 1,
                             child: ValueListenableBuilder(
                               valueListenable: pessoaController.pessoa,
                               builder: (context, value, child) {
@@ -166,6 +167,9 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                     RealInputFormatter(centavos: true)
                                   ],
                                   decoration: InputDecoration(
+                                    hintText: "00,00",
+                                    hintStyle: TextStyle(
+                                        color: Colors.grey, fontSize: 20),
                                     contentPadding: EdgeInsets.all(4.0),
                                     border: InputBorder.none,
                                     labelStyle: TextStyle(
@@ -176,8 +180,16 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400,
-                                    fontSize: 35.0,
+                                    fontSize: 30.0,
                                   ),
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (String value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Informe um valor!";
+                                    }
+                                    return null;
+                                  },
                                   onChanged: (value) {
                                     acao == "pagar"
                                         ? despesaController.despesaModel
@@ -189,13 +201,12 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                               },
                             )),
                       ]),
-                      SizedBox(height: 15),
                       Container(
                         child: Row(
                           children: [
                             SizedBox(
-                                height: 30,
-                                width: size.width * .4,
+                                height: 35,
+                                width: size.width * .5,
                                 child: ValueListenableBuilder(
                                   valueListenable:
                                       compartilhadoController.dataVencimento,
@@ -233,6 +244,17 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20.0,
                                       ),
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      validator: (String value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "Informe um data válida!";
+                                        } else if (value.length > 9) {
+                                          return ValideDatas()
+                                              .validedata(value);
+                                        }
+                                        return null;
+                                      },
                                       onChanged: (value) {
                                         acao == "pagar"
                                             ? despesaController.despesaModel
@@ -350,7 +372,6 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                 Container(
                                   color: kBackgroundColor,
                                   child: ExpansionTile(
-                                    // initiallyExpanded:false ,
                                     backgroundColor: kBackgroundColor,
                                     leading: Container(
                                       width: size.width * .22,
@@ -449,7 +470,7 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                                         setState(() {
                                                           compartilhadoController
                                                               .decrementeNumeroParcela();
-                                                             acao == "pagar"
+                                                          acao == "pagar"
                                                               ? despesaController
                                                                   .despesaModel
                                                                   .alteraDespNumeroParcelas(
@@ -463,7 +484,6 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                                                           .numeroParcela
                                                                           .value);
                                                         });
-                                                        
                                                       }),
                                                   Container(
                                                     child:
@@ -500,7 +520,7 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                                         setState(() {
                                                           compartilhadoController
                                                               .incrementeNumeroParcela();
-                                                              acao == "pagar"
+                                                          acao == "pagar"
                                                               ? despesaController
                                                                   .despesaModel
                                                                   .alteraDespNumeroParcelas(
@@ -608,11 +628,23 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                                 width: 60.0,
                                                 height: 60.0,
                                                 color: Colors.transparent,
-                                                child: CircleAvatar(
-                                                  child: SvgPicture.asset(
-                                                      "assets/icons/Image foto.svg"),
-                                                  backgroundColor: Colors.white,
-                                                )),
+                                                child: pessoaController
+                                                            .pessoaModel
+                                                            .pessoafotourl ==
+                                                        null
+                                                    ? CircleAvatar(
+                                                        child: SvgPicture.asset(
+                                                            "assets/icons/Image foto.svg"),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      )
+                                                    : CircleAvatar(
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                                pessoaController
+                                                                    .pessoaModel
+                                                                    .pessoafotourl),
+                                                      )),
                                             title: Text(
                                               pessoaController.pessoaModel
                                                           .pessoaNome !=
@@ -699,54 +731,58 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                                             ),
                                           ),
                                           ListTile(
-                                              dense: true,
-                                              isThreeLine: false,
-                                              contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      40, 0, 0, 0),
-                                              leading: SvgPicture.asset(
-                                                "assets/icons/bolo aniversario.svg",
-                                                color: Colors.grey,
-                                                width: 22,
-                                                height: 22,
-                                              ),
-                                              title: Observer(builder: (_) {
-                                                return Text(
-                                                  pessoaController.pessoaModel
-                                                              .pessoaDataNascimento !=
-                                                          null
-                                                      ? "${pessoaController.pessoaModel.pessoaDataNascimento}"
-                                                      : "Aniversário: ",
-                                                  style: TextStyle(
-                                                    //color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 15.0,
-                                                  ),
-                                                );
-                                              }),
-                                              trailing: FloatingActionButton(
-                                                backgroundColor: Colors.blue,
-                                                onPressed: () async {
-                                                  PessoaModel information =
-                                                      await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              fullscreenDialog:
-                                                                  true,
-                                                              builder: (context) =>
-                                                                  ListaPessoa()));
-
-                                                  setState(() {
-                                                    pessoaSelecionada =
-                                                        information;
-                                                  });
-                                                },
-                                                child: Icon(Icons.search),
-                                                tooltip: "Pesquisar",
-                                              )),
+                                            dense: true,
+                                            isThreeLine: false,
+                                            contentPadding: EdgeInsets.fromLTRB(
+                                                40, 0, 0, 0),
+                                            leading: SvgPicture.asset(
+                                              "assets/icons/bolo aniversario.svg",
+                                              color: Colors.grey,
+                                              width: 22,
+                                              height: 22,
+                                            ),
+                                            title: Observer(builder: (_) {
+                                              return Text(
+                                                pessoaController.pessoaModel
+                                                            .pessoaDataNascimento !=
+                                                        null
+                                                    ? "${pessoaController.pessoaModel.pessoaDataNascimento}"
+                                                    : "Aniversário: ",
+                                                style: TextStyle(
+                                                  //color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15.0,
+                                                ),
+                                              );
+                                            }),
+                                          ),
                                         ],
                                       );
                                     }),
+                                    Positioned(
+                                        right: 10.0,
+                                        bottom: 10,
+                                        child: FloatingActionButton(
+                                          backgroundColor: Colors.blue,
+                                          onPressed: () async {
+                                            PessoaModel information =
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        fullscreenDialog: true,
+                                                        builder: (context) =>
+                                                            ListaPessoa(
+                                                              retonarcadastro:
+                                                                  true,
+                                                            )));
+
+                                            setState(() {
+                                              pessoaSelecionada = information;
+                                            });
+                                          },
+                                          child: Icon(Icons.search),
+                                          tooltip: "Pesquisar",
+                                        ))
                                   ],
                                 )),
                             new Container(
@@ -755,33 +791,31 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                               width: MediaQuery.of(context).size.width,
                               decoration:
                                   BoxDecoration(color: Color(0xfff1f1f1)),
-                              child: Column(
+                              child: Wrap(
                                 children: <Widget>[
                                   ListTile(
-                                      leading: Text("Descrição:"),
                                       title: TextFormField(
-                                        maxLines: 9,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        initialValue: acao == "pagar"
-                                            ? despesaController
-                                                .despesaModel.despObservacao
-                                            : receitaController
-                                                .receitaModel.recObservacao,
-                                        style: TextStyle(
-                                          //color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15.0,
-                                        ),
-                                        onChanged: (value) {
-                                          acao == "pagar"
-                                              ? despesaController.despesaModel
-                                                  .alteraDespObservacao(value)
-                                              : receitaController.receitaModel
-                                                  .alteraRecObservacao(value);
-                                        },
-                                      )),
+                                    maxLines: 9,
+                                    maxLength: 200,
+                                    decoration: InputDecoration(
+                                      hintStyle: TextStyle(fontSize: 15),
+                                      hintText: "Descrição (200 caracteres.)",
+                                      border: InputBorder.none,
+                                    ),
+                                    initialValue: despesaController
+                                        .despesaModel.despObservacao,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
+                                    ),
+                                    onChanged: (value) {
+                                      widget.acao == "pagar"
+                                          ? despesaController.despesaModel
+                                              .alteraDespObservacao(value)
+                                          : receitaController.receitaModel
+                                              .alteraRecObservacao(value);
+                                    },
+                                  )),
                                 ],
                               ),
                             ),

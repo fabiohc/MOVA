@@ -39,7 +39,6 @@ abstract class _LoginControllerBase with Store {
     usuarioModel.nome;
     usuarioModel.email;
     usuarioModel.senha;
-
     var _retorno = servico.consulteUsuarioLogado();
 
     salvePreferencias(_retorno);
@@ -50,8 +49,17 @@ abstract class _LoginControllerBase with Store {
     try {
       return servico.login(usuarioModel);
     } catch (ex) {
-     
+      print(ex.toString());
     }
+  }
+
+  deslogarUsuario() {
+    servico.deslogarUsuario();
+  }
+
+  getPreferencias() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.get("login");
   }
 
   salvePreferencias(dynamic _retorno) async {
@@ -68,9 +76,8 @@ abstract class _LoginControllerBase with Store {
     }
   }
 
-  removaPreferencias() {}
-
-  deslogarUsuario() {
-    servico.deslogarUsuario();
+  removaPreferencias() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove("login");
   }
 }

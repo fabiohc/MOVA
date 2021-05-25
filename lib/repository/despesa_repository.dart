@@ -29,6 +29,16 @@ class DespesaRepository {
 /*Inserindo parcelas */
     if (despesa.parcelaModel != null) {
       despesa.parcelaModel.forEach((parcela) {
+       
+        /*Inserindo parcela na tabela parcelas */
+        db
+            .collection("usuarios")
+            .doc(ehUsuarioLogado.email)
+            .collection("parcelas")
+            .doc(parcela.parcelaIdGlobal + parcela.parcelaNumero.toString())
+            .set(parcela.toMap());
+       
+         /*Inserindo parcela na tabela despesa/parcelas */
         db
             .collection("usuarios")
             .doc(ehUsuarioLogado.email)
@@ -40,7 +50,8 @@ class DespesaRepository {
       });
     }
     /*Inserindo cliente vinculado a despesa */
-    if (despesa.pessoaModel != null) {
+    if (despesa.pessoaModel != null) if (despesa.pessoaModel.pessoaIdGlobal !=
+        null) {
       db
           .collection("usuarios")
           .doc(ehUsuarioLogado.email)
@@ -123,7 +134,7 @@ class DespesaRepository {
   Future<DespesaModel> deleteFirestore(DespesaModel despesa) async {
     User ehUsuarioLogado = auth.currentUser;
     if (despesa.pessoaModel != null) {
-      db
+      await db
           .collection("usuarios")
           .doc(ehUsuarioLogado.email)
           .collection("despesa")
@@ -134,8 +145,8 @@ class DespesaRepository {
     }
 
     if (despesa.parcelaModel != null) {
-      despesa.parcelaModel.forEach((parcela) {
-        db
+      despesa.parcelaModel.forEach((parcela) async {
+        await db
             .collection("usuarios")
             .doc(ehUsuarioLogado.email)
             .collection("despesa")

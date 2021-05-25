@@ -43,11 +43,10 @@ abstract class _PessoaControllerBase with Store {
 
   @computed
   bool get isValid {
-    return valideNome() == null &&
-        valideEmail() == null &&
-        valideTelefone() == null &&
-        valideDataNascimento() == null &&
-        valideCPF() == null;
+    return valideNome() == null && valideTelefone() == null;
+    //  valideEmail() == null &&
+    //  valideDataNascimento() == null &&
+    // valideCPF() == null;
   }
 
   String valideNome() {
@@ -89,10 +88,10 @@ abstract class _PessoaControllerBase with Store {
     return null;
   }
 
-   valideCPF() {
-    if(pessoaModel.pessoaCpf != null || pessoaModel.pessoaCpf.isNotEmpty)  {
-    var cpf = pessoaModel.pessoaCpf.replaceAll('-', '').replaceAll('.', '');
-    return validarCPF(cpf);
+  valideCPF() {
+    if (pessoaModel.pessoaCpf != null || pessoaModel.pessoaCpf.isNotEmpty) {
+      var cpf = pessoaModel.pessoaCpf.replaceAll('-', '').replaceAll('.', '');
+      return validarCPF(cpf);
     }
   }
 

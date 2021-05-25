@@ -39,11 +39,13 @@ class AgendaHelper {
           "agenIdGlobal",
           "agenTitulo",
           "agenDataInicio",
-          "agenDataFim",
+          "agenHoraInico",
+          "agenHoraFim",
           "agenDescricao",
           "agenCor",
           "agenDiaTodo",
           "agenEventoAtivo",
+          "agenPessoaIdVinculado"
         ],
         where: "agenIdGlobal = ?",
         whereArgs: [id]);

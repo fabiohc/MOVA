@@ -1,9 +1,12 @@
 import 'package:emanuellemepoupe/constants/constants_color.dart';
 import 'package:emanuellemepoupe/controller/carteira_controller.dart';
+import 'package:emanuellemepoupe/helperBD/parcela_helperdb.dart';
 import 'package:emanuellemepoupe/model/despesa_model.dart';
 import 'package:emanuellemepoupe/model/parcela_model.dart';
 import 'package:emanuellemepoupe/model/receita_model.dart';
 import 'package:emanuellemepoupe/repository/despesa_repository.dart';
+import 'package:emanuellemepoupe/repository/receita_repository.dart';
+import 'package:emanuellemepoupe/repository/parcela_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 part 'parcela_controller.g.dart';
@@ -11,7 +14,10 @@ part 'parcela_controller.g.dart';
 class ParcelaController = _ParcelaControllerBase with _$ParcelaController;
 
 abstract class _ParcelaControllerBase with Store {
-  var repositoryHelper = DespesaRepository();
+  final despesaRepositoryHelper = DespesaRepository();
+  final parcelaRepositoryHelper = ParcelaRepository();
+  final receitaRepositoryHelper = ReceitaRepository();
+  final parcelaHelper = ParcelaHelper();
 
   List<Map<String, dynamic>> verificaStatusPagamento(ParcelaModel parcela) {
     if (parcela.parcelaStatusPag == true)
@@ -37,11 +43,18 @@ abstract class _ParcelaControllerBase with Store {
   }
 
   atualizeStatusPagamentoParcela(dynamic objetoReceitaDespesa) async {
-   
     var parcela = _ObtenhaParcelaParaUpdate(objetoReceitaDespesa);
 
     await parcelaHelper.update(parcela);
-    repositoryHelper.updateParcelaFirestore(parcela);
+
+    if (objetoReceitaDespesa is DespesaModel) {
+      despesaRepositoryHelper.updateParcelaFirestore(parcela);
+    }
+    if (objetoReceitaDespesa is ReceitaModel) {
+      receitaRepositoryHelper.updateParcelaFirestore(parcela);
+    }
+    
+    parcelaRepositoryHelper.updateParcelaFirestore(parcela);
   }
 
   // ignore: non_constant_identifier_names
@@ -78,5 +91,46 @@ abstract class _ParcelaControllerBase with Store {
     }
 
     return parcelaUpdate;
+  }
+
+  @observable
+  insiraParcelaFirebase(List<ParcelaModel> parcelaAddFirestore) async {
+    final List<ParcelaModel> listaParcelaLocal =
+        await parcelaHelper.selectAll();
+    List<ParcelaModel> listaNovosRegistros = [];
+
+    if (listaParcelaLocal.length == 0) {
+      listaNovosRegistros = parcelaAddFirestore;
+    } else {
+      parcelaAddFirestore.forEach((novoRegistro) {
+        var existeRegistro = listaParcelaLocal.any(
+            (x) => x.parcelaIdGlobal.contains(novoRegistro.parcelaIdGlobal));
+
+        if (existeRegistro == false) {
+          listaNovosRegistros.add(novoRegistro);
+        }
+      });
+    }
+
+    if (listaNovosRegistros != null && listaNovosRegistros.length > 0) {
+      listaNovosRegistros.forEach((parcelaFirebase) {
+        parcelaHelper.insert(parcelaFirebase);
+      });
+    }
+    listaNovosRegistros.clear();
+    parcelaAddFirestore.clear();
+  }
+
+  atualizeParcelaFirebase(List<ParcelaModel> parcelaAddFirestore) async {
+    parcelaAddFirestore.forEach((parcelaFirebase) {
+      parcelaHelper.update(parcelaFirebase);
+    });
+  }
+
+  @observable
+  deleteParcelaFirestore(List<ParcelaModel> parcelaAddFirestore) async {
+    parcelaAddFirestore.forEach((parcelaFirebase) {
+      parcelaHelper.delete(parcelaFirebase.parcelaIdGlobal);
+    });
   }
 }
