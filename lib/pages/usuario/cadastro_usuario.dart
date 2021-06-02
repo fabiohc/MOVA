@@ -199,7 +199,7 @@ class _CadastroState extends State<Cadastro> {
   Flushbar flushbarAlerta() {
     return Flushbar<bool>(
       title: "Falha ao cadastrar usuário!",
-      message: "Email e senha inválidos \n ou o email informado já está cadastrado.",
+      message: "E-mail e senha inválidos \n ou o e-mail informado já está cadastrado.",
       margin: EdgeInsets.all(10),
       borderRadius: 8,
       animationDuration: Duration(seconds: 1),

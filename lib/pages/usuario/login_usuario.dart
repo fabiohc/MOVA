@@ -189,7 +189,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     return Flushbar<bool>(
       title: "Algo deu errado!",
       message:
-          "Verifique se usuário e senha estão corretos \n ou se exite se este usuário está cadastrado.",
+          "Verifique se usuário e senha estão corretos \n ou se este usuário está cadastrado.",
       margin: EdgeInsets.all(10),
       borderRadius: 8,
       animationDuration: Duration(seconds: 1),
