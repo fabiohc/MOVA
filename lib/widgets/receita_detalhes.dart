@@ -3,7 +3,7 @@ import 'package:emanuellemepoupe/widgets/pessoa_detalhes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:emanuellemepoupe/model/receita_model.dart';
 
 class ReceitaDetalhes extends StatefulWidget {
@@ -204,7 +204,10 @@ class _ReceitaDetalhesState extends State<ReceitaDetalhes> {
                                                 color: Colors.blueAccent),
                                             child: PessoaDespesa(
                                                 widget.receita.pessoaModel)),
-                                      if (widget.receita.recObservacao != null && widget.receita.recObservacao != "null")
+                                      if (widget.receita.recObservacao !=
+                                              null &&
+                                          widget.receita.recObservacao !=
+                                              "null")
                                         Container(
                                           height: size.height * .15,
                                           decoration: BoxDecoration(
@@ -248,7 +251,8 @@ class _ReceitaDetalhesState extends State<ReceitaDetalhes> {
                                         ),
                                       if (widget.receita.parcelaModel != null)
                                         ListView.separated(
-                                             physics: NeverScrollableScrollPhysics(),
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
                                           scrollDirection: Axis.vertical,
                                           shrinkWrap: true,
                                           itemCount: widget
@@ -298,10 +302,10 @@ class _ReceitaDetalhesState extends State<ReceitaDetalhes> {
                 children: <Widget>[
                   Text(
                     widget.receita.recServico ?? "-",
-                    style: GoogleFonts.lato(
-                        textStyle: TextStyle(color: Colors.blue[200]),
+                    style: (TextStyle(
+                        color: Colors.blue[200],
                         fontSize: 17.0,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold)),
                     textAlign: TextAlign.start,
                   ),
                   Text(

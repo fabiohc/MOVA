@@ -61,7 +61,7 @@ class PessoaHelper {
     // List list = await dbPessoa.rawQuery("Select * from despesa");
     List list =
         await dbPessoa.rawQuery("SELECT * from pessoa order by pessoaNome asc");
-    List<PessoaModel> lsPessoa = List();
+    List<PessoaModel> lsPessoa = [];
     for (Map m in list) {
       lsPessoa.add(PessoaModel.fromMap(m, false));
     }

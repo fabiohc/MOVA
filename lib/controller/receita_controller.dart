@@ -151,7 +151,7 @@ abstract class _ReceitaControllerBase with Store {
  */
   @observable
   Future<List> obtentaListaReceitas() async {
-    var receitasCompletas = new List<ReceitaModel>();
+    var receitasCompletas = <ReceitaModel>[];
     var lista = await receitaHelper.selectAll();
 
     /*Obtendo lista de parcelas da receira*/

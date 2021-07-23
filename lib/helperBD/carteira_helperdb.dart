@@ -83,7 +83,7 @@ class CarteiraHelper {
         " ORDER  BY [data] desc;";
 
     List list = await dbReceita.rawQuery(sql);
-    List<CarteiraModel> listaReceitas = List();
+    List<CarteiraModel> listaReceitas = [];
     for (Map m in list) {
       listaReceitas.add(CarteiraModel.fromMap(m));
     }

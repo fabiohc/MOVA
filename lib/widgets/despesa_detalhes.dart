@@ -4,7 +4,6 @@ import 'package:emanuellemepoupe/widgets/pessoa_detalhes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DespesaDetalhes extends StatefulWidget {
   final DespesaModel despesa;
@@ -297,10 +296,10 @@ class _DespesaDetalhesState extends State<DespesaDetalhes> {
                 children: <Widget>[
                   Text(
                     widget.despesa.despServico ?? "-",
-                    style: GoogleFonts.lato(
-                        textStyle: TextStyle(color: Colors.blue[200]),
+                    style: (
+                        TextStyle(color: Colors.blue[200],
                         fontSize: 17.0,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold)),
                     textAlign: TextAlign.start,
                   ),
                   Text(

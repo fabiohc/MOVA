@@ -94,6 +94,7 @@ class _EditarEventoState extends State<EditarEvento>
                                 autofocus: false,
                                 keyboardType: TextInputType.text,
                                 maxLines: 1,
+                                 maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(40),
                                 ],
@@ -101,7 +102,7 @@ class _EditarEventoState extends State<EditarEvento>
                                         null
                                     ? agendaController.agendaModel.agenTitulo
                                     : agendaController.tituloEvento,
-                                maxLengthEnforced: true,
+                        
                                 decoration: InputDecoration(
                                   hintStyle: TextStyle(
                                       fontSize: 15, color: Colors.grey),
@@ -682,13 +683,8 @@ class _EditarEventoState extends State<EditarEvento>
                                           Border.all(color: Colors.blueAccent),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: RaisedButton(
-                                        color: Colors.orangeAccent,
-                                        shape: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12)),
-                                        padding:
-                                            EdgeInsets.fromLTRB(32, 16, 32, 16),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(primary: Colors.orangeAccent),
                                         child: Text(
                                           "Alterar",
                                           style: TextStyle(
@@ -717,13 +713,8 @@ class _EditarEventoState extends State<EditarEvento>
                                           Border.all(color: Colors.blueAccent),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: RaisedButton(
-                                        color: Colors.red,
-                                        shape: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12)),
-                                        padding:
-                                            EdgeInsets.fromLTRB(32, 16, 32, 16),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(primary: Colors.red),
                                         child: Text(
                                           "Excluir",
                                           style: TextStyle(
@@ -761,7 +752,7 @@ class _EditarEventoState extends State<EditarEvento>
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -772,7 +763,7 @@ class _EditarEventoState extends State<EditarEvento>
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 return flush = Flushbar<bool>(
@@ -816,7 +807,7 @@ class _EditarEventoState extends State<EditarEvento>
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -827,7 +818,7 @@ class _EditarEventoState extends State<EditarEvento>
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 return flush = Flushbar<bool>(
@@ -874,7 +865,7 @@ class _EditarEventoState extends State<EditarEvento>
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -885,7 +876,7 @@ class _EditarEventoState extends State<EditarEvento>
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 return flush = Flushbar<bool>(

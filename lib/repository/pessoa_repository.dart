@@ -52,14 +52,14 @@ class PessoaRepository {
       User ehUsuarioLogado = auth.currentUser;
 
       FirebaseStorage db = FirebaseStorage.instance;
-      StorageReference pastaRaiz = db.ref();
-      StorageReference arquivo = pastaRaiz
+      Reference pastaRaiz = db.ref();
+      Reference arquivo = pastaRaiz
           .child("perfil_cliente")
           .child(ehUsuarioLogado.uid)
           .child(DateTime.now().microsecondsSinceEpoch.toString());
 
-      StorageUploadTask task = arquivo.putFile(imagem);
-      StorageTaskSnapshot taskSnapshot = await task.onComplete;
+      arquivo.putFile(imagem);
+      TaskSnapshot taskSnapshot;
 
       return taskSnapshot.ref.getDownloadURL();
     } catch (e) {
@@ -72,9 +72,9 @@ class PessoaRepository {
     User ehUsuarioLogado = auth.currentUser;
     pessoaController = new PessoaController();
 
-    var pessoasAdicionadasFirestore = new List<PessoaModel>();
-    var pessoasAlteradasFirestore = new List<PessoaModel>();
-    var pessoasRemovidasFirestore = new List<PessoaModel>();
+    var pessoasAdicionadasFirestore = <PessoaModel>[];
+    var pessoasAlteradasFirestore = <PessoaModel>[];
+    var pessoasRemovidasFirestore = <PessoaModel>[];
     db.snapshotsInSync();
     db
         .collection("usuarios")

@@ -21,8 +21,8 @@ class ListaPessoa extends StatefulWidget {
 class _ListaPessoaState extends State<ListaPessoa> {
   final pessoaController = PessoaController();
   final logincontroller = LoginController();
-  List<PessoaModel> listaPessoasCompleta = List();
-  List<PessoaModel> listaPessoas = List();
+  List<PessoaModel> listaPessoasCompleta = [];
+  List<PessoaModel> listaPessoas = [];
   TextEditingController filtro;
   bool carregamentoCompleto = true;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -226,7 +226,7 @@ class _ListaPessoaState extends State<ListaPessoa> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -237,7 +237,7 @@ class _ListaPessoaState extends State<ListaPessoa> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 return flush = Flushbar<bool>(

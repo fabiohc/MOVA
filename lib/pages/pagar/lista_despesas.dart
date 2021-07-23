@@ -27,8 +27,8 @@ class _ListaDespesaState extends State<ListaDespesas> {
 
   var util = Util();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
-  List<DespesaModel> listaDespesas = List();
-  List<DespesaModel> listaDespesasMesAtual = List();
+  List<DespesaModel> listaDespesas = [];
+  List<DespesaModel> listaDespesasMesAtual = [];
   dynamic quantidadeDeMeses = [];
 
   List<String> categorias = [
@@ -118,7 +118,7 @@ class _ListaDespesaState extends State<ListaDespesas> {
                           return Container(
                             child: Row(
                               children: [
-                                FlatButton(
+                                TextButton(
                                   onPressed: () {
                                     setState(() {
                                       listaDespesasMesAtual =
@@ -128,14 +128,15 @@ class _ListaDespesaState extends State<ListaDespesas> {
                                       selectedIndexTipo = 0;
                                     });
                                   },
-                                  color: selectedIndexMes == index
+                                  style: TextButton.styleFrom(shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      side: BorderSide(color: Colors.white60)),primary: selectedIndexMes == index
                                       ? Colors.deepPurple[200]
-                                      : Colors.transparent,
+                                      : Colors.transparent, ),
+                               
                                   child: Text(
                                       util.formataDataMesAno(meses.toString())),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      side: BorderSide(color: Colors.white60)),
+                                  
                                 ),
                                 SizedBox(width: 10)
                               ],
@@ -163,7 +164,8 @@ class _ListaDespesaState extends State<ListaDespesas> {
                           return Container(
                             child: Row(
                               children: [
-                                FlatButton(
+                                
+                                TextButton(
                                   onPressed: () {
                                     setState(() {
                                       listaDespesasMesAtual = despesaController
@@ -172,13 +174,12 @@ class _ListaDespesaState extends State<ListaDespesas> {
                                       selectedIndexTipo = index;
                                     });
                                   },
-                                  color: selectedIndexTipo == index
-                                      ? Colors.deepPurple[200]
-                                      : Colors.transparent,
-                                  child: Text(categorias[index]),
-                                  shape: RoundedRectangleBorder(
+                                    style: TextButton.styleFrom(shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
-                                      side: BorderSide(color: Colors.white60)),
+                                      side: BorderSide(color: Colors.white60)),primary: selectedIndexMes == index
+                                      ? Colors.deepPurple[200]
+                                      : Colors.transparent, ), child: null,
+                                
                                 ),
                                 SizedBox(width: 10)
                               ],
@@ -303,7 +304,7 @@ class _ListaDespesaState extends State<ListaDespesas> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -314,7 +315,7 @@ class _ListaDespesaState extends State<ListaDespesas> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 return flush = Flushbar<bool>(
@@ -363,7 +364,7 @@ class _ListaDespesaState extends State<ListaDespesas> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -374,7 +375,7 @@ class _ListaDespesaState extends State<ListaDespesas> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
           
@@ -424,7 +425,7 @@ class _ListaDespesaState extends State<ListaDespesas> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -435,7 +436,7 @@ class _ListaDespesaState extends State<ListaDespesas> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
                 setState(() {

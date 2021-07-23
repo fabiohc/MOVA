@@ -37,9 +37,9 @@ class ParcelaRepository {
     var parcelaController = new ParcelaController();
     User ehUsuarioLogado = auth.currentUser;
 
-    var parcelasAdicionadasFirestore = new List<ParcelaModel>();
-    var parcelasAlteradasFirestore = new List<ParcelaModel>();
-    var parcelasRemovidasFirestore = new List<ParcelaModel>();
+    var parcelasAdicionadasFirestore = <ParcelaModel>[];
+    var parcelasAlteradasFirestore = <ParcelaModel>[];
+    var parcelasRemovidasFirestore = <ParcelaModel>[];
     db.snapshotsInSync();
     db
         .collection("usuarios")

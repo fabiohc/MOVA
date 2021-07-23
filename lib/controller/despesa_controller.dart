@@ -274,7 +274,7 @@ abstract class _DespesaControllerBase with Store {
  */
   @observable
   Future<List> obtentaListaDespesas() async {
-    var despesasCompletas = new List<DespesaModel>();
+    var despesasCompletas = <DespesaModel>[];
     var lista = await despesaHelper.selectAll();
 
     lista.forEach((despesa) async {

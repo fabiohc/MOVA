@@ -127,17 +127,14 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     Padding(
                       padding: EdgeInsets.only(top: 16, bottom: 10),
                       child: Observer(builder: (_) {
-                        return RaisedButton(
+                        return ElevatedButton(
                             child: carregamentoCompleto
                                 ? CircularProgressIndicator()
                                 : Text(
                                     "Entrar",
                                     style: TextStyle(color: Colors.white),
                                   ),
-                            color: Color(0xff0BBFD6),
-                            padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                            shape: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                           
                             onPressed: logincontroller.isValid
                                 ? () async {
                                     setState(() {

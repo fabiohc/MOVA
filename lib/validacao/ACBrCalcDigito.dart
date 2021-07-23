@@ -38,38 +38,38 @@ class ACBrCalcDigito {
   }
 
   calcular() {
-    int N, Base, Tamanho, ValorCalc;
-    String ValorCalcSTR;
+    int N, base, tamanho, valorCalc;
+    String valorCalcSTR;
 
     fsSomaDigitos = 0;
     fsDigitoFinal = 0;
     fsModuloFinal = 0;
 
     if ((fsMultAtu >= fsMultIni) && (fsMultAtu <= fsMultFim))
-      Base = fsMultAtu;
+      base = fsMultAtu;
     else
-      Base = fsMultIni;
-    Tamanho = fsDocto.length;
+      base = fsMultIni;
+    tamanho = fsDocto.length;
 
     //{ Calculando a Soma dos digitos de traz para diante, multiplicadas por BASE }
-    for (var A = 0; A < Tamanho; A++) {
-      N = (fsDocto[Tamanho - A - 1]).toIntDef(0);
-      ValorCalc = (N * Base);
+    for (var A = 0; A < tamanho; A++) {
+      N = (fsDocto[tamanho - A - 1]).toIntDef(0);
+      valorCalc = (N * base);
 
       if ((fsFormulaDigito == ACBrCalcDigFormula.frModulo10) &&
-          (ValorCalc > 9)) {
-        ValorCalcSTR = ValorCalc.toString();
-        ValorCalc = (ValorCalcSTR[1]).toInt() + (ValorCalcSTR[2]).toInt();
+          (valorCalc > 9)) {
+        valorCalcSTR = valorCalc.toString();
+        valorCalc = (valorCalcSTR[1]).toInt() + (valorCalcSTR[2]).toInt();
       }
 
-      fsSomaDigitos = fsSomaDigitos + ValorCalc;
+      fsSomaDigitos = fsSomaDigitos + valorCalc;
 
       if (fsMultIni > fsMultFim) {
-        Base--;
-        if (Base < fsMultFim) Base = fsMultIni;
+        base--;
+        if (base < fsMultFim) base = fsMultIni;
       } else {
-        Base++;
-        if (Base > fsMultFim) Base = fsMultIni;
+        base++;
+        if (base > fsMultFim) base = fsMultIni;
       }
     }
 

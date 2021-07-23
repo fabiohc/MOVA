@@ -54,11 +54,11 @@ class Util {
   String obtenhaDataProximaParcela(String data, int contadorParcela) {
     DateFormat inputFormat = DateFormat("dd/MM/yyyy");
     DateTime dateTime = inputFormat.parse(data);
-    dateTime = Jiffy(dateTime).add(months: contadorParcela);
+    dateTime = Jiffy(dateTime).add(months: contadorParcela).dateTime;
     final dataParcela = formatData(dateTime.toString());
     return dataParcela;
   }
-
+ //39541928
   /*
  *Função: Converter data de String para DateTime.
  *Parametro(s): Data no formato String
@@ -182,7 +182,7 @@ Retorno: Retorna ID Global.
         .toList();
 
     if (listaDespesasMesAtual.length == 0) {
-      DateTime dateTime = Jiffy(DateTime.now()).subtract(months: 1);
+      DateTime dateTime = Jiffy(DateTime.now()).subtract(months: 1).dateTime;
       var dataAtual = formatData(dateTime.toString());
       var anoMes = obtenhaMesAno(dataAtual);
       listaDespesas = listaDespesas
@@ -208,7 +208,7 @@ Retorno: Retorna ID Global.
         .toList();
 
     if (listaReceitasMesAtual.length == 0) {
-      DateTime dateTime = Jiffy(DateTime.now()).subtract(months: 1);
+      DateTime dateTime = Jiffy(DateTime.now()).subtract(months: 1).dateTime;
       var dataAtual = formatData(dateTime.toString());
       var anoMes = obtenhaMesAno(dataAtual);
       listaReceitas = listaReceitas

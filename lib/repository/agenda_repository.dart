@@ -44,9 +44,9 @@ class AgendaRepository {
     User ehUsuarioLogado = auth.currentUser;
     var agendaController = new AgendaController();
 
-    var agendaAdicionadasFirestore = new List<AgendaModel>();
-    var agendaAlteradasFirestore = new List<AgendaModel>();
-    var agendaRemovidasFirestore = new List<AgendaModel>();
+    var agendaAdicionadasFirestore = <AgendaModel>[];
+    var agendaAlteradasFirestore =  <AgendaModel>[];
+    var agendaRemovidasFirestore = <AgendaModel>[];
     db.snapshotsInSync();
     db
         .collection("usuarios")

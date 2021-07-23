@@ -22,8 +22,8 @@ class _ListaReceitasState extends State<ListaReceitas> {
   final receitaController = ReceitaController();
   final receitaHelper = ReceitaHelper();
   final parcelaController = ParcelaController();
-  List<ReceitaModel> listaReceitasMesAtual = List();
-  List<ReceitaModel> listaReceitas = List();
+  List<ReceitaModel> listaReceitasMesAtual = [];
+  List<ReceitaModel> listaReceitas = [];
   var util = Util();
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   dynamic quantidadeDeMeses = [];
@@ -116,11 +116,10 @@ class _ListaReceitasState extends State<ListaReceitas> {
                         itemCount: quantidadeDeMeses.length,
                         itemBuilder: (context, index) {
                           var mesAno = quantidadeDeMeses[index];
-                          final meses = quantidadeDeMeses[index];
                           return Container(
                             child: Row(
                               children: [
-                                FlatButton(
+                                TextButton(
                                   onPressed: () {
                                     setState(() {
                                       listaReceitasMesAtual =
@@ -131,14 +130,11 @@ class _ListaReceitasState extends State<ListaReceitas> {
                                       mesAnoGlobal = mesAno;
                                     });
                                   },
-                                  color: selectedIndexMes == index
-                                      ? Colors.deepPurple[200]
-                                      : Colors.transparent,
-                                  child: Text(
-                                      util.formataDataMesAno(meses.toString())),
-                                  shape: RoundedRectangleBorder(
+                                 style: TextButton.styleFrom(shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
-                                      side: BorderSide(color: Colors.white60)),
+                                      side: BorderSide(color: Colors.white60)),primary: selectedIndexMes == index
+                                      ? Colors.deepPurple[200]
+                                      : Colors.transparent, ), child: null,
                                 ),
                                 SizedBox(width: 10),
                                 Divider(
@@ -170,7 +166,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
                           return Container(
                             child: Row(
                               children: [
-                                FlatButton(
+                                TextButton(
                                   onPressed: () {
                                     setState(() {
                                       listaReceitasMesAtual = receitaController
@@ -181,13 +177,11 @@ class _ListaReceitasState extends State<ListaReceitas> {
                                       selectedIndexTipo = index;
                                     });
                                   },
-                                  color: selectedIndexTipo == index
-                                      ? Colors.deepPurple[200]
-                                      : Colors.transparent,
-                                  child: Text(categorias[index]),
-                                  shape: RoundedRectangleBorder(
+                               style: TextButton.styleFrom(shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
-                                      side: BorderSide(color: Colors.white60)),
+                                      side: BorderSide(color: Colors.white60)),primary: selectedIndexMes == index
+                                      ? Colors.deepPurple[200]
+                                      : Colors.transparent, ), child: null,
                                 ),
                                 SizedBox(width: 10)
                               ],
@@ -309,7 +303,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -320,7 +314,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 return flush = Flushbar<bool>(
@@ -369,7 +363,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -380,7 +374,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 Flushbar(
@@ -428,7 +422,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -439,7 +433,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
                 setState(() {

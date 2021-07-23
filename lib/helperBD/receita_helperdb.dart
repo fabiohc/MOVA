@@ -59,7 +59,7 @@ class ReceitaHelper {
 
   Future<List<ReceitaModel>> selectAll() async {
     Database dbReceita = await db;
-    List<ReceitaModel> listaReceitas = List();
+    List<ReceitaModel> listaReceitas = [];
 
     List list = await dbReceita.rawQuery("SELECT * " +
         " FROM   (SELECT  " +

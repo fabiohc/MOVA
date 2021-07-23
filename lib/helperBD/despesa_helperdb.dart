@@ -61,7 +61,7 @@ class DespesaHelper {
 
   Future<List<DespesaModel>> selectAll() async {
     Database dbDespesa = await db;
-    List<DespesaModel> lsDespesa = List();
+    List<DespesaModel> lsDespesa = [];
 
      List list = await dbDespesa.rawQuery("SELECT * " +
         "   FROM   (SELECT " +

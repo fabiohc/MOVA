@@ -53,7 +53,7 @@ class UsuarioHelper {
 
   Future<List<UsuarioModel>> selectAll() async {
     Database dbUsuario = await db;
-    List<UsuarioModel> listaUsuario = List();
+    List<UsuarioModel> listaUsuario =[];
 
     List list = await dbUsuario.rawQuery("SELECT * " + " FROM  usuario ");
 

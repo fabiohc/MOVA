@@ -82,6 +82,7 @@ class _CadastroEventoState extends State<CadastroEvento>
                                 autofocus: false,
                                 keyboardType: TextInputType.text,
                                 maxLines: 1,
+                                 maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(40),
                                 ],
@@ -89,7 +90,7 @@ class _CadastroEventoState extends State<CadastroEvento>
                                         null
                                     ? agendaController.agendaModel.agenDescricao
                                     : agendaController.tituloEvento,
-                                maxLengthEnforced: true,
+                                
                                 decoration: InputDecoration(
                                   hintStyle: TextStyle(
                                       fontSize: 15, color: Colors.grey),
@@ -666,11 +667,8 @@ class _CadastroEventoState extends State<CadastroEvento>
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Observer(builder: (_) {
-                            return RaisedButton(
-                              color: Color(0xff0BBFD6),
-                              shape: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                            return ElevatedButton(
+                   
                               child: Text(
                                 "Salvar",
                                 style: TextStyle(
@@ -708,7 +706,7 @@ class _CadastroEventoState extends State<CadastroEvento>
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -719,7 +717,7 @@ class _CadastroEventoState extends State<CadastroEvento>
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 return flush = Flushbar<bool>(

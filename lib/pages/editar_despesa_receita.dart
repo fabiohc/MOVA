@@ -836,7 +836,7 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                         color: Colors.transparent.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: FlatButton(
+                      child: TextButton(
                         child: Text(
                           "Salvar alteração",
                           style: TextStyle(
@@ -866,7 +866,7 @@ class _EditarDespesaReceitaState extends State<EditarDespesaReceita>
                             backgroundGradient: LinearGradient(
                                 colors: [Colors.blue, Colors.teal]),
                             //duration: Duration(seconds: 3),
-                            mainButton: FlatButton(
+                            mainButton: TextButton(
                               onPressed: () {
                                 if (acao == "pagar") {
                                   Navigator.of(context).pop();

@@ -15,8 +15,8 @@ class CardlistaPessoa extends StatefulWidget {
 
 class _CardlistaPessoaState extends State<CardlistaPessoa> {
   final pessoaController = PessoaController();
-  List<PessoaModel> listaPessoasCompleta = List();
-  List<PessoaModel> listaPessoas = List();
+  List<PessoaModel> listaPessoasCompleta = [];
+  List<PessoaModel> listaPessoas = [];
 
   TextEditingController filtro;
 
@@ -198,7 +198,7 @@ class _CardlistaPessoaState extends State<CardlistaPessoa> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -209,7 +209,7 @@ class _CardlistaPessoaState extends State<CardlistaPessoa> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
 

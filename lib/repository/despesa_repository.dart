@@ -29,7 +29,6 @@ class DespesaRepository {
 /*Inserindo parcelas */
     if (despesa.parcelaModel != null) {
       despesa.parcelaModel.forEach((parcela) {
-       
         /*Inserindo parcela na tabela parcelas */
         db
             .collection("usuarios")
@@ -37,8 +36,8 @@ class DespesaRepository {
             .collection("parcelas")
             .doc(parcela.parcelaIdGlobal + parcela.parcelaNumero.toString())
             .set(parcela.toMap());
-       
-         /*Inserindo parcela na tabela despesa/parcelas */
+
+        /*Inserindo parcela na tabela despesa/parcelas */
         db
             .collection("usuarios")
             .doc(ehUsuarioLogado.email)
@@ -170,9 +169,9 @@ class DespesaRepository {
     despesaController = new DespesaController();
     User ehUsuarioLogado = auth.currentUser;
 
-    var despesasAdicionadasFirestore = new List<DespesaModel>();
-    var despesasAlteradasFirestore = new List<DespesaModel>();
-    var despesasRemovidasFirestore = new List<DespesaModel>();
+    var despesasAdicionadasFirestore = <DespesaModel>[];
+    var despesasAlteradasFirestore = <DespesaModel>[];
+    var despesasRemovidasFirestore = <DespesaModel>[];
     db.snapshotsInSync();
     db
         .collection("usuarios")

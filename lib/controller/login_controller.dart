@@ -59,7 +59,7 @@ abstract class _LoginControllerBase with Store {
 
   getPreferencias() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.get("login");
+    return prefs.get("login");
   }
 
   salvePreferencias(dynamic _retorno) async {

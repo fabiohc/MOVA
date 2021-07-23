@@ -14,7 +14,6 @@ class Cadastro extends StatefulWidget {
 }
 
 class _CadastroState extends State<Cadastro> {
-  
   final logincontroller = LoginController();
 
   bool carregamentoCompleto = false;
@@ -68,8 +67,7 @@ class _CadastroState extends State<Cadastro> {
                           onChanged: (value) {
                             cadastroController.usuarioModel.alteraNome(value);
                           },
-                          autovalidateMode:
-                              AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (String value) {
                             return value == null ||
                                     value.isEmpty ||
@@ -99,11 +97,9 @@ class _CadastroState extends State<Cadastro> {
                         return TextFormField(
                           textInputAction: TextInputAction.next,
                           onChanged: (value) {
-                            cadastroController.usuarioModel
-                                .alteraEmail(value);
+                            cadastroController.usuarioModel.alteraEmail(value);
                           },
-                          autovalidateMode:
-                              AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (String value) {
                             return value == null ||
                                     value.isEmpty ||
@@ -133,11 +129,9 @@ class _CadastroState extends State<Cadastro> {
                       child: Observer(builder: (_) {
                         return TextFormField(
                           onChanged: (value) {
-                            cadastroController.usuarioModel
-                                .alteraSenha(value);
+                            cadastroController.usuarioModel.alteraSenha(value);
                           },
-                          autovalidateMode:
-                              AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (String value) {
                             return value.length <= 5
                                 ? "Imforme a senha com mais 5 caracteres!"
@@ -162,15 +156,11 @@ class _CadastroState extends State<Cadastro> {
                   Padding(
                       padding: EdgeInsets.only(top: 16, bottom: 10),
                       child: Observer(
-                        builder: (_) => RaisedButton(
+                        builder: (_) => ElevatedButton(
                             child: Text(
                               "Cadastrar",
                               style: TextStyle(color: Colors.white),
                             ),
-                            color: Color(0xff0BBFD6),
-                            padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                            shape: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
                             onPressed: cadastroController.isValid
                                 ? () async {
                                     carregamentoCompleto = true;
@@ -181,10 +171,9 @@ class _CadastroState extends State<Cadastro> {
                                       logincontroller.salvePreferencias(user);
                                       Navigator.of(context)
                                           .popAndPushNamed(RotasNavegacao.HOME);
-                                    }else{
-  carregamentoCompleto = false;
-  flushbarAlerta();
-
+                                    } else {
+                                      carregamentoCompleto = false;
+                                      flushbarAlerta();
                                     }
                                   }
                                 : null),
@@ -199,7 +188,8 @@ class _CadastroState extends State<Cadastro> {
   Flushbar flushbarAlerta() {
     return Flushbar<bool>(
       title: "Falha ao cadastrar usuário!",
-      message: "E-mail e senha inválidos \n ou o e-mail informado já está cadastrado.",
+      message:
+          "E-mail e senha inválidos \n ou o e-mail informado já está cadastrado.",
       margin: EdgeInsets.all(10),
       borderRadius: 8,
       animationDuration: Duration(seconds: 1),

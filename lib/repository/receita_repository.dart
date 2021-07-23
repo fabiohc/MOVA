@@ -161,9 +161,9 @@ class ReceitaRepository {
     User ehUsuarioLogado = auth.currentUser;
     receitaController = new ReceitaController();
 
-    var receitasAdicionadasFirestore = new List<ReceitaModel>();
-    var receitasAlteradasFirestore = new List<ReceitaModel>();
-    var receitasRemovidasFirestore = new List<ReceitaModel>();
+    var receitasAdicionadasFirestore = <ReceitaModel>[];
+    var receitasAlteradasFirestore = <ReceitaModel>[];
+    var receitasRemovidasFirestore = <ReceitaModel>[];
     db.snapshotsInSync();
 
     db

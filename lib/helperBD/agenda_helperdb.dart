@@ -60,7 +60,7 @@ class AgendaHelper {
     Database dbagenda = await db;
     List list = await dbagenda.rawQuery("Select * from agenda");
 
-    List<AgendaModel> lsagenda = List();
+    List<AgendaModel> lsagenda = [];
     for (Map compromisso in list) {
       lsagenda.add(AgendaModel.fromMap(compromisso));
     }

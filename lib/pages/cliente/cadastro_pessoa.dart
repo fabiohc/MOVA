@@ -20,7 +20,7 @@ class CadastroPessoa extends StatefulWidget {
 
 class _CadastroPessoaState extends State<CadastroPessoa> {
   final pessoaController = PessoaController();
-  List<File> _imagemSlecionada = List();
+  List<File> _imagemSlecionada = [];
   final picker = ImagePicker();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String url;
@@ -224,12 +224,14 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                                   _imagemSlecionada.length > 0 ||
                               pessoaController.pessoaModel.pessoafotourl !=
                                   null)
-                            FlatButton.icon(
+                            TextButton.icon(
                               label: Text(
                                 "Remover",
                                 style: TextStyle(color: Colors.white),
                               ),
-                              color: Colors.transparent,
+                              style: TextButton.styleFrom(
+                                primary: Colors.transparent,
+                              ),
                               icon: Icon(
                                 Icons.delete,
                                 semanticLabel: "Delete",
@@ -468,10 +470,7 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                       width: size.width,
                       height: size.height * 0.1,
                       child: Observer(builder: (_) {
-                        return RaisedButton(
-                          color: Color(0xff0BBFD6),
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                        return ElevatedButton(
                           child: Text(
                             registroEditado != null ? "Alterar" : "Salvar",
                             style: TextStyle(
@@ -513,7 +512,7 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -524,7 +523,7 @@ class _CadastroPessoaState extends State<CadastroPessoa> {
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
 

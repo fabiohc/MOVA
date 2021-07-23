@@ -19,8 +19,8 @@ class _CarteiraState extends State<Carteira> {
   final carteiraController = CarteiraController();
   final despesaHelper = DespesaHelper();
   var util = Util();
-  List<CarteiraModel> listaCarteira = List();
-  List<CarteiraModel> listaCarteiraMesAtual = List();
+  List<CarteiraModel> listaCarteira = [];
+  List<CarteiraModel> listaCarteiraMesAtual = [];
   var controller = PageController(viewportFraction: 0.8);
   List quantidadeDeCards;
   bool carregamentoCompleto = true;
@@ -175,103 +175,102 @@ class _CarteiraState extends State<Carteira> {
                                                                   .circular(
                                                                       10.5),
                                                         ),
-                                                        child: Expanded(
-                                                            flex: 2,
-                                                            child: Column(
-                                                              children: [
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          8.0),
-                                                                  child: Text(
-                                                                    util.formataDataMesAno(
-                                                                        mesAno
-                                                                            .toString()),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .justify,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          20,
-                                                                    ),
-                                                                  ),
+                                                        child: Column(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                util.formataDataMesAno(
+                                                                    mesAno
+                                                                        .toString()),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .justify,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 20,
                                                                 ),
-                                                                Divider(),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          4.0),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Expanded(
-                                                                          flex:
-                                                                              1,
-                                                                          child:
-                                                                              Text(
-                                                                            "Caixa",
-                                                                            style:
-                                                                                TextStyle(fontSize: 17, color: Colors.blueAccent),
-                                                                          )),
-                                                                      Expanded(
-                                                                          child:
-                                                                              Text(
-                                                                        "Despesas",
+                                                              ),
+                                                            ),
+                                                            Divider(),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(4.0),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                      flex: 1,
+                                                                      child:
+                                                                          Text(
+                                                                        "Caixa",
                                                                         style: TextStyle(
                                                                             fontSize:
                                                                                 17,
                                                                             color:
-                                                                                Colors.redAccent),
+                                                                                Colors.blueAccent),
                                                                       )),
-                                                                      Expanded(
-                                                                          flex:
-                                                                              1,
-                                                                          child:
-                                                                              Text(
-                                                                            "Receitas",
-                                                                            style:
-                                                                                TextStyle(fontSize: 17, color: Colors.green),
-                                                                          )),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          4.0),
-                                                                  child:
-                                                                      Expanded(
-                                                                          child:
-                                                                              Row(
-                                                                    children: [
-                                                                      Expanded(
-                                                                        flex: 1,
-                                                                        child: Text(
-                                                                            caixa
-                                                                                .toString(),
-                                                                            style:
-                                                                                TextStyle(fontSize: 15)),
-                                                                      ),
-                                                                      Expanded(
-                                                                          flex:
-                                                                              1,
-                                                                          child: Text(
-                                                                              "- " + somaDespesa.toString(),
-                                                                              style: TextStyle(fontSize: 15))),
-                                                                      Expanded(
-                                                                          flex:
-                                                                              1,
-                                                                          child: Text(
-                                                                              somaReceita.toString(),
-                                                                              style: TextStyle(fontSize: 15))),
-                                                                    ],
+                                                                  Expanded(
+                                                                      child:
+                                                                          Text(
+                                                                    "Despesas",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            17,
+                                                                        color: Colors
+                                                                            .redAccent),
                                                                   )),
-                                                                ),
-                                                              ],
-                                                            )),
+                                                                  Expanded(
+                                                                      flex: 1,
+                                                                      child:
+                                                                          Text(
+                                                                        "Receitas",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                17,
+                                                                            color:
+                                                                                Colors.green),
+                                                                      )),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(4.0),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    flex: 1,
+                                                                    child: Text(
+                                                                        caixa
+                                                                            .toString(),
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                15)),
+                                                                  ),
+                                                                  Expanded(
+                                                                      flex: 1,
+                                                                      child: Text(
+                                                                          "- " +
+                                                                              somaDespesa
+                                                                                  .toString(),
+                                                                          style:
+                                                                              TextStyle(fontSize: 15))),
+                                                                  Expanded(
+                                                                      flex: 1,
+                                                                      child: Text(
+                                                                          somaReceita
+                                                                              .toString(),
+                                                                          style:
+                                                                              TextStyle(fontSize: 15))),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ))
                                                 ],
                                               )),
@@ -305,48 +304,47 @@ class _CarteiraState extends State<Carteira> {
                                                                     20,
                                                                 children: <
                                                                     Widget>[
-                                                                  Flexible(
-                                                                      child: ListView.builder(
-                                                                          scrollDirection: Axis.vertical,
-                                                                          shrinkWrap: true,
-                                                                          itemCount: listaCarteiraMesAtual.length,
-                                                                          itemBuilder: (context, index) {
-                                                                            listaCarteiraMesAtual =
-                                                                                util.obtenhaRegistroPorMes(listaCarteira, mesAno.toString());
-                                                                            var parcela =
-                                                                                listaCarteiraMesAtual[index];
-                                                                            return Observer(builder:
-                                                                                (_) {
-                                                                              return ListTile(
-                                                                                  leading: Icon(
-                                                                                    Icons.circle,
-                                                                                    color: parcela.tipo == "receita" || parcela.tipo == "parcelarec" ? Colors.greenAccent : Colors.redAccent,
-                                                                                    size: 12,
-                                                                                  ),
-                                                                                  title: Text("${parcela.data}", style: TextStyle(color: Colors.white)),
-                                                                                  subtitle: parcela.parcela.toString() == null || parcela.parcela.toString() == '0' ? Text("") : Text("Parcela " + "${parcela.parcela.toString()} de ${parcela.parcelaQuatParc.toString()}", style: TextStyle(color: Colors.white)),
-                                                                                  trailing: parcela.tipo == "receita" || parcela.tipo == "parcelarec"
-                                                                                      ? Text(
+                                                                  ListView.builder(
+                                                                      scrollDirection: Axis.vertical,
+                                                                      shrinkWrap: true,
+                                                                      itemCount: listaCarteiraMesAtual.length,
+                                                                      itemBuilder: (context, index) {
+                                                                        listaCarteiraMesAtual =
+                                                                            util.obtenhaRegistroPorMes(listaCarteira, mesAno.toString());
+                                                                        var parcela =
+                                                                            listaCarteiraMesAtual[index];
+                                                                        return Observer(builder:
+                                                                            (_) {
+                                                                          return ListTile(
+                                                                              leading: Icon(
+                                                                                Icons.circle,
+                                                                                color: parcela.tipo == "receita" || parcela.tipo == "parcelarec" ? Colors.greenAccent : Colors.redAccent,
+                                                                                size: 12,
+                                                                              ),
+                                                                              title: Text("${parcela.data}", style: TextStyle(color: Colors.white)),
+                                                                              subtitle: parcela.parcela.toString() == null || parcela.parcela.toString() == '0' ? Text("") : Text("Parcela " + "${parcela.parcela.toString()} de ${parcela.parcelaQuatParc.toString()}", style: TextStyle(color: Colors.white)),
+                                                                              trailing: parcela.tipo == "receita" || parcela.tipo == "parcelarec"
+                                                                                  ? Text(
+                                                                                      util.formatMoedaDoubleParaString(
+                                                                                        " ${parcela.valor.toString()}",
+                                                                                      ),
+                                                                                      style: TextStyle(
+                                                                                        color: Colors.greenAccent,
+                                                                                        fontSize: 15,
+                                                                                      ),
+                                                                                    )
+                                                                                  : Text(
+                                                                                      "- " +
                                                                                           util.formatMoedaDoubleParaString(
-                                                                                            " ${parcela.valor.toString()}",
+                                                                                            "${parcela.valor.toString()}",
                                                                                           ),
-                                                                                          style: TextStyle(
-                                                                                            color: Colors.greenAccent,
-                                                                                            fontSize: 15,
-                                                                                          ),
-                                                                                        )
-                                                                                      : Text(
-                                                                                          "- " +
-                                                                                              util.formatMoedaDoubleParaString(
-                                                                                                "${parcela.valor.toString()}",
-                                                                                              ),
-                                                                                          style: TextStyle(
-                                                                                            color: Colors.redAccent,
-                                                                                            fontSize: 15,
-                                                                                          ),
-                                                                                        ));
-                                                                            });
-                                                                          }))
+                                                                                      style: TextStyle(
+                                                                                        color: Colors.redAccent,
+                                                                                        fontSize: 15,
+                                                                                      ),
+                                                                                    ));
+                                                                        });
+                                                                      })
                                                                 ]),
                                                           )),
                                                     ],

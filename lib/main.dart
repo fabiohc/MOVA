@@ -57,13 +57,22 @@ class MyApp extends StatelessWidget {
         supportedLocales: [const Locale('pt', 'BR')],
         title: 'Cadastro',
         theme: ThemeData(
-          fontFamily: "Cairo",
-          primarySwatch: Colors.orange,
-          scaffoldBackgroundColor: kTextColor,
-          unselectedWidgetColor: Colors.grey,
-          textTheme:
-              Theme.of(context).textTheme.apply(displayColor: kTextColor),
-        ),
+            fontFamily: "Cairo",
+            primarySwatch: Colors.orange,
+            scaffoldBackgroundColor: kTextColor,
+            unselectedWidgetColor: Colors.grey,
+            textTheme:
+                Theme.of(context).textTheme.apply(displayColor: kTextColor),
+                textButtonTheme: TextButtonThemeData(
+                  
+                ),
+            elevatedButtonTheme: (ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+              primary: Color(0xff0BBFD6),
+              padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            )))),
         initialRoute: userLogado == false ? '/' : '/menu.dart',
         routes: {
           '/': (context) => Login(),

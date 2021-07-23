@@ -827,11 +827,8 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Observer(builder: (_) {
-                        return RaisedButton(
-                            color: Color(0xff0BBFD6),
-                            shape: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                        return ElevatedButton(
+                         
                             child: Text(
                               "Salvar",
                               style: TextStyle(
@@ -871,7 +868,7 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
       isDismissible: true,
       mainButton: Row(
         children: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(false);
               },
@@ -882,7 +879,7 @@ class _CadastroDespesaReceitaState extends State<CadastroDespesaReceita>
                   fontSize: 15,
                 ),
               )),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 flush.dismiss(true);
                 return flush = Flushbar<bool>(

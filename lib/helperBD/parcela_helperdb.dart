@@ -74,7 +74,7 @@ class ParcelaHelper {
         ],
         where: "parcelaIdGlobal = ?",
         whereArgs: [id]);
-    List<ParcelaModel> lsparcela = List();
+    List<ParcelaModel> lsparcela = [];
 
     for (Map item in maps) {
       lsparcela.add(ParcelaModel.fromMap(item,false));
@@ -86,7 +86,7 @@ class ParcelaHelper {
     Database dbparcela = await db;
     List list = await dbparcela.rawQuery("Select * from parcelas");
     
-    List<ParcelaModel> lsparcela = List();
+    List<ParcelaModel> lsparcela = [];
     for (Map m in list) {
       lsparcela.add(ParcelaModel.fromMap(m,false));
     }
